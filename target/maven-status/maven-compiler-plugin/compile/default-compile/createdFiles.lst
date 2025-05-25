@@ -22,10 +22,12 @@ daos\MessageDAO.class
 controllers\BookingController.class
 dtos\RoomDTO.class
 utils\Common.class
+utils\GoogleLogin.class
 controllers\ServiceImageController.class
 dtos\FeedbackServiceDTO.class
 daos\DAOFactory.class
 daos\RoomDAO.class
+models\GoogleAccount.class
 daos\ServiceImageDAO.class
 models\Booking$BookingState.class
 utils\DateTimeUtils.class
