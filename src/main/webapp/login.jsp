@@ -14,27 +14,20 @@
 <div class="login-container">
     <div class="container" id="container">
         <div class="form-container sign-in-container">
-            <form action="${pageContext.request.contextPath}/UsersServlet" method="post">
+            <form action="sign-in" method="post">
                 <h1>Sign in</h1>
                 <input type="text" name="username" placeholder="Email Or Username" required />
-                <input type="hidden" name="actor" value="guest">
+                <input type="hidden" name="action" value="sign-in">
                 <input type="password" name="password" placeholder="Password" required />
                 <button type="submit" class="login-btn" name="action" value="Login">Sign In</button>
-                <%
-                    if (session != null && session.getAttribute("msg") != null) {
-                        String msg = (String) session.getAttribute("msg");
-                %>
-                <div id="loginMessage" class="alert alert-danger">
-                    <%= msg%>
+
+                <div id="loginMessage" class="mt-1 rounded-3 alert alert-danger ${empty msg ? 'd-none' : ''}">
+                    ${msg}
                 </div>
-                <%
-                        session.removeAttribute("msg");
-                    }
-                %>
+
                 <a href="${pageContext.request.contextPath}/views/client/pages/forgetpassword.jsp" id="forgot">Forgot Password?</a>
                 <p class="or-text">Or sign in with</p>
-                <a href="https://accounts.google.com/o/oauth2/auth?scope=email profile openid&redirect_uri=http://localhost:8080/FlexFood/UsersServlet?actor=google-login&response_type=code&client_id=409816900443-kfrs4qib3553p053mv9p6s1ams0hs25s.apps.googleusercontent.com&approval_prompt=force" 
-                   class="google-btn">
+                <a href="https://accounts.google.com/o/oauth2/auth?scope=email profile openid&redirect_uri=${google_redirect_uri}&response_type=code&client_id=${google_client_id}&approval_prompt=force" class="google-btn">
                     <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" width="20px"/>
                     Sign In with Google
                 </a>
@@ -45,10 +38,11 @@
         </div>
 
         <div class="form-container sign-up-container">
-            <form action="${pageContext.request.contextPath}/UsersServlet" method="post">
+            <form action="sign-in" method="post">
                 <h1>Create Account</h1>
-                <input type="hidden" name="actor" value="guest">
-                <input type="text" name="username" placeholder="Name" required/>
+                <input type="hidden" name="action" value="sign-up">
+                <input type="text" name="firstName" placeholder="firstName" required/>               
+                <input type="text" name="lastName" placeholder="lastName" required/>
                 <input type="email" name="email" placeholder="Email" required/>
                 <input type="password" name="password" placeholder="Password" required/>
                 <input type="password" name="re-password" placeholder="Re-enter Password" required />
@@ -103,6 +97,7 @@
     });
     forgotButton.addEventListener('click', () => {
         container.classList.add("right-panel-active");
+        history.pushState({}, "", "/FlexCarePPlus/reset-password");
     });
 </script>
 <script>
