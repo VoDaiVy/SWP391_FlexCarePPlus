@@ -15,6 +15,7 @@ import models.User;
 import models.UserDetail;
 import models.Wallet;
 import utils.Common;
+import utils.Email;
 import utils.GoogleLogin;
 
 public class LoginController extends HttpServlet {
@@ -29,6 +30,8 @@ public class LoginController extends HttpServlet {
             switch (actor) {
                 case "google-login" ->
                     loginWithGoogle(request, response);
+                case "logout" ->
+                    logout(request, response);
             }
         }
     }
@@ -42,6 +45,10 @@ public class LoginController extends HttpServlet {
                 login(request, response);
             case "sign-up" ->
                 sign_up(request, response);
+            case "checkEmail" ->
+                checkEmailExist(request, response);
+            case "verifyEmail" ->
+                verifyEmail(request, response);
         }
     }
 
@@ -127,19 +134,87 @@ public class LoginController extends HttpServlet {
 
     private void sign_up(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//        String firstName = request.getParameter("firstName");
-//        String lastName = request.getParameter("lastName");
-//        String email = request.getParameter("email");
-//        String password = Security.encryptMD5(request.getParameter("password"));
-//        User user = new User();
-//        user.setFirstName(firstName);
-//        user.setLastName(lastName);
-//        user.setEmail(email);
-//        user.setRoleId(2);
-//        user.setPassword(password);
-//        user.setStatus(true);
-//        boolean isSuccess = UserDAO.createUser(user);
-//        response.setContentType("text/plain");
-//        response.getWriter().write(Boolean.toString(isSuccess));
+        String firstName = request.getParameter("firstName");
+        String lastName = request.getParameter("lastName");
+        String email = request.getParameter("email");
+        String password = Common.encryptMD5(request.getParameter("password"));
+        User user = new User();
+        user.setRole("customer");
+        user.setEmail(email);
+        user.setUserName(email);
+        user.setPassword(password);
+        user.setStatus(true);
+
+        UserDetail userDetail = new UserDetail();
+        userDetail.setUserID(user.getUserId());
+        userDetail.setFirstName(firstName);
+        userDetail.setLastName(lastName);
+        HttpSession session = request.getSession();
+        String key = Email.generateRandomKey();
+        session.setAttribute("key", key);
+        session.setAttribute("user", user);
+        session.setAttribute("userDetail", userDetail);
+        session.setAttribute("action", "signUp");
+        if (Email.sendEmail(user.getEmail(), "Welcome to FlexCareP+ - Dịch vụ thú cưng", Email.noiDungRegis(key))) {
+            request.getRequestDispatcher("verifyEmail.jsp").forward(request, response);
+        } else {
+            request.setAttribute("msg", "Can not sign up!");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+        }
+    }
+
+    private void logout(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+
+        response.sendRedirect("home");
+    }
+
+    private void checkEmailExist(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String email = request.getParameter("email");
+        User user = UserDAO.getByEmail(email);
+        response.setContentType("text/plain");
+        response.getWriter().write(Boolean.toString(user != null));
+    }
+
+    private void verifyEmail(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String status = request.getParameter("status");
+        HttpSession session = request.getSession(false);
+        if (status.equals("right")) {
+            switch ((String) session.getAttribute("action")) {
+                case "signUp" ->
+                    createNewAccount(request);
+                case "resetPassword" ->
+                    resetPassword(request);
+            }
+        }
+        session.invalidate();
+        response.sendRedirect("sign-in");
+    }
+
+    private void createNewAccount(HttpServletRequest request)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        User user = (User) session.getAttribute("user");
+        UserDetail userDetail = (UserDetail) session.getAttribute("userDetail");
+        UserDAO.create(user);
+        user = UserDAO.getByEmail(user.getEmail());
+        userDetail.setUserID(user.getUserId());
+        UserDetailDAO.create(userDetail);
+    }
+    
+    private void resetPassword(HttpServletRequest request)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession(false);
+        String email = (String)session.getAttribute("email");
+        User user = UserDAO.getByEmail(email);
+        user.setPassword(Common.encryptMD5("123"));
+        UserDAO.update(user);
+        Email.sendEmail(email, "FlexCareP+ - Dịch vụ chăm sóc thú cưng", Email.noiDungReset());
     }
 }
