@@ -117,12 +117,24 @@ public class UserDetailController extends HttpServlet {
 
     private void customerPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // To be implemented
+        String action = request.getParameter("action");
+        switch (action) {
+            case "changeInfo" ->
+                customerChangeInfo(request, response);
+            case "changePassword" ->
+                customerChangePassword(request, response);
+        }
     }
 
     private void customerPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // To be implemented
+        String action = request.getParameter("action");
+        switch (action) {
+            case "changeInfo" ->
+                customerChangeInfo(request, response);
+            case "changePassword" ->
+                customerChangePassword(request, response);
+        }
     }
 
     private void customerDelete(HttpServletRequest request, HttpServletResponse response)
@@ -149,5 +161,17 @@ public class UserDetailController extends HttpServlet {
     private void staffDelete(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // To be implemented
+    }
+    
+    private void customerChangeInfo(HttpServletRequest request, HttpServletResponse response){
+        
+    }
+    
+    private void customerChangePassword(HttpServletRequest request, HttpServletResponse response){
+        
+    }
+    
+    private void customerChangeAvatar(HttpServletRequest request, HttpServletResponse response){
+        
     }
 }
