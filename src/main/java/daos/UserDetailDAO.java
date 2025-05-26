@@ -13,7 +13,7 @@ import utils.DBConnection;
 public class UserDetailDAO {
     
     // Create a new user detail
-    public boolean create(UserDetail userDetail) {
+    public static boolean create(UserDetail userDetail) {
         String sql = "INSERT INTO UserDetail (UserID, FirstName, LastName, Tel, DOB, Gender, Avatar) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -43,7 +43,7 @@ public class UserDetailDAO {
     }
     
     // Get a user detail by user ID
-    public UserDetail getByUserId(int userID) {
+    public static UserDetail getByUserId(int userID) {
         String sql = "SELECT * FROM UserDetail WHERE UserID = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -76,7 +76,7 @@ public class UserDetailDAO {
     }
     
     // Update a user detail
-    public boolean update(UserDetail userDetail) {
+    public static boolean update(UserDetail userDetail) {
         String sql = "UPDATE UserDetail SET FirstName = ?, LastName = ?, Tel = ?, DOB = ?, Gender = ?, Avatar = ? WHERE UserID = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -106,7 +106,7 @@ public class UserDetailDAO {
     }
     
     // Delete a user detail
-    public boolean delete(int userID) {
+    public static boolean delete(int userID) {
         String sql = "DELETE FROM UserDetail WHERE UserID = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -122,7 +122,7 @@ public class UserDetailDAO {
     }
     
     // Check if user detail exists
-    public boolean exists(int userID) {
+    public static boolean exists(int userID) {
         String sql = "SELECT COUNT(*) AS Count FROM UserDetail WHERE UserID = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -141,7 +141,7 @@ public class UserDetailDAO {
     }
     
     // Update user avatar
-    public boolean updateAvatar(int userID, String avatarUrl) {
+    public static boolean updateAvatar(int userID, String avatarUrl) {
         String sql = "UPDATE UserDetail SET Avatar = ? WHERE UserID = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
