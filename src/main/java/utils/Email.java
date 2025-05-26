@@ -133,7 +133,7 @@ public class Email {
                 + "    <p>Chúng tôi nhận được yêu cầu đặt lại mật khẩu cho tài khoản liên kết với địa chỉ email của bạn.</p>\r\n"
                 + "    <p>Mật khẩu của bạn được đổi thành: 123</p>\r\n"
                 + "    <div class='footer'>\r\n"
-                + "      <p>Hotline hỗ trợ: <strong>1900 633 345</strong></p>\r\n"
+                + "      <p>Hotline hỗ trợ: <strong>1900 1 tông 1 dép</strong></p>\r\n"
                 + "      <p>Email: <a href='mailto:flexcarepplus@gmail.com'>flexcarepplus@gmail.com</a></p>\r\n"
                 + "      <p>Trân trọng,<br>Đội ngũ FlexCareP+</p>\r\n"
                 + "    </div>\r\n"

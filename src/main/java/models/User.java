@@ -5,6 +5,7 @@ public class User {
     public int userID;
     public String role, userName, password, email;
     public boolean status;
+    public static enum RoleName {ADMIN, CUSTOMER, STAFF};
 
     public User() {
     }

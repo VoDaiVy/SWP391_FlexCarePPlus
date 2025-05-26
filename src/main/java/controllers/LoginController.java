@@ -32,6 +32,8 @@ public class LoginController extends HttpServlet {
                     loginWithGoogle(request, response);
                 case "logout" ->
                     logout(request, response);
+                case "forgetPassword" ->
+                    showForgetPassword(request, response);
             }
         }
     }
@@ -49,6 +51,8 @@ public class LoginController extends HttpServlet {
                 checkEmailExist(request, response);
             case "verifyEmail" ->
                 verifyEmail(request, response);
+            case "forgetPassword" ->
+                forgetPassword(request, response);
         }
     }
 
@@ -57,6 +61,11 @@ public class LoginController extends HttpServlet {
         request.setAttribute("google_redirect_uri", GoogleLogin.GOOGLE_REDIRECT_URI);
         request.setAttribute("google_client_id", GoogleLogin.GOOGLE_CLIENT_ID);
         request.getRequestDispatcher("login.jsp").forward(request, response);
+    }
+
+    private void showForgetPassword(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.getRequestDispatcher("forgetPassword.jsp").forward(request, response);
     }
 
     private void loginWithGoogle(HttpServletRequest request, HttpServletResponse response)
@@ -115,6 +124,7 @@ public class LoginController extends HttpServlet {
         if (userDetailDTO.getUser().isStatus()) {
             HttpSession session = request.getSession();
             session.setAttribute("userDetailDTO", userDetailDTO);
+            session.setAttribute("actor", "customer");
             switch (userDetailDTO.getUser().getRole()) {
                 case "customer" -> {
                     response.sendRedirect("home");
@@ -207,14 +217,32 @@ public class LoginController extends HttpServlet {
         userDetail.setUserID(user.getUserId());
         UserDetailDAO.create(userDetail);
     }
-    
+
     private void resetPassword(HttpServletRequest request)
             throws ServletException, IOException {
         HttpSession session = request.getSession(false);
-        String email = (String)session.getAttribute("email");
+        String email = (String) session.getAttribute("email");
         User user = UserDAO.getByEmail(email);
         user.setPassword(Common.encryptMD5("123"));
         UserDAO.update(user);
         Email.sendEmail(email, "FlexCareP+ - Dịch vụ chăm sóc thú cưng", Email.noiDungReset());
+    }
+
+    private void forgetPassword(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        String email = request.getParameter("email");
+        User user = UserDAO.getByEmail(email);
+        String key = Email.generateRandomKey();
+        session.setAttribute("email", email);
+        session.setAttribute("key", key);
+        session.setAttribute("user", user);
+        session.setAttribute("action", "resetPassword");
+        if (Email.sendEmail(user.getEmail(), "Welcome to FlexCareP+ - Dịch vụ thú cưng", Email.noiDungRegis(key))) {
+            request.getRequestDispatcher("verifyEmail.jsp").forward(request, response);
+        } else {
+            request.setAttribute("msg", "Can not reset pasword!");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
+        }
     }
 }

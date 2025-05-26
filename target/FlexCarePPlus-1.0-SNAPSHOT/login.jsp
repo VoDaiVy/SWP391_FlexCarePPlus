@@ -25,7 +25,7 @@
                     ${msg}
                 </div>
 
-                <a href="${pageContext.request.contextPath}/views/client/pages/forgetpassword.jsp" id="forgot">Forgot Password?</a>
+                <a href="sign-in?actor=forgetPassword" id="forgot">Forgot Password?</a>
                 <p class="or-text">Or sign in with</p>
                 <a href="https://accounts.google.com/o/oauth2/auth?scope=email profile openid&redirect_uri=${google_redirect_uri}&response_type=code&client_id=${google_client_id}&approval_prompt=force" class="google-btn">
                     <img src="https://developers.google.com/identity/images/g-logo.png" alt="Google logo" width="20px"/>
@@ -152,13 +152,15 @@
 
     emailInput.addEventListener("input", function () {
         var signUpButton = document.getElementById("signUpBtn");
+        signUpButton.disabled = true;
         const email = emailInput.value.trim();
         checkWrongFormatEmail = email !== "" && !isValidEmail(email);
         if (checkWrongFormatEmail) {
             errorDiv.textContent = "Email không đúng định dạng.";
             errorDiv.style.display = "block";
-            signUpButton.disabled = true;
         } else {
+            errorDiv.textContent = "";
+            errorDiv.style.display = "none";
             document.getElementById("email").addEventListener("blur", function () {
                 const email = this.value;
                 const errorDiv = document.getElementById("email-error");
@@ -181,8 +183,6 @@
                                 errorDiv.style.display = "block";
                                 signUpButton.disabled = true;
                             } else {
-                                errorDiv.textContent = "";
-                                errorDiv.style.display = "none";
                                 signUpButton.disabled = false;
                             }
                         })
@@ -228,7 +228,7 @@
             errorMsg.textContent = "Passwords do not match!";
             errorMsg.style.display = 'block';
             signUpBtn.disabled = true;
-            
+
         }
     }
     rePassword.addEventListener('input', validatePasswords);
