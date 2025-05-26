@@ -48,7 +48,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-lg-9">
                 <div class="tab-content">
                     <!-- Personal Information Tab -->
@@ -58,7 +58,7 @@
                                 <h4 class="text-uppercase">Personal Information</h4>
                                 <button class="btn btn-sm btn-primary" id="editPersonalInfoBtn">Edit</button>
                             </div>
-                            
+
                             <form id="personalInfoForm" action="userdetail" method="put">
                                 <input type="hidden" name="action" value="changeInfo">
                                 <div class="row mb-3">
@@ -73,19 +73,19 @@
                                                value="${sessionScope.userDetailDTO.lastName}" disabled>
                                     </div>
                                 </div>
-                                
+
                                 <div class="mb-3">
                                     <label for="email" class="form-label">Email</label>
                                     <input type="email" class="form-control" id="email" name="email" 
                                            value="${sessionScope.userDetailDTO.email}" disabled>
                                 </div>
-                                
+
                                 <div class="mb-3">
                                     <label for="tel" class="form-label">Phone Number</label>
                                     <input type="tel" class="form-control" id="tel" name="tel" 
                                            value="${sessionScope.userDetailDTO.tel}" disabled>
                                 </div>
-                                
+
                                 <div class="row mb-3">
                                     <div class="col-md-6 mb-3 mb-md-0">
                                         <label for="dob" class="form-label">Date of Birth</label>
@@ -113,7 +113,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                
+
                                 <div class="mb-3" id="saveButtonGroup" style="display: none;">
                                     <button type="submit" class="btn btn-primary">Save Changes</button>
                                     <button type="button" class="btn btn-outline-secondary ms-2" id="cancelEditBtn">Cancel</button>
@@ -121,26 +121,38 @@
                             </form>
                         </div>
                     </div>
-                    
+
                     <!-- Security Settings Tab -->
                     <div class="tab-pane fade" id="securitySettings" role="tabpanel" aria-labelledby="security-settings-tab">
                         <div class="bg-light p-4 rounded">
                             <div class="border-bottom pb-3 mb-4">
                                 <h4 class="text-uppercase">Security Settings</h4>
                             </div>
-                            
+
                             <form id="passwordChangeForm" action="userdetail" method="put">
                                 <input type="hidden" name="action" value="changePassword">
+
+                                <!-- Add error/success message display -->
+                                <c:if test="${not empty passwordChangeError}">
+                                    <div class="alert alert-danger mb-3" role="alert">
+                                        ${passwordChangeError}
+                                    </div>
+                                </c:if>
+                                <c:if test="${not empty passwordChangeSuccess}">
+                                    <div class="alert alert-success mb-3" role="alert">
+                                        ${passwordChangeSuccess}
+                                    </div>
+                                </c:if>
                                 <div class="mb-3">
                                     <label for="currentPassword" class="form-label">Current Password</label>
                                     <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
                                 </div>
-                                
+
                                 <div class="mb-3">
                                     <label for="newPassword" class="form-label">New Password</label>
                                     <input type="password" class="form-control" id="newPassword" name="newPassword" required>
                                 </div>
-                                
+
                                 <div class="mb-3">
                                     <label for="confirmPassword" class="form-label">Confirm New Password</label>
                                     <input type="password" class="form-control" id="confirmPassword" name="confirmPassword" required>
@@ -148,21 +160,21 @@
                                         Passwords do not match
                                     </div>
                                 </div>
-                                
+
                                 <div class="mb-3">
                                     <button type="submit" class="btn btn-primary">Update Password</button>
                                 </div>
                             </form>
                         </div>
                     </div>
-                    
+
                     <!-- Booking History Tab -->
                     <div class="tab-pane fade" id="bookingHistory" role="tabpanel" aria-labelledby="booking-history-tab">
                         <div class="bg-light p-4 rounded">
                             <div class="border-bottom pb-3 mb-4">
                                 <h4 class="text-uppercase">Booking History</h4>
                             </div>
-                            
+
                             <div class="table-responsive">
                                 <table class="table table-hover">
                                     <thead>
@@ -217,25 +229,25 @@
 
 <!-- JavaScript for Profile Page -->
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener('DOMContentLoaded', function () {
         // Edit Personal Info Button
-        document.getElementById('editPersonalInfoBtn').addEventListener('click', function() {
+        document.getElementById('editPersonalInfoBtn').addEventListener('click', function () {
             const inputs = document.querySelectorAll('#personalInfoForm input');
             inputs.forEach(input => input.disabled = false);
             document.getElementById('saveButtonGroup').style.display = 'block';
             this.style.display = 'none';
         });
-        
+
         // Cancel Edit Button
-        document.getElementById('cancelEditBtn').addEventListener('click', function() {
+        document.getElementById('cancelEditBtn').addEventListener('click', function () {
             const inputs = document.querySelectorAll('#personalInfoForm input');
             inputs.forEach(input => input.disabled = true);
             document.getElementById('saveButtonGroup').style.display = 'none';
             document.getElementById('editPersonalInfoBtn').style.display = 'block';
         });
-        
+
         // Password confirmation validation
-        document.getElementById('confirmPassword').addEventListener('input', function() {
+        document.getElementById('confirmPassword').addEventListener('input', function () {
             const newPassword = document.getElementById('newPassword').value;
             const confirmPassword = this.value;
             if (newPassword !== confirmPassword) {
@@ -244,61 +256,61 @@
                 document.getElementById('passwordMismatch').style.display = 'none';
             }
         });
-        
+
         // Profile Image Upload Preview
-        document.getElementById('profileImageUpload').addEventListener('change', function() {
+        document.getElementById('profileImageUpload').addEventListener('change', function () {
             const file = this.files[0];
             if (file) {
                 const reader = new FileReader();
-                reader.onload = function(e) {
+                reader.onload = function (e) {
                     const profileImage = document.querySelector('.rounded-circle');
                     profileImage.src = e.target.result;
                 };
                 reader.readAsDataURL(file);
             }
         });
-        
+
         // Form submissions
-        document.getElementById('personalInfoForm').addEventListener('submit', function(e) {
+        document.getElementById('personalInfoForm').addEventListener('submit', function (e) {
             e.preventDefault();
             // Here you would typically send an AJAX request to update the user's information
             alert('Profile information updated successfully!');
-            
+
             // Disable inputs and hide save button after successful update
             const inputs = document.querySelectorAll('#personalInfoForm input');
             inputs.forEach(input => input.disabled = true);
             document.getElementById('saveButtonGroup').style.display = 'none';
             document.getElementById('editPersonalInfoBtn').style.display = 'block';
         });
-        
-        document.getElementById('passwordChangeForm').addEventListener('submit', function(e) {
+
+        document.getElementById('passwordChangeForm').addEventListener('submit', function (e) {
             e.preventDefault();
             const newPassword = document.getElementById('newPassword').value;
             const confirmPassword = document.getElementById('confirmPassword').value;
-            
+
             if (newPassword !== confirmPassword) {
                 document.getElementById('passwordMismatch').style.display = 'block';
                 return;
             }
-            
+
             // Here you would typically send an AJAX request to update the password
             alert('Password updated successfully!');
             this.reset();
         });
-        
+
         // Tab navigation - ensure proper activation of tabs
-        document.querySelectorAll('[data-bs-toggle="tab"]').forEach(function(element) {
-            element.addEventListener('click', function(e) {
+        document.querySelectorAll('[data-bs-toggle="tab"]').forEach(function (element) {
+            element.addEventListener('click', function (e) {
                 e.preventDefault();
-                
+
                 // Remove active class from all tabs
                 document.querySelectorAll('[data-bs-toggle="tab"]').forEach(el => {
                     el.classList.remove('active');
                 });
-                
+
                 // Add active class to clicked tab
                 this.classList.add('active');
-                
+
                 // Show the corresponding tab content
                 const target = this.getAttribute('href').substring(1);
                 document.querySelectorAll('.tab-pane').forEach(pane => {

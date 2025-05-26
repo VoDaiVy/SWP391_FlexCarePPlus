@@ -22,7 +22,7 @@ public class LoginController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String actor = request.getParameter("actor");
+        String actor = (String)request.getSession().getAttribute("actor");
         if (actor == null) {
             showLoginPage(request, response);
         } else {
@@ -108,6 +108,7 @@ public class LoginController extends HttpServlet {
         if (userDetailDTO.getUser().isStatus()) {
             HttpSession session = request.getSession();
             session.setAttribute("userDetailDTO", userDetailDTO);
+            session.setAttribute("actor", User.RoleName.CUSTOMER.name());
             switch (userDetailDTO.getUser().getRole()) {
                 case "customer" -> {
                     response.sendRedirect("home");
