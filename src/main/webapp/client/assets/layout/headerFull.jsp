@@ -19,8 +19,13 @@
                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">Pages</a>
                 <div class="dropdown-menu m-0">
                     <a href="price.html" class="dropdown-item">Pricing Plan</a>
-                    <a href="${pageContext.request.contextPath}/client/profile.jsp" class="dropdown-item">The Team</a>
-                    <a href="testimonial.html" class="dropdown-item">Testimonial</a>
+                    <a href="${pageContext.request.contextPath}/userdetail?action=getUserDetail" class="dropdown-item">The Team</a>
+                    <a href="${pageContext.request.contextPath}/userdetail?action=getUserDetail" class="dropdown-item">The Team</a>
+                    <a href="${pageContext.request.contextPath}/userdetail?action=getUserDetail" class="dropdown-item">The Team</a>
+                    <a href="${pageContext.request.contextPath}/userdetail?action=getUserDetail" class="dropdown-item">The Team</a>
+                    <a href="${pageContext.request.contextPath}/userdetail?action=getUserDetail" class="dropdown-item">The Team</a>
+                    <a href="${pageContext.request.contextPath}/userdetail?action=getUserDetail" class="dropdown-item">The Team</a>
+                    <a href="userdetail?action=getUserDetail" class="dropdown-item">Testimonial</a>
                     <a href="blog.html" class="dropdown-item">Blog Grid</a>
                     <a href="detail.html" class="dropdown-item">Blog Detail</a>
                 </div>
@@ -31,11 +36,11 @@
                     <!-- User Avatar with Dropdown -->
                     <div class="nav-item dropdown ms-lg-3 d-flex align-items-center me-4 me-lg-5">
                         <a href="#" class="nav-link dropdown-toggle p-0" data-bs-toggle="dropdown" id="userDropdown" style="display:flex; align-items:center;">
-                            <img src="${pageContext.request.contextPath}/client/assets/img/hero.jpg" alt="User Avatar" class="rounded-circle p-3" width="87" height="87" 
+                            <img src="${not empty sessionScope.userDetailDTO.avatar ? sessionScope.userDetailDTO.avatar : pageContext.request.contextPath.concat('/client/assets/img/hero.jpg')}" alt="User Avatar" class="rounded-circle p-3" width="87" height="87" 
                                  style="object-fit: cover;">
                         </a>
                         <div class="dropdown-menu dropdown-menu-end m-0" aria-labelledby="userDropdown">
-                            <a href="${pageContext.request.contextPath}/client/profile.jsp" class="dropdown-item"><i class="bi bi-person me-2"></i>View Profile</a>
+                            <a href="userdetail?action=getUserDetail" class="dropdown-item"><i class="bi bi-person me-2"></i>View Profile</a>
                             <a href="wallet.html" class="dropdown-item"><i class="bi bi-wallet2 me-2"></i>View Wallet</a>
                             <div class="dropdown-divider"></div>
                             <a href="logout" class="dropdown-item text-danger"><i class="bi bi-box-arrow-right me-2"></i>Logout</a>
@@ -45,7 +50,7 @@
                 <c:otherwise>
                     <!-- User is not logged in - Show Sign In Button -->
                     <div class="nav-item ms-lg-3 d-flex align-items-center me-4 me-lg-5">
-                        <a href="${pageContext.request.contextPath}/login.jsp" class="nav-link d-flex align-items-center">
+                        <a href="${pageContext.request.contextPath}/sign-in" class="nav-link d-flex align-items-center">
                             <i class="bi bi-person-circle fs-5 me-2"></i>
                             <span>Sign In</span>
                         </a>

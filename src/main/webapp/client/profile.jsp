@@ -9,17 +9,36 @@
             <div class="col-lg-10 text-center">
                 <h1 class="display-3 text-uppercase text-white mb-3">My Profile</h1>
                 <div class="d-inline-block position-relative">
-                    <img src="${pageContext.request.contextPath}/client/assets/img/hero.jpg" alt="Profile Image" 
-                         class="img-fluid rounded-circle border border-5 border-white" style="width: 150px; height: 150px; object-fit: cover;">
+                    <img src="${not empty sessionScope.userDetailDTO.avatar ? sessionScope.userDetailDTO.avatar : pageContext.request.contextPath.concat('/client/assets/img/hero.jpg')}" 
+                         alt="Profile Image" class="img-fluid rounded-circle border border-5 border-white" 
+                         style="width: 150px; height: 150px; object-fit: cover;">
                     <div class="position-absolute bottom-0 end-0 me-2">
-                        <label for="profileImageUpload" class="btn btn-sm btn-light rounded-circle" style="width: 40px; height: 40px; cursor: pointer;">
-                            <i class="bi bi-camera text-primary fs-5 d-flex align-items-center justify-content-center h-100"></i>
-                        </label>
-                        <input type="file" id="profileImageUpload" style="display: none;" accept="image/*">
+                        <form id="avatarForm" action="userdetail" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="action" value="changeAvatar">
+                            <label for="profileImageUpload" class="btn btn-sm btn-light rounded-circle" 
+                                   style="width: 40px; height: 40px; cursor: pointer;">
+                                <i class="bi bi-camera text-primary fs-5 d-flex align-items-center justify-content-center h-100"></i>
+                            </label>
+                            <input type="file" id="profileImageUpload" name="avatar" style="display: none;" accept="image/*" onchange="submitAvatarForm()">
+                        </form>
                     </div>
                 </div>
+                <div class="mt-3">
+                    <c:if test="${not empty avatarUploadError}">
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            ${avatarUploadError}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </c:if>
+                    <c:if test="${not empty avatarUploadSuccess}">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert">
+                            ${avatarUploadSuccess}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    </c:if>
+                </div>         
                 <h4 class="text-white mt-3">${sessionScope.userDetailDTO.firstName} ${sessionScope.userDetailDTO.lastName}</h4>
-                <p class="text-white">${sessionScope.userDetailDTO.email}</p>
+                <p class="text-white">${sessionScope.userDetailDTO.user.email}</p>
             </div>
         </div>
     </div>
@@ -59,7 +78,7 @@
                                 <button class="btn btn-sm btn-primary" id="editPersonalInfoBtn">Edit</button>
                             </div>
 
-                            <form id="personalInfoForm" action="userdetail" method="put">
+                            <form id="personalInfoForm">
                                 <input type="hidden" name="action" value="changeInfo">
                                 <div class="row mb-3">
                                     <div class="col-md-6 mb-3 mb-md-0">
@@ -77,7 +96,7 @@
                                 <div class="mb-3">
                                     <label for="email" class="form-label">Email</label>
                                     <input type="email" class="form-control" id="email" name="email" 
-                                           value="${sessionScope.userDetailDTO.email}" disabled>
+                                           value="${sessionScope.userDetailDTO.user.email}" readonly>
                                 </div>
 
                                 <div class="mb-3">
@@ -119,6 +138,8 @@
                                     <button type="button" class="btn btn-outline-secondary ms-2" id="cancelEditBtn">Cancel</button>
                                 </div>
                             </form>
+
+                            <div id="infoUpdateMsg"></div>
                         </div>
                     </div>
 
@@ -129,7 +150,7 @@
                                 <h4 class="text-uppercase">Security Settings</h4>
                             </div>
 
-                            <form id="passwordChangeForm" action="userdetail" method="put">
+                            <form id="passwordChangeForm">
                                 <input type="hidden" name="action" value="changePassword">
 
                                 <!-- Add error/success message display -->
@@ -143,6 +164,7 @@
                                         ${passwordChangeSuccess}
                                     </div>
                                 </c:if>
+                                <div id="passwordChangeMsg"></div>
                                 <div class="mb-3">
                                     <label for="currentPassword" class="form-label">Current Password</label>
                                     <input type="password" class="form-control" id="currentPassword" name="currentPassword" required>
@@ -232,7 +254,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         // Edit Personal Info Button
         document.getElementById('editPersonalInfoBtn').addEventListener('click', function () {
-            const inputs = document.querySelectorAll('#personalInfoForm input');
+            const inputs = document.querySelectorAll('#personalInfoForm input:not([readonly])');
             inputs.forEach(input => input.disabled = false);
             document.getElementById('saveButtonGroup').style.display = 'block';
             this.style.display = 'none';
@@ -270,34 +292,78 @@
             }
         });
 
+        function autoHideAlerts() {
+            setTimeout(function () {
+                document.querySelectorAll('.alert-dismissible').forEach(function (alert) {
+
+                    alert.classList.remove('show');
+                    alert.classList.add('hide');
+
+                    setTimeout(function () {
+                        if (alert.parentNode)
+                            alert.parentNode.removeChild(alert);
+                    }, 500);
+                });
+            }, 5000);
+        }
+
+        document.addEventListener('DOMContentLoaded', function () {
+            autoHideAlerts();
+        });
         // Form submissions
         document.getElementById('personalInfoForm').addEventListener('submit', function (e) {
             e.preventDefault();
-            // Here you would typically send an AJAX request to update the user's information
-            alert('Profile information updated successfully!');
 
-            // Disable inputs and hide save button after successful update
-            const inputs = document.querySelectorAll('#personalInfoForm input');
-            inputs.forEach(input => input.disabled = true);
-            document.getElementById('saveButtonGroup').style.display = 'none';
-            document.getElementById('editPersonalInfoBtn').style.display = 'block';
+            const form = e.target;
+            const formData = new FormData(form);
+
+            fetch('userdetail', {
+                method: 'POST',
+                body: formData,
+            })
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('infoUpdateMsg').innerHTML = html;
+                        // Disable inputs and hide save button after successful update
+                        const inputs = document.querySelectorAll('#personalInfoForm input');
+                        inputs.forEach(input => input.disabled = true);
+                        document.getElementById('saveButtonGroup').style.display = 'none';
+                        document.getElementById('editPersonalInfoBtn').style.display = 'block';
+                        autoHideAlerts();
+                    })
+                    .catch(error => {
+                        document.getElementById('infoUpdateMsg').innerHTML = '<div class="alert alert-danger alert-dismissible fade show">Có lỗi xảy ra!</div>';
+                    });
         });
 
         document.getElementById('passwordChangeForm').addEventListener('submit', function (e) {
             e.preventDefault();
-            const newPassword = document.getElementById('newPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
+            const form = e.target;
+            const formData = new FormData(form);
 
-            if (newPassword !== confirmPassword) {
-                document.getElementById('passwordMismatch').style.display = 'block';
-                return;
-            }
-
-            // Here you would typically send an AJAX request to update the password
-            alert('Password updated successfully!');
-            this.reset();
+            fetch('userdetail', {
+                method: 'POST',
+                body: formData,
+            })
+                    .then(response => response.text())
+                    .then(html => {
+                        document.getElementById('passwordChangeMsg').innerHTML = html;
+                        autoHideAlerts();
+                        form.reset();
+                    })
+                    .catch(error => {
+                        document.getElementById('passwordChangeMsg').innerHTML =
+                                '<div class="alert alert-danger alert-dismissible fade show">Có lỗi xảy ra!</div>';
+                        autoHideAlerts();
+                    });
         });
 
+        document.addEventListener('DOMContentLoaded', function () {
+            const hasPassword = '${sessionScope.userDetailDTO.user.password}' !== '';
+            if (!hasPassword) {
+                document.getElementById('currentPassword').closest('.mb-3').style.display = 'none';
+            }
+        });
         // Tab navigation - ensure proper activation of tabs
         document.querySelectorAll('[data-bs-toggle="tab"]').forEach(function (element) {
             element.addEventListener('click', function (e) {
@@ -320,6 +386,12 @@
             });
         });
     });
+
+    function submitAvatarForm() {
+        // Show loading indicator if desired
+        document.querySelector('.rounded-circle').style.opacity = '0.5';
+        document.getElementById('avatarForm').submit();
+    }
 </script>
 
 <jsp:include page="/client/assets/layout/footer.jsp"/>

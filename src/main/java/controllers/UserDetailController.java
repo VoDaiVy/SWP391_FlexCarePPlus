@@ -4,12 +4,24 @@ import daos.UserDAO;
 import dtos.UserDetailDTO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
+import java.io.InputStream;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import models.User;
 import utils.Common;
+import static utils.S3Uploader.deleteFromS3;
+import static utils.S3Uploader.uploadToS3;
 
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024 * 1, // 1 MB
+        maxFileSize = 1024 * 1024 * 10, // 10 MB
+        maxRequestSize = 1024 * 1024 * 100 // 100 MB
+)
 public class UserDetailController extends HttpServlet {
 
     @Override
@@ -116,7 +128,12 @@ public class UserDetailController extends HttpServlet {
     // Customer role methods
     private void customerGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // To be implemented
+        String action = request.getParameter("action");
+        switch (action) {
+            case "getUserDetail" ->
+                request.getRequestDispatcher("/client/profile.jsp").forward(request, response);
+
+        }
     }
 
     private void customerPost(HttpServletRequest request, HttpServletResponse response)
@@ -127,6 +144,8 @@ public class UserDetailController extends HttpServlet {
                 customerChangeInfo(request, response);
             case "changePassword" ->
                 customerChangePassword(request, response);
+            case "changeAvatar" ->
+                customerChangeAvatar(request, response);
         }
     }
 
@@ -138,6 +157,8 @@ public class UserDetailController extends HttpServlet {
                 customerChangeInfo(request, response);
             case "changePassword" ->
                 customerChangePassword(request, response);
+            case "changeAvatar" ->
+                customerChangeAvatar(request, response);
         }
     }
 
@@ -167,67 +188,148 @@ public class UserDetailController extends HttpServlet {
         // To be implemented
     }
 
-    private void customerChangeInfo(HttpServletRequest request, HttpServletResponse response) {
+    private void customerChangeInfo(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        try {
+            UserDetailDTO userDetailDTO = (UserDetailDTO) request.getSession().getAttribute("userDetailDTO");
+            if (userDetailDTO == null) {
+                response.getWriter().write("<div class='alert alert-danger'>Bạn chưa đăng nhập!</div>");
+                return;
+            }
 
+            String firstName = request.getParameter("firstName");
+            String lastName = request.getParameter("lastName");
+            String tel = request.getParameter("tel");
+            String dob = request.getParameter("dob");
+            String gender = request.getParameter("gender");
+
+            userDetailDTO.setFirstName(firstName);
+            userDetailDTO.setLastName(lastName);
+            userDetailDTO.setTel(tel);
+            userDetailDTO.setDob(LocalDate.parse(dob, DateTimeFormatter.ofPattern("yyyy-MM-dd")));
+            userDetailDTO.setGender(gender);
+
+            boolean updated = daos.UserDetailDAO.update(userDetailDTO.toUserDetail());
+
+            if (updated) {
+                request.getSession().setAttribute("userDetailDTO", userDetailDTO);
+                response.getWriter().write("<div class='alert alert-success alert-dismissible fade show'>Cập nhật thành công!</div>");
+            } else {
+                response.getWriter().write("<div class='alert alert-danger alert-dismissible fade show'>Cập nhật thất bại!</div>");
+            }
+        } catch (Exception e) {
+            response.getWriter().write("<div class='alert alert-danger alert-dismissible fade show'>Lỗi: " + e.getMessage() + "</div>");
+        }
     }
 
-    private void customerChangePassword(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void customerChangePassword(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.setContentType("text/html;charset=UTF-8");
         try {
-            // Get the current user from session
             UserDetailDTO currentUserDetailDTO = (UserDetailDTO) request.getSession().getAttribute("userDetailDTO");
             User currentUser = currentUserDetailDTO.getUser();
 
             if (currentUser == null) {
+                response.getWriter().write("<div class='alert alert-danger alert-dismissible fade show'>Bạn chưa đăng nhập!</div>");
+                return;
+            }
+
+            String currentPassword = request.getParameter("currentPassword");
+            String newPassword = request.getParameter("newPassword");
+            String confirmPassword = request.getParameter("confirmPassword");
+
+            if (newPassword == null || newPassword.isEmpty()
+                    || confirmPassword == null || confirmPassword.isEmpty()) {
+                response.getWriter().write("<div class='alert alert-danger alert-dismissible fade show'>Vui lòng nhập đầy đủ mật khẩu mới!</div>");
+                return;
+            }
+
+            if (!newPassword.equals(confirmPassword)) {
+                response.getWriter().write("<div class='alert alert-danger alert-dismissible fade show'>Mật khẩu xác nhận không khớp!</div>");
+                return;
+            }
+
+            // Nếu user chưa có mật khẩu (lần đầu setup)
+            boolean isFirstSetup = currentUser.getPassword() == null || currentUser.getPassword().isEmpty();
+
+            if (!isFirstSetup) {
+                // Đã có mật khẩu, phải kiểm tra mật khẩu cũ
+                if (currentPassword == null || currentPassword.isEmpty()) {
+                    response.getWriter().write("<div class='alert alert-danger alert-dismissible fade show'>Vui lòng nhập mật khẩu hiện tại!</div>");
+                    return;
+                }
+                if (!currentUser.getPassword().equals(Common.encryptMD5(currentPassword))) {
+                    response.getWriter().write("<div class='alert alert-danger alert-dismissible fade show'>Mật khẩu hiện tại không đúng!</div>");
+                    return;
+                }
+            }
+
+            // Update password
+            currentUser.setPassword(Common.encryptMD5(newPassword));
+            boolean updated = UserDAO.update(currentUser);
+
+            if (updated) {
+                // Update session
+                currentUserDetailDTO.setUser(currentUser);
+                request.getSession().setAttribute("userDetailDTO", currentUserDetailDTO);
+                response.getWriter().write("<div class='alert alert-success alert-dismissible fade show'>Cập nhật mật khẩu thành công!</div>");
+            } else {
+                response.getWriter().write("<div class='alert alert-danger alert-dismissible fade show'>Cập nhật mật khẩu thất bại!</div>");
+            }
+        } catch (Exception e) {
+            response.getWriter().write("<div class='alert alert-danger alert-dismissible fade show'>Lỗi: " + e.getMessage() + "</div>");
+        }
+    }
+
+    private void customerChangeAvatar(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            // Get the current user from session
+            UserDetailDTO currentUserDetailDTO = (UserDetailDTO) request.getSession().getAttribute("userDetailDTO");
+
+            if (currentUserDetailDTO == null) {
                 // User not logged in, redirect to login page
                 response.sendRedirect(request.getContextPath() + "/login");
                 return;
             }
 
-            // Get password parameters from the form
-            String currentPassword = request.getParameter("currentPassword");
-            String newPassword = request.getParameter("newPassword");
-            String confirmPassword = request.getParameter("confirmPassword");
+            // Process the file upload - need to use Parts for multipart/form-data
+            Part filePart = request.getPart("avatar");
 
-            // Validate passwords
-            if (newPassword == null || newPassword.isEmpty()
-                    || currentPassword == null || currentPassword.isEmpty()
-                    || confirmPassword == null || confirmPassword.isEmpty()) {
-
-                request.setAttribute("passwordChangeError", "All password fields are required");
+            // Check if file was actually uploaded
+            if (filePart == null || filePart.getSize() <= 0) {
+                request.setAttribute("avatarUploadError", "No file was uploaded");
                 request.getRequestDispatcher("/client/profile.jsp").forward(request, response);
                 return;
             }
 
-            // Check if new password and confirm password match
-            if (!newPassword.equals(confirmPassword)) {
-                request.setAttribute("passwordChangeError", "New password and confirmation do not match");
+            // Validate file type
+            String fileName = filePart.getSubmittedFileName();
+            String fileExtension = fileName.substring(fileName.lastIndexOf(".") + 1).toLowerCase();
+
+            if (!fileExtension.equals("jpg") && !fileExtension.equals("jpeg")
+                    && !fileExtension.equals("png") && !fileExtension.equals("gif")) {
+                request.setAttribute("avatarUploadError", "Only image files (jpg, jpeg, png, gif) are allowed");
                 request.getRequestDispatcher("/client/profile.jsp").forward(request, response);
                 return;
             }
 
-            // Verify current password
-            // Note: In a real application, passwords should be hashed and not stored in plain text
-            if (!currentUser.getPassword().equals(Common.encryptMD5(currentPassword))) {
-                request.setAttribute("passwordChangeError", "Current password is incorrect");
-                request.getRequestDispatcher("/client/profile.jsp").forward(request, response);
-                return;
-            }
+            InputStream inputStream = filePart.getInputStream();
+            String avatarURL = uploadToS3(inputStream, fileName, filePart.getSize());
 
-            // Update password in database
-            currentUser.setPassword(Common.encryptMD5(newPassword));
-            boolean updated = UserDAO.update(currentUser);
+            deleteFromS3(currentUserDetailDTO.getAvatar());
+
+            int userID = currentUserDetailDTO.getUser().getUserId();
+
+            // Update in the database
+            boolean updated = daos.UserDetailDAO.updateAvatar(userID, avatarURL);
 
             if (updated) {
-                // Update successful
-                request.setAttribute("passwordChangeSuccess", "Password updated successfully");
-
-                // Update the session user object with new password
-                currentUser.setPassword(newPassword);
-                currentUserDetailDTO.setUser(currentUser);
+                // Update successful - update the session object
+                currentUserDetailDTO.setAvatar(avatarURL);
                 request.getSession().setAttribute("userDetailDTO", currentUserDetailDTO);
+                request.setAttribute("avatarUploadSuccess", "Avatar updated successfully");
             } else {
-                // Update failed
-                request.setAttribute("passwordChangeError", "Failed to update password. Please try again.");
+                request.setAttribute("avatarUploadError", "Failed to update avatar in database");
             }
 
             // Redirect back to profile page
@@ -235,16 +337,12 @@ public class UserDetailController extends HttpServlet {
 
         } catch (Exception e) {
             // Log the error
-            System.out.println("Error in customerChangePassword: " + e.getMessage());
+            System.out.println("Error in customerChangeAvatar: " + e.getMessage());
             e.printStackTrace();
 
             // Set error message and forward back to profile page
-            request.setAttribute("passwordChangeError", "An error occurred: " + e.getMessage());
+            request.setAttribute("avatarUploadError", "An error occurred: " + e.getMessage());
             request.getRequestDispatcher("/client/profile.jsp").forward(request, response);
         }
-    }
-
-    private void customerChangeAvatar(HttpServletRequest request, HttpServletResponse response) {
-
     }
 }
