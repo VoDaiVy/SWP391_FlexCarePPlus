@@ -5,6 +5,7 @@ models\BookingDetail.class
 daos\UserDetailDAO.class
 controllers\UserDetailController.class
 models\WalletTransfer.class
+utils\Email$1.class
 controllers\UserController.class
 utils\ConfigGetter.class
 models\Notification.class
@@ -26,6 +27,7 @@ utils\GoogleLogin.class
 controllers\ServiceImageController.class
 dtos\FeedbackServiceDTO.class
 daos\DAOFactory.class
+utils\Email.class
 daos\RoomDAO.class
 models\GoogleAccount.class
 daos\ServiceImageDAO.class
