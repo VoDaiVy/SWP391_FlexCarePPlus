@@ -9,6 +9,7 @@ C:\Users\LAPTOP\Desktop\FlexCarePPlus\FlexCarePPlus\src\main\java\controllers\No
 C:\Users\LAPTOP\Desktop\FlexCarePPlus\FlexCarePPlus\src\main\java\dtos\NewsImageDTO.java
 C:\Users\LAPTOP\Desktop\FlexCarePPlus\FlexCarePPlus\src\main\java\models\Room.java
 C:\Users\LAPTOP\Desktop\FlexCarePPlus\FlexCarePPlus\src\main\java\controllers\BookingController.java
+C:\Users\LAPTOP\Desktop\FlexCarePPlus\FlexCarePPlus\src\main\java\utils\GoogleLogin.java
 C:\Users\LAPTOP\Desktop\FlexCarePPlus\FlexCarePPlus\src\main\java\controllers\WalletController.java
 C:\Users\LAPTOP\Desktop\FlexCarePPlus\FlexCarePPlus\src\main\java\utils\DBConnection.java
 C:\Users\LAPTOP\Desktop\FlexCarePPlus\FlexCarePPlus\src\main\java\daos\UserDetailDAO.java
@@ -27,6 +28,7 @@ C:\Users\LAPTOP\Desktop\FlexCarePPlus\FlexCarePPlus\src\main\java\dtos\BookingDT
 C:\Users\LAPTOP\Desktop\FlexCarePPlus\FlexCarePPlus\src\main\java\controllers\UserController.java
 C:\Users\LAPTOP\Desktop\FlexCarePPlus\FlexCarePPlus\src\main\java\controllers\NotificationUserController.java
 C:\Users\LAPTOP\Desktop\FlexCarePPlus\FlexCarePPlus\src\main\java\controllers\UserDetailController.java
+C:\Users\LAPTOP\Desktop\FlexCarePPlus\FlexCarePPlus\src\main\java\utils\Email.java
 C:\Users\LAPTOP\Desktop\FlexCarePPlus\FlexCarePPlus\src\main\java\controllers\HomeController.java
 C:\Users\LAPTOP\Desktop\FlexCarePPlus\FlexCarePPlus\src\main\java\controllers\ServiceImageController.java
 C:\Users\LAPTOP\Desktop\FlexCarePPlus\FlexCarePPlus\src\main\java\models\NotificationUser.java
@@ -70,5 +72,6 @@ C:\Users\LAPTOP\Desktop\FlexCarePPlus\FlexCarePPlus\src\main\java\models\NewsIma
 C:\Users\LAPTOP\Desktop\FlexCarePPlus\FlexCarePPlus\src\main\java\dtos\ServiceImageDTO.java
 C:\Users\LAPTOP\Desktop\FlexCarePPlus\FlexCarePPlus\src\main\java\daos\UserDAO.java
 C:\Users\LAPTOP\Desktop\FlexCarePPlus\FlexCarePPlus\src\main\java\models\Service.java
+C:\Users\LAPTOP\Desktop\FlexCarePPlus\FlexCarePPlus\src\main\java\models\GoogleAccount.java
 C:\Users\LAPTOP\Desktop\FlexCarePPlus\FlexCarePPlus\src\main\java\models\BookingDetail.java
 C:\Users\LAPTOP\Desktop\FlexCarePPlus\FlexCarePPlus\src\main\java\dtos\ServiceDTO.java

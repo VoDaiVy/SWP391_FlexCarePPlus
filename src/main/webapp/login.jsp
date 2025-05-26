@@ -47,6 +47,7 @@
         <div class="form-container sign-up-container">
             <form action="${pageContext.request.contextPath}/UsersServlet" method="post">
                 <h1>Create Account</h1>
+<<<<<<< Updated upstream
                 <input type="hidden" name="actor" value="guest">
                 <input type="text" name="username" placeholder="Name" required/>
                 <input type="email" name="email" placeholder="Email" required/>
@@ -64,6 +65,18 @@
                         session.removeAttribute("msg");
                     }
                 %>
+=======
+                <input type="hidden" name="action" value="sign-up">
+                <input type="text" name="firstName" placeholder="firstName" required/>               
+                <input type="text" name="lastName" placeholder="lastName" required/>
+                <input id="email" type="text" name="email" placeholder="Email" required/>
+                <div id="email-error" style="color: red; font-size: 14px; display: none; margin-bottom: 10px"></div>
+                <input id="password" type="password" name="password" placeholder="Password" required/>
+                <div id="password-error" style="color: red; font-size: 14px; display: none; margin-bottom: 10px"></div>
+                <input id="re-password" type="password" placeholder="Re-enter Password" required />
+                <div id="error-msg" style="color: red; font-size: 14px; display: none; margin-bottom: 10px"></div>
+                <button id="signUpBtn" type="submit" value="Register" name="action" class="login-btn">Sign Up</button>
+>>>>>>> Stashed changes
             </form>
         </div>
 
@@ -151,3 +164,98 @@
         color: #555;
     }
 </style>
+
+
+<script>
+    var checkWrongFormatEmail = true;
+    const emailInput = document.getElementById("email");
+    const errorDiv = document.getElementById("email-error");
+    function isValidEmail(email) {
+        // Regex kiểm tra định dạng email
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email);
+    }
+
+    emailInput.addEventListener("input", function () {
+        var signUpButton = document.getElementById("signUpBtn");
+        const email = emailInput.value.trim();
+        checkWrongFormatEmail = email !== "" && !isValidEmail(email);
+        if (checkWrongFormatEmail) {
+            errorDiv.textContent = "Email không đúng định dạng.";
+            errorDiv.style.display = "block";
+            signUpButton.disabled = true;
+        } else {
+            document.getElementById("email").addEventListener("blur", function () {
+                const email = this.value;
+                const errorDiv = document.getElementById("email-error");
+
+                // Gửi request đến servlet
+                fetch("sign-in", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/x-www-form-urlencoded"
+                    },
+                    body: `email=` + email + `+&action=checkEmail`
+                })
+                        .then(response => response.text())
+                        .then(data => {
+                            var signUpButton = document.getElementById("signUpBtn");
+                            const isExisted = (data.trim() === "true"); // nhận kết quả boolean từ server
+
+                            if (isExisted) {
+                                errorDiv.textContent = "Email đã được sử dụng!";
+                                errorDiv.style.display = "block";
+                                signUpButton.disabled = true;
+                            } else {
+                                errorDiv.textContent = "";
+                                errorDiv.style.display = "none";
+                                signUpButton.disabled = false;
+                            }
+                        })
+                        .catch(error => {
+                            errorDiv.textContent = "Có lỗi xảy ra khi kiểm tra email.";
+                            console.error("Lỗi:", error);
+                        });
+            });
+        }
+    });
+
+
+</script>
+
+<script>
+    document.getElementById("password").addEventListener("input", function () {
+        const password = this.value;
+        const errorDiv = document.getElementById("password-error");
+        var signUpButton = document.getElementById("signUpBtn");
+        if (password.length < 6) {
+            errorDiv.textContent = "Mật khẩu phải có ít nhất 6 ký tự.";
+            errorDiv.style.display = "block";
+            signUpButton.disabled = true;
+        } else {
+            errorDiv.textContent = "";
+            errorDiv.style.display = "none";
+            signUpButton.disabled = false;
+        }
+    });
+</script>
+
+<script>
+    const password = document.getElementById('password');
+    const rePassword = document.getElementById('re-password');
+    const signUpBtn = document.getElementById('signUpBtn');
+    const errorMsg = document.getElementById('error-msg');
+
+    function validatePasswords() {
+        if (password.value === rePassword.value && rePassword.value.trim() !== "") {
+            signUpBtn.disabled = false;
+            errorMsg.style.display = 'none';
+        } else {
+            errorMsg.textContent = "Passwords do not match!";
+            errorMsg.style.display = 'block';
+            signUpBtn.disabled = true;
+            
+        }
+    }
+    rePassword.addEventListener('input', validatePasswords);
+</script>
