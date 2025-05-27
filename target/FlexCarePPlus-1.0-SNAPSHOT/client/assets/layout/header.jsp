@@ -37,7 +37,7 @@
                         <i class="bi bi-geo-alt fs-1 text-primary me-3"></i>
                         <div class="text-start">
                             <h6 class="text-uppercase mb-1">Our Office</h6>
-                            <span>123 Street, New York, USA</span>
+                            <span>FPT City, Ngu Hanh Son, Da Nang</span>
                         </div>
                     </div>
                 </div>
@@ -46,7 +46,7 @@
                         <i class="bi bi-envelope-open fs-1 text-primary me-3"></i>
                         <div class="text-start">
                             <h6 class="text-uppercase mb-1">Email Us</h6>
-                            <span>info@example.com</span>
+                            <span>flexcarepplus@gmail.com</span>
                         </div>
                     </div>
                 </div>
@@ -55,7 +55,7 @@
                         <i class="bi bi-phone-vibrate fs-1 text-primary me-3"></i>
                         <div class="text-start">
                             <h6 class="text-uppercase mb-1">Call Us</h6>
-                            <span>+012 345 6789</span>
+                            <span>0767658269</span>
                         </div>
                     </div>
                 </div>

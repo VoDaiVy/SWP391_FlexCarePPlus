@@ -37,7 +37,7 @@
     </servlet>
     <servlet-mapping>
         <servlet-name>UserDetailServlet</servlet-name>
-        <url-pattern>/userdetail/*</url-pattern>
+        <url-pattern>/userdetail</url-pattern>
     </servlet-mapping>
     <!-- Booking Controller -->
     <servlet>

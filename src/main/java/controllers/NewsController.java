@@ -11,7 +11,7 @@ public class NewsController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String actor = request.getParameter("actor");
+        String actor = (String)request.getSession().getAttribute("actor");
         switch (actor) {
             case "admin":
                 adminGet(request, response);
@@ -31,7 +31,7 @@ public class NewsController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String actor = request.getParameter("actor");
+        String actor = (String)request.getSession().getAttribute("actor");
         switch (actor) {
             case "admin":
                 adminPost(request, response);
@@ -51,7 +51,7 @@ public class NewsController extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String actor = request.getParameter("actor");
+        String actor = (String)request.getSession().getAttribute("actor");
         switch (actor) {
             case "admin":
                 adminPut(request, response);
@@ -71,7 +71,7 @@ public class NewsController extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String actor = request.getParameter("actor");
+        String actor = (String)request.getSession().getAttribute("actor");
         switch (actor) {
             case "admin":
                 adminDelete(request, response);
