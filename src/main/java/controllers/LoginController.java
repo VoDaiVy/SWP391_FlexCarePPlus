@@ -19,7 +19,7 @@ import utils.Email;
 import utils.GoogleLogin;
 
 public class LoginController extends HttpServlet {
-
+//Login By Google
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
