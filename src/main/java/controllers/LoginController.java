@@ -19,7 +19,7 @@ import utils.Email;
 import utils.GoogleLogin;
 
 public class LoginController extends HttpServlet {
-//Login By Google
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -90,8 +90,6 @@ public class LoginController extends HttpServlet {
             userDetail.setAvatar(acc.getPicture());
             userDetail.setFirstName(acc.getFamily_name());
             userDetail.setLastName(acc.getGiven_name());
-            System.out.println(user);
-            System.out.println(userDetail);
             UserDetailDAO.create(userDetail);
             Wallet wallet = new Wallet(user.getUserId(), 0, true);
             WalletDAO.create(wallet);
@@ -121,10 +119,11 @@ public class LoginController extends HttpServlet {
 
     private void navigateByRole(HttpServletRequest request, HttpServletResponse response, UserDetailDTO userDetailDTO)
             throws ServletException, IOException {
-        if (userDetailDTO.getUser().isStatus()) {
+        if (userDetailDTO.getUser().isStatus()) {            
             HttpSession session = request.getSession();
             session.setAttribute("userDetailDTO", userDetailDTO);
-            session.setAttribute("actor", "customer");
+            session.setAttribute("actor", userDetailDTO.getUser().getRole());
+            session.setAttribute("wallet", WalletDAO.getByUserId(userDetailDTO.getUser().getUserId()));
             switch (userDetailDTO.getUser().getRole()) {
                 case "customer" -> {
                     response.sendRedirect("home");
@@ -216,6 +215,8 @@ public class LoginController extends HttpServlet {
         user = UserDAO.getByEmail(user.getEmail());
         userDetail.setUserID(user.getUserId());
         UserDetailDAO.create(userDetail);
+        Wallet wallet = new Wallet(user.getUserId(), 0, true);
+        WalletDAO.create(wallet);
     }
 
     private void resetPassword(HttpServletRequest request)
