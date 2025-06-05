@@ -1,4 +1,3 @@
-
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <jsp:include page="/client/assets/layout/header.jsp"/>
 <!DOCTYPE html>

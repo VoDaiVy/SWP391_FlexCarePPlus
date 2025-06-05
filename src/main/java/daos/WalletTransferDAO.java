@@ -13,7 +13,7 @@ import utils.DBConnection;
 public class WalletTransferDAO {
     
     // Create a new wallet transfer record
-    public boolean create(WalletTransfer transfer) {
+    public static boolean create(WalletTransfer transfer) {
         String sql = "INSERT INTO WalletTransfer (TransCode, TimeCode, UserID, IsRefunded, Amount, Content) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
@@ -44,7 +44,7 @@ public class WalletTransferDAO {
     }
     
     // Get a wallet transfer by ID
-    public WalletTransfer getById(int walletTransferID) {
+    public static WalletTransfer getById(int walletTransferID) {
         String sql = "SELECT * FROM WalletTransfer WHERE WalletTransferID = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -71,7 +71,7 @@ public class WalletTransferDAO {
     }
     
     // Get a wallet transfer by transaction code
-    public WalletTransfer getByTransCode(String transCode) {
+    public static WalletTransfer getByTransCode(String transCode) {
         String sql = "SELECT * FROM WalletTransfer WHERE TransCode = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -98,7 +98,7 @@ public class WalletTransferDAO {
     }
     
     // Get all wallet transfers
-    public List<WalletTransfer> getAll() {
+    public static List<WalletTransfer> getAll() {
         List<WalletTransfer> transfers = new ArrayList<>();
         String sql = "SELECT * FROM WalletTransfer";
         try (Connection conn = DBConnection.getConnection();
@@ -124,7 +124,7 @@ public class WalletTransferDAO {
     }
     
     // Get transfers by user ID
-    public List<WalletTransfer> getByUserId(int userID) {
+    public static List<WalletTransfer> getByUserId(int userID) {
         List<WalletTransfer> transfers = new ArrayList<>();
         String sql = "SELECT * FROM WalletTransfer WHERE UserID = ? ORDER BY TimeCode DESC";
         try (Connection conn = DBConnection.getConnection();
@@ -152,7 +152,7 @@ public class WalletTransferDAO {
     }
     
     // Update a wallet transfer
-    public boolean update(WalletTransfer transfer) {
+    public static boolean update(WalletTransfer transfer) {
         String sql = "UPDATE WalletTransfer SET TransCode = ?, TimeCode = ?, UserID = ?, IsRefunded = ?, Amount = ?, Content = ? WHERE WalletTransferID = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -175,7 +175,7 @@ public class WalletTransferDAO {
     }
     
     // Mark a transfer as refunded
-    public boolean markAsRefunded(int walletTransferID) {
+    public static boolean markAsRefunded(int walletTransferID) {
         String sql = "UPDATE WalletTransfer SET IsRefunded = 1 WHERE WalletTransferID = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -191,7 +191,7 @@ public class WalletTransferDAO {
     }
     
     // Delete a wallet transfer
-    public boolean delete(int walletTransferID) {
+    public static boolean delete(int walletTransferID) {
         String sql = "DELETE FROM WalletTransfer WHERE WalletTransferID = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -207,7 +207,7 @@ public class WalletTransferDAO {
     }
     
     // Get total amount transferred by a user
-    public float getTotalAmountByUserId(int userID) {
+    public static float getTotalAmountByUserId(int userID) {
         String sql = "SELECT SUM(Amount) AS TotalAmount FROM WalletTransfer WHERE UserID = ? AND IsRefunded = 0";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -226,7 +226,7 @@ public class WalletTransferDAO {
     }
     
     // Get recent wallet transfers by user ID (with limit)
-    public List<WalletTransfer> getRecentByUserId(int userID, int limit) {
+    public static List<WalletTransfer> getRecentByUserId(int userID, int limit) {
         List<WalletTransfer> transfers = new ArrayList<>();
         String sql = "SELECT * FROM WalletTransfer WHERE UserID = ? ORDER BY TimeCode DESC LIMIT ?";
         try (Connection conn = DBConnection.getConnection();
