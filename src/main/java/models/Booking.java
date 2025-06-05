@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 public class Booking {
-    public int bookingID, userID, roomID;
+    public int bookingID, userID;
     public LocalDateTime dateBooked;
     public float totalPrice, paid;
     public String state, note;
@@ -15,11 +15,10 @@ public class Booking {
     public Booking() {
     }
 
-    public Booking(int bookingID, int userID, int roomID, String dateBooked, float totalPrice, float paid, String state, String note, boolean status) {
+    public Booking(int bookingID, int userID, String dateBooked, float totalPrice, float paid, String state, String note, boolean status) {
         this.bookingID = bookingID;
         this.userID = userID;
-        this.roomID = roomID;
-        this.dateBooked = LocalDateTime.parse(dateBooked, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+        this.dateBooked = dateBooked != null ? LocalDateTime.parse(dateBooked, DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")) : null;
         this.totalPrice = totalPrice;
         this.paid = paid;
         this.state = state;
@@ -41,15 +40,7 @@ public class Booking {
 
     public void setUserID(int userID) {
         this.userID = userID;
-    }
-
-    public int getRoomID() {
-        return roomID;
-    }
-
-    public void setRoomID(int roomID) {
-        this.roomID = roomID;
-    }
+    }    // Removed roomID getter and setter as it's not in the database schema
 
     public String getDateBooked() {
         if(dateBooked == null) return "";
@@ -102,7 +93,7 @@ public class Booking {
 
     @Override
     public String toString() {
-        return "Booking{" + "bookingID=" + bookingID + ", userID=" + userID + ", roomID=" + roomID + ", dateBooked=" + dateBooked + ", totalPrice=" + totalPrice + ", paid=" + paid + ", state=" + state + ", note=" + note + ", status=" + status + '}';
+        return "Booking{" + "bookingID=" + bookingID + ", userID=" + userID + ", dateBooked=" + dateBooked + ", totalPrice=" + totalPrice + ", paid=" + paid + ", state=" + state + ", note=" + note + ", status=" + status + '}';
     }
     
 }

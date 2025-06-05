@@ -2,13 +2,13 @@ package dtos;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import models.Room;
 import models.User;
+import models.Booking;
+import daos.UserDAO;
 
 public class BookingDTO {
     private int bookingID;
     private User user;           // Instead of userID
-    private Room room;           // Instead of roomID
     private LocalDateTime dateBooked;
     private float totalPrice, paid;
     private String state, note;
@@ -17,11 +17,10 @@ public class BookingDTO {
     public BookingDTO() {
     }
 
-    public BookingDTO(int bookingID, User user, Room room, LocalDateTime dateBooked, 
+    public BookingDTO(int bookingID, User user, LocalDateTime dateBooked, 
                     float totalPrice, float paid, String state, String note, boolean status) {
         this.bookingID = bookingID;
         this.user = user;
-        this.room = room;
         this.dateBooked = dateBooked;
         this.totalPrice = totalPrice;
         this.paid = paid;
@@ -30,11 +29,21 @@ public class BookingDTO {
         this.status = status;
     }
 
-    // Constructor that takes a Booking model
-    public BookingDTO(models.Booking booking, User user, Room room) {
+    // Constructor that takes a Booking model with User object
+    public BookingDTO(models.Booking booking, User user) {
         this.bookingID = booking.getBookingID();
         this.user = user;
-        this.room = room;
+        this.dateBooked = booking.dateBooked;
+        this.totalPrice = booking.getTotalPrice();
+        this.paid = booking.getPaid();
+        this.state = booking.getState();
+        this.note = booking.getNote();
+        this.status = booking.isStatus();
+    }
+      // Constructor that takes only a Booking model
+    public BookingDTO(models.Booking booking) {
+        this.bookingID = booking.getBookingID();
+        this.user = UserDAO.getById(booking.getUserID());
         this.dateBooked = booking.dateBooked;
         this.totalPrice = booking.getTotalPrice();
         this.paid = booking.getPaid();
@@ -53,19 +62,19 @@ public class BookingDTO {
 
     public User getUser() {
         return user;
-    }
-
-    public void setUser(User user) {
+    }    public void setUser(User user) {
         this.user = user;
     }
-
-    public Room getRoom() {
-        return room;
+    
+    public int getUserID() {
+        return user != null ? user.getUserId() : 0;
     }
 
-    public void setRoom(Room room) {
-        this.room = room;
+    public void setUserID(int userID) {
+        this.user = UserDAO.getById(userID);
     }
+    
+    // Removed room getter and setter as it's not in the database schema
 
     public String getDateBooked() {
         if(dateBooked == null) return "";
@@ -115,14 +124,12 @@ public class BookingDTO {
     public void setStatus(boolean status) {
         this.status = status;
     }
-    
-    // Convert DTO back to original model (without the linked objects)
+      // Convert DTO back to original model
     public models.Booking toBooking() {
         models.Booking booking = new models.Booking();
         booking.setBookingID(this.bookingID);
         booking.setUserID(this.user != null ? this.user.getUserId() : 0);
-        booking.setRoomID(this.room != null ? this.room.getRoomID() : 0);
-        booking.dateBooked = this.dateBooked;
+        booking.setDateBooked(this.dateBooked);
         booking.setTotalPrice(this.totalPrice);
         booking.setPaid(this.paid);
         booking.setState(this.state);
