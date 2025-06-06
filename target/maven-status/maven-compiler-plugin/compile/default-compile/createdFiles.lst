@@ -12,14 +12,8 @@ controllers\UserController.class
 utils\ConfigGetter.class
 models\Notification.class
 dtos\ServiceImageDTO.class
-<<<<<<< HEAD
-models\Cart.class
-dtos\CartDTO.class
-controllers\LoginController.class
-=======
 controllers\LoginController.class
 dtos\UserPetDTO.class
->>>>>>> e7df45836acf6543273939deba93c6152aade5d4
 daos\BookingDetailDAO.class
 models\Service.class
 dtos\BookingDetailDTO.class
@@ -75,7 +69,7 @@ dtos\NotificationUserDTO.class
 daos\NewsDAO.class
 models\FeedbackService.class
 daos\WalletTransferDAO.class
-controllers\AdminController.class
+daos\GenericDAO.class
 controllers\MedicalRecordsController.class
 controllers\WalletController.class
 daos\WalletDAO.class
@@ -87,7 +81,6 @@ controllers\PolicyController.class
 daos\NewsImageDAO.class
 dtos\MessageDTO.class
 models\Message.class
-controllers\CartCleanupServlet.class
 dtos\NewsImageDTO.class
 models\NotificationUser.class
 controllers\NewsImageController.class
