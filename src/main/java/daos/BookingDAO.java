@@ -17,26 +17,20 @@ public class BookingDAO {
     
     // Create a new booking
     public static boolean create(Booking booking) {
-        String sql = "INSERT INTO Booking (UserID, RoomID, DateBooked, TotalPrice, Paid, State, Note, Status) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+        String sql = "INSERT INTO Booking (UserID, DateBooked, TotalPrice, Paid, State, Note, Status) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             
             ps.setInt(1, booking.getUserID());
-            ps.setInt(2, booking.getRoomID());
             
             // Handle LocalDateTime conversion to SQL Timestamp
-            LocalDateTime dateBooked = null;
-            if (!booking.getDateBooked().isEmpty()) {
-                dateBooked = LocalDateTime.parse(booking.getDateBooked(), 
-                    DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
-            }
-            ps.setTimestamp(3, dateBooked != null ? Timestamp.valueOf(dateBooked) : null);
+            ps.setTimestamp(2, booking.dateBooked != null ? Timestamp.valueOf(booking.dateBooked) : null);
             
-            ps.setFloat(4, booking.getTotalPrice());
-            ps.setFloat(5, booking.getPaid());
-            ps.setString(6, booking.getState());
-            ps.setString(7, booking.getNote());
-            ps.setBoolean(8, booking.isStatus());
+            ps.setFloat(3, booking.getTotalPrice());
+            ps.setFloat(4, booking.getPaid());
+            ps.setString(5, booking.getState());
+            ps.setString(6, booking.getNote());
+            ps.setBoolean(7, booking.isStatus());
             
             int rowsAffected = ps.executeUpdate();
             
@@ -68,7 +62,6 @@ public class BookingDAO {
                 Booking booking = new Booking();
                 booking.setBookingID(rs.getInt("BookingID"));
                 booking.setUserID(rs.getInt("UserID"));
-                booking.setRoomID(rs.getInt("RoomID"));
                 
                 // Handle SQL Timestamp to LocalDateTime conversion
                 Timestamp dateBookedTimestamp = rs.getTimestamp("DateBooked");
@@ -101,7 +94,6 @@ public class BookingDAO {
                 Booking booking = new Booking();
                 booking.setBookingID(rs.getInt("BookingID"));
                 booking.setUserID(rs.getInt("UserID"));
-                booking.setRoomID(rs.getInt("RoomID"));
                 
                 // Handle SQL Timestamp to LocalDateTime conversion
                 Timestamp dateBookedTimestamp = rs.getTimestamp("DateBooked");
@@ -136,7 +128,6 @@ public class BookingDAO {
                 Booking booking = new Booking();
                 booking.setBookingID(rs.getInt("BookingID"));
                 booking.setUserID(rs.getInt("UserID"));
-                booking.setRoomID(rs.getInt("RoomID"));
                 
                 // Handle SQL Timestamp to LocalDateTime conversion
                 Timestamp dateBookedTimestamp = rs.getTimestamp("DateBooked");
@@ -159,12 +150,11 @@ public class BookingDAO {
     }
       // Update a booking
     public static boolean update(Booking booking) {
-        String sql = "UPDATE Booking SET UserID = ?, RoomID = ?, DateBooked = ?, TotalPrice = ?, Paid = ?, State = ?, Note = ?, Status = ? WHERE BookingID = ?";
+        String sql = "UPDATE Booking SET UserID = ?, DateBooked = ?, TotalPrice = ?, Paid = ?, State = ?, Note = ?, Status = ? WHERE BookingID = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
             ps.setInt(1, booking.getUserID());
-            ps.setInt(2, booking.getRoomID());
             
             // Handle LocalDateTime conversion to SQL Timestamp
             LocalDateTime dateBooked = null;
@@ -172,14 +162,14 @@ public class BookingDAO {
                 dateBooked = LocalDateTime.parse(booking.getDateBooked(), 
                     DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
             }
-            ps.setTimestamp(3, dateBooked != null ? Timestamp.valueOf(dateBooked) : null);
+            ps.setTimestamp(2, dateBooked != null ? Timestamp.valueOf(dateBooked) : null);
             
-            ps.setFloat(4, booking.getTotalPrice());
-            ps.setFloat(5, booking.getPaid());
-            ps.setString(6, booking.getState());
-            ps.setString(7, booking.getNote());
-            ps.setBoolean(8, booking.isStatus());
-            ps.setInt(9, booking.getBookingID());
+            ps.setFloat(3, booking.getTotalPrice());
+            ps.setFloat(4, booking.getPaid());
+            ps.setString(5, booking.getState());
+            ps.setString(6, booking.getNote());
+            ps.setBoolean(7, booking.isStatus());
+            ps.setInt(8, booking.getBookingID());
             
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
@@ -233,7 +223,6 @@ public class BookingDAO {
                 Booking booking = new Booking();
                 booking.setBookingID(rs.getInt("BookingID"));
                 booking.setUserID(rs.getInt("UserID"));
-                booking.setRoomID(rs.getInt("RoomID"));
                 
                 // Handle SQL Timestamp to LocalDateTime conversion
                 Timestamp dateBookedTimestamp = rs.getTimestamp("DateBooked");

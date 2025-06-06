@@ -54,43 +54,68 @@ Status bit default 1,
 Role varchar(50) null
 )
 
-create table Cart(
-UserID int not null,
-ServiceID int not null,
-Stock tinyint default 1,
-Display bit default 1,
-StatusBooking bit null,
-constraint PK_Cart primary key (UserID, ServiceID),
-constraint FK_Cart_Service foreign key (ServiceID) references Service(ServiceID),
-constraint FK_Cart_User foreign key (UserID) references Users(UserID)
-)
-
 create table Booking(
 BookingID int identity(1,1) primary key,
 UserID int not null,
-RoomID int not null,
 DataBooked datetime default getdate(),
 TotalPrice money null,
 Paid money null,
 State nvarchar(100) null,
 Note nvarchar(MAX) null,
 Status bit null,
-constraint FK_Booking_User foreign key (UserID) references Users(UserID),
-constraint FK_Booking_Room foreign key (RoomID) references Room(RoomID)
+constraint FK_Booking_User foreign key (UserID) references Users(UserID)
+)
+
+create table Pet(
+PetID int identity(1,1) primary key,
+Name varchar(50) not null
+)
+
+create table UserPet(
+UserPetID int identity(1,1) primary key,
+UserID int not null,
+PetID int not null,
+PetName nvarchar(100) null,
+constraint FK_UserPet_User foreign key (UserID) references Users(UserID),
+constraint FK_UserPet_Pet foreign key (PetID) references Pet(PetID)
 )
 
 create table BookingDetail(
+BookingDetailID int identity(1,1) primary key,
 BookingID int not null,
 ServiceID int not null,
+RoomID int not null,
+UserPetID int not null,
 StockBooking int not null,
 DataStartService datetime null,
 DataEndService datetime null,
 StartTime time null,
 EndTime time null,
 Price money not null,
-constraint PK_BookingDetail primary key (BookingID, ServiceID),
 constraint FK_BookingDetail_Booking foreign key (BookingID) references Booking(BookingID) ,
-constraint FK_BookingDetail_Service foreign key (ServiceID) references Service(ServiceID) 
+constraint FK_BookingDetail_Service foreign key (ServiceID) references Service(ServiceID) ,
+constraint FK_BookingDetail_Room foreign key (RoomID) references Room(RoomID) ,
+constraint FK_BookingDetail_UserPet foreign key (UserPetID) references UserPet(UserPetID)
+)
+
+create table MedicalRecords(
+MedicalRecordsID int identity(1,1) primary key,
+UserPetID int not null,
+UserID int not null,
+DateVisit datetime default getdate(),
+Condition nvarchar(MAX) null,
+Diagnosis nvarchar(MAX) null,
+Treatment nvarchar(MAX) null,
+Notes nvarchar(MAX) null,
+TreatmentStart datetime null,
+TreatmentEnd datetime null,
+FollowUpRequired bit null,
+NextBookingID int null,
+State nvarchar(100) null,
+Status bit null,
+constraint FK_MedicalRecordst_User foreign key (UserID) references Users(UserID),
+constraint FK_MedicalRecords_UserPet foreign key (UserPetID) references UserPet(UserPetID),
+constraint FK_MedicalRecords_Booking foreign key (NextBookingID) references Booking(BookingID),
 )
 
 create table FeedbackService(
@@ -137,11 +162,11 @@ DataCreated datetime default getdate()
 )
 
 create table NotificationUser(
+NotificationUserID int identity(1,1) primary key,
 NotificationID int not null,
 UserID int not null,
 Status bit default 1,
 HasRead bit default 0,
-constraint PK_NotificationUser primary key (UserID, NotificationID),
 constraint FK_NotificationUser_User foreign key (UserID) references Users(UserID),
 constraint FK_NotificationUser_Notifications foreign key (NotificationID) references Notifications(NotificationID)
 )
@@ -157,6 +182,7 @@ create table WalletTransfer (
 WalletTransferID int identity(1,1) primary key,
 TransCode nvarchar(10),
 TimeCode nvarchar(20),
+Content nvarchar(20),
 UserID int,
 Amount money,
 IsRefunded bit

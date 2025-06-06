@@ -1,17 +1,26 @@
 package models;
 
 public class NotificationUser {
-    private int userID, notificationID;
+    private int notificationUserID, userID, notificationID;
     private boolean status, hasRead;
 
     public NotificationUser() {
     }
 
-    public NotificationUser(int userID, int notificationID, boolean status, boolean hasRead) {
+    public NotificationUser(int notificationUserID, int userID, int notificationID, boolean status, boolean hasRead) {
+        this.notificationUserID = notificationUserID;
         this.userID = userID;
         this.notificationID = notificationID;
         this.status = status;
         this.hasRead = hasRead;
+    }
+
+    public int getNotificationUserID() {
+        return notificationUserID;
+    }
+
+    public void setNotificationUserID(int notificationUserID) {
+        this.notificationUserID = notificationUserID;
     }
 
     public int getUserID() {

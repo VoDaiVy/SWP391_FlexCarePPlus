@@ -9,7 +9,9 @@ import java.util.ArrayList;
 import java.util.List;
 import models.Notification;
 import models.NotificationUser;
+import models.User;
 import utils.DBConnection;
+import dtos.NotificationUserDTO;
 
 public class NotificationUserDAO {
     
@@ -31,6 +33,85 @@ public class NotificationUserDAO {
             System.out.println("Error creating notification-user relationship: " + e.getMessage());
         }
         return false;
+    }
+    
+    // Get by ID
+    public static NotificationUser getById(int notificationUserID) {
+        String sql = "SELECT * FROM NotificationUser WHERE NotificationUserID = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+             
+            ps.setInt(1, notificationUserID);
+            ResultSet rs = ps.executeQuery();
+            
+            if (rs.next()) {
+                NotificationUser notificationUser = new NotificationUser();
+                notificationUser.setNotificationUserID(rs.getInt("NotificationUserID"));
+                notificationUser.setUserID(rs.getInt("UserID"));
+                notificationUser.setNotificationID(rs.getInt("NotificationID"));
+                notificationUser.setStatus(rs.getBoolean("Status"));
+                notificationUser.setHasRead(rs.getBoolean("HasRead"));
+                return notificationUser;
+            }
+        } catch (SQLException e) {
+            System.out.println("Error retrieving notification-user by ID: " + e.getMessage());
+        }
+        return null;
+    }
+    
+    // Get all notification-user relationships
+    public static List<NotificationUser> getAll() {
+        List<NotificationUser> notificationUsers = new ArrayList<>();
+        String sql = "SELECT * FROM NotificationUser";
+        try (Connection conn = DBConnection.getConnection();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            
+            while (rs.next()) {
+                NotificationUser notificationUser = new NotificationUser();
+                notificationUser.setNotificationUserID(rs.getInt("NotificationUserID"));
+                notificationUser.setUserID(rs.getInt("UserID"));
+                notificationUser.setNotificationID(rs.getInt("NotificationID"));
+                notificationUser.setStatus(rs.getBoolean("Status"));
+                notificationUser.setHasRead(rs.getBoolean("HasRead"));
+                notificationUsers.add(notificationUser);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error retrieving all notification-users: " + e.getMessage());
+        }
+        return notificationUsers;
+    }
+    
+    // Create a notification-user relationship using DTO
+    public static boolean createFromDTO(NotificationUserDTO dto) {
+        NotificationUser notificationUser = dto.toNotificationUser();
+        return create(notificationUser);
+    }
+    
+    // Convert NotificationUser to NotificationUserDTO (with full objects)
+    public static NotificationUserDTO toDTO(NotificationUser notificationUser) {
+        User user = UserDAO.getById(notificationUser.getUserID());
+        Notification notification = NotificationDAO.getById(notificationUser.getNotificationID());
+        return new NotificationUserDTO(notificationUser, user, notification);
+    }
+    
+    // Get NotificationUserDTO by ID
+    public static NotificationUserDTO getDTOById(int notificationUserID) {
+        NotificationUser notificationUser = getById(notificationUserID);
+        if (notificationUser != null) {
+            return toDTO(notificationUser);
+        }
+        return null;
+    }
+    
+    // Get all NotificationUserDTOs
+    public static List<NotificationUserDTO> getAllDTOs() {
+        List<NotificationUser> notificationUsers = getAll();
+        List<NotificationUserDTO> dtos = new ArrayList<>();
+        for (NotificationUser notificationUser : notificationUsers) {
+            dtos.add(toDTO(notificationUser));
+        }
+        return dtos;
     }
     
     // Check if a notification-user relationship exists
@@ -78,6 +159,15 @@ public class NotificationUserDAO {
         return null;
     }
     
+    // Get NotificationUserDTO by user ID and notification ID
+    public static NotificationUserDTO getDTOByIds(int userID, int notificationID) {
+        NotificationUser notificationUser = getByIds(userID, notificationID);
+        if (notificationUser != null) {
+            return toDTO(notificationUser);
+        }
+        return null;
+    }
+    
     // Get all notifications for a user
     public static List<Notification> getNotificationsForUser(int userID) {
         List<Notification> notifications = new ArrayList<>();
@@ -108,6 +198,32 @@ public class NotificationUserDAO {
             System.out.println("Error retrieving notifications for user: " + e.getMessage());
         }
         return notifications;
+    }
+    
+    // Get all NotificationUserDTOs for a user
+    public static List<NotificationUserDTO> getDTOsForUser(int userID) {
+        List<NotificationUserDTO> dtos = new ArrayList<>();
+        String sql = "SELECT * FROM NotificationUser WHERE UserID = ? ORDER BY NotificationUserID DESC";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setInt(1, userID);
+            ResultSet rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                NotificationUser notificationUser = new NotificationUser();
+                notificationUser.setNotificationUserID(rs.getInt("NotificationUserID"));
+                notificationUser.setUserID(rs.getInt("UserID"));
+                notificationUser.setNotificationID(rs.getInt("NotificationID"));
+                notificationUser.setStatus(rs.getBoolean("Status"));
+                notificationUser.setHasRead(rs.getBoolean("HasRead"));
+                
+                dtos.add(toDTO(notificationUser));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error retrieving notification-user DTOs for user: " + e.getMessage());
+        }
+        return dtos;
     }
     
     // Get unread notifications count for a user
@@ -184,6 +300,27 @@ public class NotificationUserDAO {
         return false;
     }
     
+    // Update notification-user from DTO
+    public static boolean updateFromDTO(NotificationUserDTO dto) {
+        NotificationUser notificationUser = dto.toNotificationUser();
+        String sql = "UPDATE NotificationUser SET Status = ?, HasRead = ? WHERE UserID = ? AND NotificationID = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setBoolean(1, notificationUser.isStatus());
+            ps.setBoolean(2, notificationUser.isHasRead());
+            ps.setInt(3, notificationUser.getUserID());
+            ps.setInt(4, notificationUser.getNotificationID());
+            
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+            
+        } catch (SQLException e) {
+            System.out.println("Error updating notification-user from DTO: " + e.getMessage());
+        }
+        return false;
+    }
+    
     // Delete notification-user relationship
     public static boolean delete(int userID, int notificationID) {
         String sql = "DELETE FROM NotificationUser WHERE UserID = ? AND NotificationID = ?";
@@ -198,6 +335,23 @@ public class NotificationUserDAO {
             
         } catch (SQLException e) {
             System.out.println("Error deleting notification-user relationship: " + e.getMessage());
+        }
+        return false;
+    }
+    
+    // Delete notification-user by ID
+    public static boolean deleteById(int notificationUserID) {
+        String sql = "DELETE FROM NotificationUser WHERE NotificationUserID = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setInt(1, notificationUserID);
+            
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+            
+        } catch (SQLException e) {
+            System.out.println("Error deleting notification-user by ID: " + e.getMessage());
         }
         return false;
     }

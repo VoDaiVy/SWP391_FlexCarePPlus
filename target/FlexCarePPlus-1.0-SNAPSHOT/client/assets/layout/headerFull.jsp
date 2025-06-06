@@ -79,7 +79,7 @@
                             <a href="wallet.html" class="dropdown-item"><i class="bi bi-wallet2 me-2"></i>View
                                 Booking</a>
                             <div class="dropdown-divider"></div>
-                            <a href="sign-in?actor=logout" class="dropdown-item text-danger"><i
+                            <a href="logout" class="dropdown-item text-danger"><i
                                     class="bi bi-box-arrow-right me-2"></i>Logout</a>
                         </div>
                     </div>
