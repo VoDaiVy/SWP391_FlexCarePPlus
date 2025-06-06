@@ -168,7 +168,7 @@
                                     <th class="text-center" style="width: 45%;">Nội dung</th>
                                     <th class="text-center" style="width: 17%;">Thời gian</th>
                                     <th class="text-center" style="width: 15%;">Số tiền</th>
-                                    <th class="text-center" style="width: 20%;">Thao tác</th>
+                                    
                                 </tr>
                             </thead>
                             <tbody>
@@ -190,38 +190,7 @@
                                         <fmt:formatNumber value="${wt.amount}" type="number" groupingUsed="true" />
                                         <span class="text-xs font-medium">₫</span>
                                     </td>
-
-                                    <!-- Nút hoàn tiền -->
-                                    <td class="text-center">
-                                        <c:if test="${wallet.amount > wt.amount && !wt.isRefunded}">
-                                            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#confirmModal">Hoàn tiền</button>
-                                        </c:if>
-
-                                    </td>
                                 </tr>
-
-                            <div class="modal fade" id="confirmModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="successModalLabel">Thông báo</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-
-                                            <strong>Bạn chắc chắn muốn hoàn tiền!</strong>
-                                        </div>
-                                        <div class="modal-footer">
-                                            <form action="WalletServlet" method="post">
-                                                <input type="hidden" name="walletTransferID" value="${wt.walletTransferID}">
-                                                <input type="hidden" name="actor" value="customer">
-                                                <input type="hidden" name="action" value="refund">
-                                                <button type="submit" class="btn btn-primary">OK</button>
-                                            </form>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
                         </c:forEach>
                         </tbody>
                     </table>

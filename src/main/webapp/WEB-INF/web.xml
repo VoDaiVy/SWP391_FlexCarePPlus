@@ -1,8 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app version="6.0" xmlns="https://jakarta.ee/xml/ns/jakartaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd">
+    <servlet>
+        <servlet-name>AdminController</servlet-name>
+        <servlet-class>controllers.AdminController</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/sign-in</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AdminController</servlet-name>
+        <url-pattern>/admin</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
@@ -12,7 +20,7 @@
     <filter>
         <filter-name>AccessFilter</filter-name>
         <filter-class>filters.AccessFilter</filter-class>
-    </filter>    
+    </filter>
     <filter-mapping>
         <filter-name>AccessFilter</filter-name>
         <url-pattern>/userdetail</url-pattern>
@@ -34,7 +42,8 @@
     <servlet-mapping>
         <servlet-name>HomeServlet</servlet-name>
         <url-pattern>/home</url-pattern>
-    </servlet-mapping>    <!-- User Controller -->
+    </servlet-mapping>
+    <!-- User Controller -->
     <servlet>
         <servlet-name>UserServlet</servlet-name>
         <servlet-class>controllers.UserController</servlet-class>
@@ -51,7 +60,8 @@
     <servlet-mapping>
         <servlet-name>UserDetailServlet</servlet-name>
         <url-pattern>/userdetail</url-pattern>
-    </servlet-mapping>    <!-- Booking Controller -->
+    </servlet-mapping>
+    <!-- Booking Controller -->
     <servlet>
         <servlet-name>BookingServlet</servlet-name>
         <servlet-class>controllers.BookingController</servlet-class>
@@ -68,7 +78,8 @@
     <servlet-mapping>
         <servlet-name>BookingDetailServlet</servlet-name>
         <url-pattern>/bookingdetail</url-pattern>
-    </servlet-mapping>    <!-- Service Controller -->
+    </servlet-mapping>
+    <!-- Service Controller -->
     <servlet>
         <servlet-name>ServiceServlet</servlet-name>
         <servlet-class>controllers.ServiceController</servlet-class>
@@ -76,7 +87,8 @@
     <servlet-mapping>
         <servlet-name>ServiceServlet</servlet-name>
         <url-pattern>/service</url-pattern>
-    </servlet-mapping>    <!-- CategoryService Controller -->
+    </servlet-mapping>
+    <!-- CategoryService Controller -->
     <servlet>
         <servlet-name>CategoryServiceServlet</servlet-name>
         <servlet-class>controllers.CategoryServiceController</servlet-class>
@@ -84,7 +96,8 @@
     <servlet-mapping>
         <servlet-name>CategoryServiceServlet</servlet-name>
         <url-pattern>/categoryservice</url-pattern>
-    </servlet-mapping>    <!-- Room Controller -->
+    </servlet-mapping>
+    <!-- Room Controller -->
     <servlet>
         <servlet-name>RoomServlet</servlet-name>
         <servlet-class>controllers.RoomController</servlet-class>
@@ -92,7 +105,8 @@
     <servlet-mapping>
         <servlet-name>RoomServlet</servlet-name>
         <url-pattern>/room</url-pattern>
-    </servlet-mapping>    <!-- Policy Controller -->
+    </servlet-mapping>
+    <!-- Policy Controller -->
     <servlet>
         <servlet-name>PolicyServlet</servlet-name>
         <servlet-class>controllers.PolicyController</servlet-class>
@@ -100,7 +114,8 @@
     <servlet-mapping>
         <servlet-name>PolicyServlet</servlet-name>
         <url-pattern>/policy</url-pattern>
-    </servlet-mapping>    <!-- Notification Controller -->
+    </servlet-mapping>
+    <!-- Notification Controller -->
     <servlet>
         <servlet-name>NotificationServlet</servlet-name>
         <servlet-class>controllers.NotificationController</servlet-class>
@@ -108,7 +123,8 @@
     <servlet-mapping>
         <servlet-name>NotificationServlet</servlet-name>
         <url-pattern>/notification</url-pattern>
-    </servlet-mapping>    <!-- NotificationUser Controller -->
+    </servlet-mapping>
+    <!-- NotificationUser Controller -->
     <servlet>
         <servlet-name>NotificationUserServlet</servlet-name>
         <servlet-class>controllers.NotificationUserController</servlet-class>
@@ -116,7 +132,8 @@
     <servlet-mapping>
         <servlet-name>NotificationUserServlet</servlet-name>
         <url-pattern>/notificationuser</url-pattern>
-    </servlet-mapping>    <!-- Message Controller -->
+    </servlet-mapping>
+    <!-- Message Controller -->
     <servlet>
         <servlet-name>MessageServlet</servlet-name>
         <servlet-class>controllers.MessageController</servlet-class>
@@ -124,7 +141,8 @@
     <servlet-mapping>
         <servlet-name>MessageServlet</servlet-name>
         <url-pattern>/message</url-pattern>
-    </servlet-mapping>    <!-- News Controller -->
+    </servlet-mapping>
+    <!-- News Controller -->
     <servlet>
         <servlet-name>NewsServlet</servlet-name>
         <servlet-class>controllers.NewsController</servlet-class>
@@ -132,7 +150,8 @@
     <servlet-mapping>
         <servlet-name>NewsServlet</servlet-name>
         <url-pattern>/news</url-pattern>
-    </servlet-mapping>    <!-- NewsImage Controller -->
+    </servlet-mapping>
+    <!-- NewsImage Controller -->
     <servlet>
         <servlet-name>NewsImageServlet</servlet-name>
         <servlet-class>controllers.NewsImageController</servlet-class>
@@ -140,7 +159,8 @@
     <servlet-mapping>
         <servlet-name>NewsImageServlet</servlet-name>
         <url-pattern>/newsimage</url-pattern>
-    </servlet-mapping>    <!-- ServiceImage Controller -->
+    </servlet-mapping>
+    <!-- ServiceImage Controller -->
     <servlet>
         <servlet-name>ServiceImageServlet</servlet-name>
         <servlet-class>controllers.ServiceImageController</servlet-class>
@@ -148,7 +168,8 @@
     <servlet-mapping>
         <servlet-name>ServiceImageServlet</servlet-name>
         <url-pattern>/serviceimage</url-pattern>
-    </servlet-mapping>    <!-- FeedbackService Controller -->
+    </servlet-mapping>
+    <!-- FeedbackService Controller -->
     <servlet>
         <servlet-name>FeedbackServiceServlet</servlet-name>
         <servlet-class>controllers.FeedbackServiceController</servlet-class>
@@ -156,7 +177,8 @@
     <servlet-mapping>
         <servlet-name>FeedbackServiceServlet</servlet-name>
         <url-pattern>/feedbackservice</url-pattern>
-    </servlet-mapping><!-- Pet Controller -->
+    </servlet-mapping>
+    <!-- Pet Controller -->
     <servlet>
         <servlet-name>PetServlet</servlet-name>
         <servlet-class>controllers.PetController</servlet-class>
@@ -182,7 +204,8 @@
     <servlet-mapping>
         <servlet-name>MedicalRecordsServlet</servlet-name>
         <url-pattern>/medicalrecords</url-pattern>
-    </servlet-mapping>    <!-- Wallet Controller -->
+    </servlet-mapping>
+    <!-- Wallet Controller -->
     <servlet>
         <servlet-name>WalletServlet</servlet-name>
         <servlet-class>controllers.WalletController</servlet-class>
@@ -190,7 +213,8 @@
     <servlet-mapping>
         <servlet-name>WalletServlet</servlet-name>
         <url-pattern>/wallet</url-pattern>
-    </servlet-mapping>    <!-- WalletTransfer Controller -->
+    </servlet-mapping>
+    <!-- WalletTransfer Controller -->
     <servlet>
         <servlet-name>WalletTransferServlet</servlet-name>
         <servlet-class>controllers.WalletTransferController</servlet-class>
