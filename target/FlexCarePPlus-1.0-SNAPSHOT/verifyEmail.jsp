@@ -1,6 +1,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
-<jsp:include page="/client/assets/layout/header.jsp"/>
+<jsp:include page="/client/assets/layout/headerFull.jsp"/>
 <div class="login-container">
     <div class="container" id="container">
         <div class="password-container">
