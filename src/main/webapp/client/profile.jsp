@@ -60,6 +60,10 @@
                             <i class="bi bi-shield-lock me-2 text-primary"></i>
                             <span>Security Settings</span>
                         </a>
+                        <a href="#userPets" class="d-flex align-items-center mb-3 pb-3 border-bottom" data-bs-toggle="tab" role="tab" id="user-pets-tab">
+                            <i class="bi bi-heart-fill me-2 text-primary"></i>
+                            <span>My Pets</span>
+                        </a>
                         <a href="#bookingHistory" class="d-flex align-items-center" data-bs-toggle="tab" role="tab" id="booking-history-tab">
                             <i class="bi bi-calendar-check me-2 text-primary"></i>
                             <span>Booking History</span>
@@ -237,6 +241,42 @@
                                             <td><span class="badge bg-info">Processing</span></td>
                                             <td><button class="btn btn-sm btn-outline-primary">View Details</button></td>
                                         </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- My Pets Tab -->
+                    <div class="tab-pane fade" id="userPets" role="tabpanel" aria-labelledby="user-pets-tab">
+                        <div class="bg-light p-4 rounded">
+                            <div class="border-bottom pb-3 mb-4">
+                                <h4 class="text-uppercase">My Pets</h4>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Type</th>
+                                            <th>Name</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <c:forEach var="pet" items="${sessionScope.userPets}" varStatus="status">
+                                            <tr>
+                                                <td>${status.index + 1}</td>
+                                                <td>${pet.pet.name}</td>
+                                                <td>${pet.petName}</td>
+                                                <td>
+                                                    <a href="petDetail?userPetID=${pet.userPetID}" class="btn btn-sm btn-outline-primary">View Details</a>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                        <c:if test="${empty sessionScope.userPets}">
+                                            <tr><td colspan="4" class="text-center">No pets found.</td></tr>
+                                        </c:if>
                                     </tbody>
                                 </table>
                             </div>

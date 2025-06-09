@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import java.util.List;
+import java.util.ArrayList;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -131,7 +133,7 @@ public class UserDetailController extends HttpServlet {
         String action = request.getParameter("action");
         switch (action) {
             case "getUserDetail" ->
-                request.getRequestDispatcher("/client/profile.jsp").forward(request, response);
+                getUserDetail(request, response);
 
         }
     }
@@ -186,7 +188,27 @@ public class UserDetailController extends HttpServlet {
     private void staffDelete(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // To be implemented
-    }
+    }    
+      private void getUserDetail(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        UserDetailDTO userDetailDTO = (UserDetailDTO) request.getSession().getAttribute("userDetailDTO");
+        
+        if (userDetailDTO != null) {
+            int userID = userDetailDTO.getUser().getUserId();
+            List<models.UserPet> userPets = daos.UserPetDAO.getByUserId(userID);
+            
+            List<dtos.UserPetDTO> userPetDTOs = new ArrayList<>();
+            
+            for (models.UserPet userPet : userPets) {
+                dtos.UserPetDTO userPetDTO = new dtos.UserPetDTO(userPet);
+                userPetDTOs.add(userPetDTO);
+            }
+            
+            request.getSession().setAttribute("userPets", userPetDTOs);
+        }
+        
+        request.getRequestDispatcher("/client/profile.jsp").forward(request, response);
+    }   
 
     private void customerChangeInfo(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/html;charset=UTF-8");

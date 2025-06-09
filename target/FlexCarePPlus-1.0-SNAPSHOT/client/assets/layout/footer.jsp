@@ -1,4 +1,7 @@
-<!-- Footer Start -->
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 <div class="container-fluid bg-light mt-5 py-5">
     <div class="container pt-5">
         <div class="row g-5">
@@ -75,14 +78,222 @@
         </div>
     </div>
 </div>
+
+
 <!-- Footer End -->
 
 
 <!-- Back to Top -->
 <a href="#" class="btn btn-primary py-3 fs-4 back-to-top"><i class="bi bi-arrow-up"></i></a>
+<!-- Chat Button -->
+<c:if test="${not empty sessionScope.userDetailDTO}">
+    <!-- Chat Icon -->
+    <div class="chat-icon" onclick="toggleChat()">
+        <i class="fas fa-comments"></i>
+    </div>
+
+    <!-- Chat Box -->
+    <div class="chat-box" id="chatBox">
+        <div class="chat-header">
+            Chat Support ${sessionScope.userDetailDTO.user.userId}
+            <span class="close-btn" onclick="closeChat()">&times;</span>
+        </div>
+        <div class="chat-messages" id="chatMessages"></div>
+        <div class="chat-input">
+            <input type="text" id="chatInput" class="form-control" placeholder="Enter your message">
+            <button class="btn btn-primary" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <!-- STYLE -->
+    <style>
+        .chat-icon {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            background-color: #8ecc7d;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 28px;
+            cursor: pointer;
+            z-index: 1000;
+        }
+
+        .chat-box {
+            position: fixed;
+            bottom: 90px;
+            left: 50px;
+            width: 320px;
+            height: 400px;
+            border: 1px solid #ccc;
+            background-color: white;
+            border-radius: 10px;
+            display: none;
+            flex-direction: column;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+            z-index: 9999;
+        }
+
+        .chat-box.active {
+            display: flex;
+        }
+
+        .chat-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            border-bottom: 1px solid #ccc;
+            font-weight: bold;
+            background-color: #f8f9fa;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .message {
+            padding: 8px 12px;
+            border-radius: 18px;
+            max-width: 75%;
+            margin-bottom: 10px;
+            word-wrap: break-word;
+        }
+
+        .user {
+            align-self: flex-end;
+            background-color: #dcf8c6;
+        }
+
+        .bot {
+            align-self: flex-start;
+            background-color: #f1f0f0;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 10px;
+            border-top: 1px solid #ccc;
+            background-color: white;
+        }
+
+        .chat-input input {
+            flex: 1;
+            margin-right: 5px;
+        }
+
+        .close-btn {
+            cursor: pointer;
+            color: #888;
+            font-size: 20px;
+        }
+
+        .close-btn:hover {
+            color: #333;
+        }
+    </style>
+
+    <!-- SCRIPT -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const chatBox = document.getElementById('chatBox');
+            const chatMessages = document.getElementById('chatMessages');
+            const chatInput = document.getElementById('chatInput');
+            const senderID = ${sessionScope.userDetailDTO.user.userId};
+
+            function isNearBottom() {
+                const threshold = 0; 
+                return chatMessages.scrollHeight - chatMessages.scrollTop - chatMessages.clientHeight < threshold;
+            }
+
+            window.getMessages = function () {
+                fetch('message?senderID=' + senderID + '&receiverID=8', {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    }
+                })
+                        .then(response => response.json())  // Nhận kết quả dưới dạng JSON
+                        .then(datas => {
+                            chatMessages.innerHTML = '';
+                            datas.forEach(data => {
+                                const msgDiv = document.createElement('div');
+                                msgDiv.className = 'message ' + (data.userID === senderID ? 'user' : 'bot');
+                                msgDiv.innerHTML = data.content;
+                                chatMessages.appendChild(msgDiv);
+                            });
+                            if (isNearBottom) {
+                                scrollToBottom();
+                            }
+                        })
+                        .catch(error => console.error('Error:', error));
+            };
+
+            setInterval(() => {
+                getMessages();
+            }, 500);
+
+            window.toggleChat = function () {
+                chatBox.classList.toggle('active');
+                if (chatBox.classList.contains('active')) {
+                    scrollToBottom();
+                }
+            };
+
+            window.closeChat = function () {
+                chatBox.classList.remove('active');
+            };
+
+            function scrollToBottom() {
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            window.sendMessage = function () {
+                const text = chatInput.value.trim();
+                if (!text)
+                    return;
+                chatInput.value = '';
+
+                fetch('message', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded'
+                    },
+                    body: new URLSearchParams({
+                        senderID: senderID,
+                        receiverID: 8,
+                        content: text
+                    })
+                })
+                        .then(() => {
+                            getMessages();
+                            scrollToBottom();
+                        })
+                        .catch(error => console.error('Send error:', error));
+
+            };
+
+            chatInput.addEventListener('keydown', function (event) {
+                if (event.key === 'Enter') {
+                    event.preventDefault();
+                    sendMessage();
+                }
+            });
+        });
+    </script>
+</c:if>
 
 
-<!-- JavaScript Libraries -->
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
 <script src="${pageContext.request.contextPath}/client/assets/lib/easing/easing.min.js"></script>
