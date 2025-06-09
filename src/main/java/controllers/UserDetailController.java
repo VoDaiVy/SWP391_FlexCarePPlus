@@ -9,6 +9,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import java.util.List;
+import java.util.ArrayList;
 import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -131,12 +133,11 @@ public class UserDetailController extends HttpServlet {
         String action = request.getParameter("action");
         switch (action) {
             case "getUserDetail" ->
-                request.getRequestDispatcher("/client/profile.jsp").forward(request, response);
-
+                getUserDetail(request, response);
+            case "getAvailablePets" ->
+                getAvailablePets(request, response);
         }
-    }
-
-    private void customerPost(HttpServletRequest request, HttpServletResponse response)
+    }    private void customerPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
         switch (action) {
@@ -146,6 +147,12 @@ public class UserDetailController extends HttpServlet {
                 customerChangePassword(request, response);
             case "changeAvatar" ->
                 customerChangeAvatar(request, response);
+            case "addUserPet" ->
+                addUserPet(request, response);
+            case "editUserPet" ->
+                editUserPet(request, response);
+            case "deleteUserPet" ->
+                deleteUserPet(request, response);
         }
     }
 
@@ -186,7 +193,27 @@ public class UserDetailController extends HttpServlet {
     private void staffDelete(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // To be implemented
-    }
+    }    
+      private void getUserDetail(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        UserDetailDTO userDetailDTO = (UserDetailDTO) request.getSession().getAttribute("userDetailDTO");
+        
+        if (userDetailDTO != null) {
+            int userID = userDetailDTO.getUser().getUserId();
+            List<models.UserPet> userPets = daos.UserPetDAO.getByUserId(userID);
+            
+            List<dtos.UserPetDTO> userPetDTOs = new ArrayList<>();
+            
+            for (models.UserPet userPet : userPets) {
+                dtos.UserPetDTO userPetDTO = new dtos.UserPetDTO(userPet);
+                userPetDTOs.add(userPetDTO);
+            }
+            
+            request.getSession().setAttribute("userPets", userPetDTOs);
+        }
+        
+        request.getRequestDispatcher("/client/profile.jsp").forward(request, response);
+    }   
 
     private void customerChangeInfo(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("text/html;charset=UTF-8");
@@ -343,6 +370,177 @@ public class UserDetailController extends HttpServlet {
             // Set error message and forward back to profile page
             request.setAttribute("avatarUploadError", "An error occurred: " + e.getMessage());
             request.getRequestDispatcher("/client/profile.jsp").forward(request, response);
+        }
+    }
+
+    private void getAvailablePets(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        
+        try {
+            List<models.Pet> pets = daos.PetDAO.getAll();
+            StringBuilder jsonBuilder = new StringBuilder("[");
+            
+            for (int i = 0; i < pets.size(); i++) {
+                models.Pet pet = pets.get(i);
+                jsonBuilder.append("{\"petID\":").append(pet.getPetID())
+                           .append(",\"name\":\"").append(pet.getName()).append("\"}");
+                
+                if (i < pets.size() - 1) {
+                    jsonBuilder.append(",");
+                }
+            }
+            
+            jsonBuilder.append("]");
+            response.getWriter().write(jsonBuilder.toString());
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"error\":\"" + e.getMessage() + "\"}");
+        }
+    }
+    
+    // Method to add a new pet to the user's profile via AJAX
+    private void addUserPet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        
+        try {
+            // Get user ID from session
+            UserDetailDTO userDetailDTO = (UserDetailDTO) request.getSession().getAttribute("userDetailDTO");
+            if (userDetailDTO == null) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("{\"error\":\"User not logged in\"}");
+                return;
+            }
+            
+            int userID = userDetailDTO.getUser().getUserId();
+            int petID = Integer.parseInt(request.getParameter("petID"));
+            String petName = request.getParameter("petName");
+            
+            // Create and save new UserPet
+            models.UserPet userPet = new models.UserPet();
+            userPet.setUserID(userID);
+            userPet.setPetID(petID);
+            userPet.setPetName(petName);
+            
+            boolean success = daos.UserPetDAO.create(userPet);
+            
+            if (success) {
+                dtos.UserPetDTO newPetDTO = new dtos.UserPetDTO(userPet);
+                
+                // Return the new pet as JSON
+                StringBuilder jsonBuilder = new StringBuilder();
+                jsonBuilder.append("{\"success\":true,\"pet\":{")
+                           .append("\"userPetID\":").append(newPetDTO.getUserPetID())
+                           .append(",\"petName\":\"").append(newPetDTO.getPetName()).append("\"")
+                           .append(",\"petType\":\"").append(newPetDTO.getPet().getName()).append("\"")
+                           .append("}}");
+                
+                response.getWriter().write(jsonBuilder.toString());
+            } else {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.getWriter().write("{\"success\":false,\"error\":\"Failed to add pet\"}");
+            }
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"success\":false,\"error\":\"" + e.getMessage() + "\"}");
+        }
+    }
+    
+    // Method to delete a user pet via AJAX
+    private void deleteUserPet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        
+        try {
+            // Get user ID from session
+            UserDetailDTO userDetailDTO = (UserDetailDTO) request.getSession().getAttribute("userDetailDTO");
+            if (userDetailDTO == null) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("{\"error\":\"User not logged in\"}");
+                return;
+            }
+            
+            int userID = userDetailDTO.getUser().getUserId();
+            int userPetID = Integer.parseInt(request.getParameter("userPetID"));
+            
+            // Get the pet to verify ownership
+            models.UserPet userPet = daos.UserPetDAO.getById(userPetID);
+            
+            // Security check - only allow deleting own pets
+            if (userPet == null || userPet.getUserID() != userID) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                response.getWriter().write("{\"success\":false,\"error\":\"You are not authorized to delete this pet\"}");
+                return;
+            }
+            
+            boolean success = daos.UserPetDAO.delete(userPetID);
+            
+            if (success) {
+                response.getWriter().write("{\"success\":true}");
+            } else {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.getWriter().write("{\"success\":false,\"error\":\"Failed to delete pet\"}");
+            }
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"success\":false,\"error\":\"" + e.getMessage() + "\"}");
+        }
+    }
+    
+    // Method to edit a user pet's name via AJAX
+    private void editUserPet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        
+        try {
+            // Get user ID from session
+            UserDetailDTO userDetailDTO = (UserDetailDTO) request.getSession().getAttribute("userDetailDTO");
+            if (userDetailDTO == null) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                response.getWriter().write("{\"success\":false,\"error\":\"User not logged in\"}");
+                return;
+            }
+            
+            int userID = userDetailDTO.getUser().getUserId();
+            int userPetID = Integer.parseInt(request.getParameter("userPetID"));
+            String newPetName = request.getParameter("petName");
+            
+            if (newPetName == null || newPetName.trim().isEmpty() || newPetName.length() > 50) {
+                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                response.getWriter().write("{\"success\":false,\"error\":\"Pet name must be between 1 and 50 characters\"}");
+                return;
+            }
+            
+            models.UserPet userPet = daos.UserPetDAO.getById(userPetID);
+            
+            if (userPet == null || userPet.getUserID() != userID) {
+                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                response.getWriter().write("{\"success\":false,\"error\":\"You don't have permission to edit this pet\"}");
+                return;
+            }
+            
+            userPet.setPetName(newPetName);
+            boolean success = daos.UserPetDAO.update(userPet);
+            
+            if (success) {
+                dtos.UserPetDTO updatedPetDTO = new dtos.UserPetDTO(userPet);
+                
+                StringBuilder jsonBuilder = new StringBuilder();
+                jsonBuilder.append("{\"success\":true,\"pet\":{")
+                           .append("\"userPetID\":").append(updatedPetDTO.getUserPetID())
+                           .append(",\"petName\":\"").append(updatedPetDTO.getPetName()).append("\"")
+                           .append(",\"petType\":\"").append(updatedPetDTO.getPet().getName()).append("\"")
+                           .append("}}");
+                          
+                response.getWriter().write(jsonBuilder.toString());
+            } else {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                response.getWriter().write("{\"success\":false,\"error\":\"Failed to update pet name\"}");
+            }
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write("{\"success\":false,\"error\":\"" + e.getMessage() + "\"}");
         }
     }
 }

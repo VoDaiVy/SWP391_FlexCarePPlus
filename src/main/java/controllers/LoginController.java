@@ -55,22 +55,19 @@ public class LoginController extends HttpServlet {
                 forgetPassword(request, response);
         }
     }
-    
-    //Show Login page
+
     private void showLoginPage(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.setAttribute("google_redirect_uri", GoogleLogin.GOOGLE_REDIRECT_URI);
         request.setAttribute("google_client_id", GoogleLogin.GOOGLE_CLIENT_ID);
         request.getRequestDispatcher("login.jsp").forward(request, response);
     }
-    
-    //Show forget password
+
     private void showForgetPassword(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         request.getRequestDispatcher("forgetPassword.jsp").forward(request, response);
     }
-    
-    //Login with gg
+
     private void loginWithGoogle(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException {
         String code = request.getParameter("code");
