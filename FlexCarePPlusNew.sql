@@ -188,6 +188,7 @@ Amount money,
 IsRefunded bit
 )
 
+
 create table News(
 NewsID int identity(1,1) primary key,
 Title nvarchar(100) null,

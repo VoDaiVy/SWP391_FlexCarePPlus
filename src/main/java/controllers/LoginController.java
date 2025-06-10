@@ -129,7 +129,7 @@ public class LoginController extends HttpServlet {
                     response.sendRedirect("home");
                 }
                 case "admin" -> {
-                    response.sendRedirect("admin/homepage.jsp");
+                    response.sendRedirect("admin");
                 }
                 case "staff" -> {
                     response.sendRedirect("staff/homepage.jsp");
