@@ -2,6 +2,29 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:include page="/client/assets/layout/headerFull.jsp"/>
 
+<style>
+    /* Animation for new row */
+    @keyframes highlightNew {
+        0% { background-color: rgba(52, 173, 84, 0.2); }
+        70% { background-color: rgba(52, 173, 84, 0.2); }
+        100% { background-color: transparent; }
+    }
+    
+    .highlight-new {
+        animation: highlightNew 3s ease;
+    }
+    
+    /* Animation for row deletion */
+    @keyframes fadeOut {
+        from { opacity: 1; }
+        to { opacity: 0; transform: translateX(30px); }
+    }
+    
+    .fade-out {
+        animation: fadeOut 0.5s ease forwards;
+    }
+</style>
+
 <!-- Profile Header Start -->
 <div class="container-fluid bg-primary py-5 mb-5">
     <div class="container py-5">
@@ -59,6 +82,10 @@
                         <a href="#securitySettings" class="d-flex align-items-center mb-3 pb-3 border-bottom" data-bs-toggle="tab" role="tab" id="security-settings-tab">
                             <i class="bi bi-shield-lock me-2 text-primary"></i>
                             <span>Security Settings</span>
+                        </a>
+                        <a href="#userPets" class="d-flex align-items-center mb-3 pb-3 border-bottom" data-bs-toggle="tab" role="tab" id="user-pets-tab">
+                            <i class="bi bi-heart-fill me-2 text-primary"></i>
+                            <span>My Pets</span>
                         </a>
                         <a href="#bookingHistory" class="d-flex align-items-center" data-bs-toggle="tab" role="tab" id="booking-history-tab">
                             <i class="bi bi-calendar-check me-2 text-primary"></i>
@@ -241,6 +268,50 @@
                                 </table>
                             </div>
                         </div>
+                    </div>                   
+                    
+                    <!-- My Pets Tab -->
+                    <div class="tab-pane fade" id="userPets" role="tabpanel" aria-labelledby="user-pets-tab">
+                        <div class="bg-light p-4 rounded">
+                            <div id="petAddMsg" class="mb-3"></div>
+                            <div class="border-bottom pb-3 mb-4 d-flex justify-content-between align-items-center">
+                                <h4 class="text-uppercase">My Pets</h4>
+                                <button type="button" class="btn btn-success" id="addPetBtn" data-bs-toggle="modal" data-bs-target="#addPetModal">
+                                    <i class="bi bi-plus-circle me-1"></i> Add Pet
+                                </button>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th>ID</th>
+                                            <th>Type</th>
+                                            <th>Name</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="petsTableBody">
+                                        <c:forEach var="pet" items="${sessionScope.userPets}" varStatus="status">
+                                            <tr>
+                                                <td>${status.index + 1}</td>
+                                                <td>${pet.pet.name}</td>
+                                                <td>${pet.petName}</td>                                                
+                                                <td>
+                                                    <div class="btn-group" role="group">
+                                                        <a href="petDetail?userPetID=${pet.userPetID}" class="btn btn-sm btn-outline-primary me-4">View Details</a>
+                                                        <button type="button" class="btn btn-sm btn-outline-secondary edit-pet-btn me-4" data-id="${pet.userPetID}" data-name="${pet.petName}" data-type="${pet.pet.name}">Edit</button>
+                                                        <button type="button" class="btn btn-sm btn-outline-danger delete-pet-btn" data-id="${pet.userPetID}">Delete</button>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </c:forEach>
+                                        <c:if test="${empty sessionScope.userPets}">
+                                            <tr><td colspan="4" class="text-center">No pets found.</td></tr>
+                                        </c:if>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -248,6 +319,71 @@
     </div>
 </div>
 <!-- Profile Content End -->
+
+<!-- Add Pet Modal -->
+<div class="modal fade" id="addPetModal" tabindex="-1" aria-labelledby="addPetModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="addPetModalLabel">Add New Pet</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>            <div class="modal-body">
+                <form id="addPetForm">
+                    <div class="mb-3">
+                        <label for="petType" class="form-label">Pet Type</label>
+                        <select class="form-select" id="petType" name="petID" required>
+                            <option value="" selected disabled>Select a pet type...</option>
+                            <!-- Options will be loaded dynamically -->
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="petName" class="form-label">Pet Name</label>
+                        <input type="text" class="form-control" id="petName" name="petName" required>
+                        <small class="form-text text-muted">Enter a name for your pet</small>
+                    </div>
+                    <div id="modalPetAddMsg"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveNewPetBtn">Add Pet</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Pet Modal -->
+<div class="modal fade" id="editPetModal" tabindex="-1" aria-labelledby="editPetModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="editPetModalLabel">Edit Pet Name</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="editPetForm">
+                    <input type="hidden" id="editPetId" name="userPetID">
+                    <div class="mb-3">
+                        <label class="form-label">Pet Type</label>
+                        <input type="text" class="form-control" id="editPetType" readonly>
+                    </div>
+                    <div class="mb-3">
+                        <label for="editPetName" class="form-label">Pet Name</label>
+                        <input type="text" class="form-control" id="editPetName" name="petName" required>
+                        <small class="form-text text-muted">Enter a new name for your pet</small>
+                    </div>
+                    <div id="modalPetEditMsg"></div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" id="saveEditPetBtn">Save Changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<jsp:include page="/client/assets/layout/footer.jsp"/>
 
 <!-- JavaScript for Profile Page -->
 <script>
@@ -319,7 +455,7 @@
 
             fetch('userdetail', {
                 method: 'POST',
-                body: formData,
+                body: formData
             })
                     .then(response => response.text())
                     .then(html => {
@@ -343,7 +479,7 @@
 
             fetch('userdetail', {
                 method: 'POST',
-                body: formData,
+                body: formData
             })
                     .then(response => response.text())
                     .then(html => {
@@ -385,13 +521,370 @@
                 document.getElementById(target).classList.add('show', 'active');
             });
         });
-    });
 
+        // Pet type select dropdown - load options on modal open
+        document.getElementById('addPetBtn').addEventListener('click', function() {
+            // Clear previous messages and form values
+            document.getElementById('modalPetAddMsg').innerHTML = '';
+            document.getElementById('addPetForm').reset();
+            
+            // Fetch pet types from server
+            fetch('userdetail?action=getAvailablePets')
+                .then(response => response.json())
+                .then(pets => {
+                    const petSelect = document.getElementById('petType');
+                    // Clear existing options
+                    while (petSelect.options.length > 1) {
+                        petSelect.remove(1);
+                    }
+                    
+                    // Add new options
+                    pets.forEach(pet => {
+                        const option = document.createElement('option');
+                        option.value = pet.petID;
+                        option.textContent = pet.name;
+                        petSelect.appendChild(option);
+                    });
+                })
+                .catch(error => {
+                    document.getElementById('modalPetAddMsg').innerHTML = 
+                        '<div class="alert alert-danger">Error loading pet types. Please try again.</div>';
+                });
+        });
+          // Initialize modal object
+        const petModal = new bootstrap.Modal(document.getElementById('addPetModal'), {
+            backdrop: 'static',   // Prevent closing when clicking outside
+            keyboard: false       // Prevent closing with keyboard
+        });
+        
+        // Save new pet button
+        document.getElementById('saveNewPetBtn').addEventListener('click', function() {
+            const form = document.getElementById('addPetForm');
+            const petTypeSelect = document.getElementById('petType');
+            const petNameInput = document.getElementById('petName');
+            const modalMsgDiv = document.getElementById('modalPetAddMsg');
+            
+            // Clear previous error messages
+            modalMsgDiv.innerHTML = '';
+            
+            // Custom validation
+            let isValid = true;
+            
+            if (petTypeSelect.value === "") {
+                modalMsgDiv.innerHTML += '<div class="alert alert-danger">Please select a pet type</div>';
+                isValid = false;
+            }
+            
+            if (petNameInput.value.trim() === "") {
+                modalMsgDiv.innerHTML += '<div class="alert alert-danger">Please enter a name for your pet</div>';
+                isValid = false;
+            } else if (petNameInput.value.length > 50) {
+                modalMsgDiv.innerHTML += '<div class="alert alert-danger">Pet name cannot be more than 50 characters</div>';
+                isValid = false;
+            }
+            
+            // Stop if validation fails
+            if (!isValid) {
+                return;
+            }
+            
+            const petID = petTypeSelect.value;
+            const petName = petNameInput.value.trim();
+            
+            // Create form data
+            const formData = new FormData();
+            formData.append('action', 'addUserPet');
+            formData.append('petID', petID);
+            formData.append('petName', petName);
+            
+            // Send AJAX request
+            fetch('userdetail', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {                
+                if (data.success) {
+                    // Close modal
+                    petModal.hide();
+                    
+                    // Update pets table
+                    updatePetsTable(data.pet);
+                      // Show success message
+                    document.getElementById('petAddMsg').innerHTML = 
+                        '<div class="alert alert-success alert-dismissible fade show">Pet added successfully! <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
+                    
+                    // Hide message after 5 seconds
+                    setTimeout(() => {
+                        const alert = document.querySelector('#petAddMsg .alert');
+                        if (alert) {
+                            alert.classList.remove('show');
+                            alert.classList.add('hide');
+                            setTimeout(() => {
+                                if (alert.parentNode) {
+                                    alert.parentNode.removeChild(alert);
+                                }
+                            }, 500);
+                        }
+                    }, 5000);
+                } else {
+                    document.getElementById('modalPetAddMsg').innerHTML = 
+                        `<div class="alert alert-danger">${data.error || 'Failed to add pet. Please try again.'}</div>`;
+                }
+            })
+            .catch(error => {
+                document.getElementById('modalPetAddMsg').innerHTML = 
+                    '<div class="alert alert-danger">An error occurred. Please try again.</div>';
+            });
+        });
+          // Function to update the pets table
+        function updatePetsTable(newPet) {
+            const tableBody = document.getElementById('petsTableBody');
+            
+            // Remove "No pets found" row if it exists
+            const noPetsRow = tableBody.querySelector('tr td[colspan="4"]');
+            if (noPetsRow) {
+                tableBody.innerHTML = '';
+            }
+            
+            // Count existing rows to determine new ID
+            const rowCount = tableBody.querySelectorAll('tr').length + 1;
+            
+            // Create new row
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>` + rowCount + `</td>
+                <td>` + newPet.petType + `</td>
+                <td>` + newPet.petName + `</td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <a href="petDetail?userPetID=` + newPet.userPetID +`" class="btn btn-sm btn-outline-primary me-4">View Details</a>
+                        <button type="button" class="btn btn-sm btn-outline-secondary edit-pet-btn me-4" data-id="` + newPet.userPetID +`" data-name="` + newPet.petName +`" data-type="` + newPet.petType +`">Edit</button>
+                        <button type="button" class="btn btn-sm btn-outline-danger delete-pet-btn" data-id="` + newPet.userPetID +`">Delete</button>
+                    </div>
+                </td>
+            `;
+            
+            // Add row to table with animation
+            newRow.classList.add('highlight-new');
+            tableBody.appendChild(newRow);
+            
+            // Add event listeners for the buttons
+            const deleteButton = newRow.querySelector('.delete-pet-btn');
+            if (deleteButton) {
+                deleteButton.addEventListener('click', handleDeletePet);
+            }
+            
+            const editButton = newRow.querySelector('.edit-pet-btn');
+            if (editButton) {
+                editButton.addEventListener('click', handleEditPet);
+            }
+            
+            // Remove highlight after animation
+            setTimeout(() => {
+                newRow.classList.remove('highlight-new');
+            }, 3000);
+        }
+        
+        // Function to handle delete pet button clicks
+        function handleDeletePet(event) {
+            if (confirm('Are you sure you want to delete this pet?')) {
+                const petId = event.target.getAttribute('data-id');
+                
+                // Create form data
+                const formData = new FormData();
+                formData.append('action', 'deleteUserPet');
+                formData.append('userPetID', petId);
+                
+                // Send AJAX request
+                fetch('userdetail', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Server responded with an error');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.success) {
+                        // Find and remove the row
+                        const row = event.target.closest('tr');
+                        row.classList.add('fade-out');
+                        
+                        // Wait for animation to finish then remove
+                        setTimeout(() => {
+                            row.remove();
+                            
+                            // Show success message
+                            document.getElementById('petAddMsg').innerHTML = 
+                                '<div class="alert alert-success alert-dismissible fade show">Pet deleted successfully! <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
+                            
+                            // Renumber remaining rows
+                            const rows = document.querySelectorAll('#petsTableBody tr');
+                            if (rows.length === 0) {
+                                // Add "No pets found" message if all pets are deleted
+                                document.getElementById('petsTableBody').innerHTML = '<tr><td colspan="4" class="text-center">No pets found.</td></tr>';
+                            } else {
+                                rows.forEach((row, index) => {
+                                    row.cells[0].textContent = index + 1;
+                                });
+                            }
+                            
+                            // Hide message after 5 seconds
+                            setTimeout(() => {
+                                const alert = document.querySelector('#petAddMsg .alert');
+                                if (alert) {
+                                    alert.classList.remove('show');
+                                    alert.classList.add('hide');
+                                    setTimeout(() => {
+                                        if (alert.parentNode) {
+                                            alert.parentNode.removeChild(alert);
+                                        }
+                                    }, 500);
+                                }
+                            }, 5000);
+                        }, 500);
+                    } else {
+                        document.getElementById('petAddMsg').innerHTML = 
+                            `<div class="alert alert-danger">${data.error || 'Failed to delete pet. Please try again.'}</div>`;
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('petAddMsg').innerHTML = 
+                        '<div class="alert alert-danger">An error occurred ' + error + '. Please try again.</div>';
+                });
+            }
+        }
+        
+        // Add event listeners to existing delete buttons
+        document.querySelectorAll('.delete-pet-btn').forEach(button => {
+            button.addEventListener('click', handleDeletePet);
+        });
+        
+        // Add event listeners to existing edit buttons
+        document.querySelectorAll('.edit-pet-btn').forEach(button => {
+            button.addEventListener('click', handleEditPet);
+        });
+        
+        // Initialize edit pet modal
+        const editPetModal = new bootstrap.Modal(document.getElementById('editPetModal'), {
+            backdrop: 'static',
+            keyboard: false
+        });
+        
+        // Function to handle edit pet button clicks
+        function handleEditPet(event) {
+            const petId = event.target.getAttribute('data-id');
+            const petName = event.target.getAttribute('data-name');
+            const petType = event.target.getAttribute('data-type');
+            
+            // Populate the edit form
+            document.getElementById('editPetId').value = petId;
+            document.getElementById('editPetName').value = petName;
+            document.getElementById('editPetType').value = petType;
+            
+            // Clear previous messages
+            document.getElementById('modalPetEditMsg').innerHTML = '';
+            
+            // Show the modal
+            editPetModal.show();
+        }
+        
+        // Save edited pet name
+        document.getElementById('saveEditPetBtn').addEventListener('click', function() {
+            const form = document.getElementById('editPetForm');
+            const petId = document.getElementById('editPetId').value;
+            const petName = document.getElementById('editPetName').value.trim();
+            const modalMsgDiv = document.getElementById('modalPetEditMsg');
+            
+            // Clear previous error messages
+            modalMsgDiv.innerHTML = '';
+            
+            // Validate pet name
+            if (petName === "") {
+                modalMsgDiv.innerHTML = '<div class="alert alert-danger">Please enter a name for your pet</div>';
+                return;
+            } else if (petName.length > 50) {
+                modalMsgDiv.innerHTML = '<div class="alert alert-danger">Pet name cannot be more than 50 characters</div>';
+                return;
+            }
+            
+            // Create form data
+            const formData = new FormData();
+            formData.append('action', 'editUserPet');
+            formData.append('userPetID', petId);
+            formData.append('petName', petName);
+            
+            // Send AJAX request
+            fetch('userdetail', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Close modal
+                    editPetModal.hide();
+                    
+                    // Update the pet name in the table
+                    updatePetInTable(data.pet);
+                    
+                    // Show success message
+                    document.getElementById('petAddMsg').innerHTML = 
+                        '<div class="alert alert-success alert-dismissible fade show">Pet name updated successfully! <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
+                    
+                    // Hide message after 5 seconds
+                    setTimeout(() => {
+                        const alert = document.querySelector('#petAddMsg .alert');
+                        if (alert) {
+                            alert.classList.remove('show');
+                            alert.classList.add('hide');
+                            setTimeout(() => {
+                                if (alert.parentNode) {
+                                    alert.parentNode.removeChild(alert);
+                                }
+                            }, 500);
+                        }
+                    }, 5000);
+                } else {
+                    modalMsgDiv.innerHTML = 
+                        `<div class="alert alert-danger">${data.error || 'Failed to update pet name. Please try again.'}</div>`;
+                }
+            })
+            .catch(error => {
+                modalMsgDiv.innerHTML = 
+                    '<div class="alert alert-danger">An error occurred. Please try again.</div>';
+            });
+        });
+        
+        // Function to update a pet in the table after editing
+        function updatePetInTable(updatedPet) {
+            const rows = document.querySelectorAll('#petsTableBody tr');
+            
+            rows.forEach(row => {
+                const editBtn = row.querySelector('.edit-pet-btn');
+                if (editBtn && editBtn.getAttribute('data-id') == updatedPet.userPetID) {
+                    // Update the pet name in the row
+                    row.cells[2].textContent = updatedPet.petName;
+                    
+                    // Update the data attributes for the edit button
+                    editBtn.setAttribute('data-name', updatedPet.petName);
+                    
+                    // Add highlighting effect
+                    row.classList.add('highlight-new');
+                    setTimeout(() => {
+                        row.classList.remove('highlight-new');
+                    }, 3000);
+                }
+            });
+        }
+    });
+    
     function submitAvatarForm() {
         // Show loading indicator if desired
         document.querySelector('.rounded-circle').style.opacity = '0.5';
         document.getElementById('avatarForm').submit();
     }
 </script>
-
-<jsp:include page="/client/assets/layout/footer.jsp"/>
