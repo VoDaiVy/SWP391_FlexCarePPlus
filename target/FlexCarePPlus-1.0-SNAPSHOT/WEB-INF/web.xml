@@ -4,11 +4,6 @@
         <servlet-name>AdminController</servlet-name>
         <servlet-class>controllers.AdminController</servlet-class>
     </servlet>
-    <servlet>
-        <servlet-name>CartCleanupServlet</servlet-name>
-        <servlet-class>controllers.CartCleanupServlet</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
     <servlet-mapping>
         <servlet-name>LoginController</servlet-name>
         <url-pattern>/sign-in</url-pattern>
@@ -16,10 +11,6 @@
     <servlet-mapping>
         <servlet-name>AdminController</servlet-name>
         <url-pattern>/admin</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>CartCleanupServlet</servlet-name>
-        <url-pattern>/cart-cleanup</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
