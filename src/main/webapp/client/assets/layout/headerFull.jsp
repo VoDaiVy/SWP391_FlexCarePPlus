@@ -24,7 +24,7 @@
                     <a href="${pageContext.request.contextPath}/client/about.html" class="nav-link">About</a>
                 </li>
                 <li class="nav-item">
-                    <a href="${pageContext.request.contextPath}/client/service.html"
+                    <a href="${pageContext.request.contextPath}/service?action=viewListService"
                        class="nav-link">Service</a>
                 </li>
                 <li class="nav-item">
