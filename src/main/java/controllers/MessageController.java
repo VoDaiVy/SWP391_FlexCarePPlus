@@ -1,90 +1,68 @@
 package controllers;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import daos.MessageDAO;
+import daos.UserDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.PrintWriter;
+import java.time.LocalDateTime;
+import java.util.List;
+import models.Message;
+import models.User;
+import utils.LocalDateTimeAdapter;
 
 public class MessageController extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String actor = (String)request.getSession().getAttribute("actor");
+        String actor = (String) request.getSession().getAttribute("actor");
         switch (actor) {
-            case "admin":
+            case "admin" ->
                 adminGet(request, response);
-                break;
-            case "customer":
+            case "customer" ->
                 customerGet(request, response);
-                break;
-            case "staff":
+            case "staff" ->
                 staffGet(request, response);
-                break;
-            default:
+            default ->
                 response.sendRedirect("./");
-                break;
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String actor = (String)request.getSession().getAttribute("actor");
+        String actor = (String) request.getSession().getAttribute("actor");
         switch (actor) {
-            case "admin":
+            case "admin" ->
                 adminPost(request, response);
-                break;
-            case "customer":
+            case "customer" ->
                 customerPost(request, response);
-                break;
-            case "staff":
+            case "staff" ->
                 staffPost(request, response);
-                break;
-            default:
+            default ->
                 response.sendRedirect("./");
-                break;
         }
     }
 
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String actor = (String)request.getSession().getAttribute("actor");
+        String actor = (String) request.getSession().getAttribute("actor");
         switch (actor) {
-            case "admin":
+            case "admin" ->
                 adminPut(request, response);
-                break;
-            case "customer":
+            case "customer" ->
                 customerPut(request, response);
-                break;
-            case "staff":
+            case "staff" ->
                 staffPut(request, response);
-                break;
-            default:
+            default ->
                 response.sendRedirect("./");
-                break;
-        }
-    }
-
-    @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String actor = (String)request.getSession().getAttribute("actor");
-        switch (actor) {
-            case "admin":
-                adminDelete(request, response);
-                break;
-            case "customer":
-                customerDelete(request, response);
-                break;
-            case "staff":
-                staffDelete(request, response);
-                break;
-            default:
-                response.sendRedirect("./");
-                break;
         }
     }
 
@@ -104,20 +82,46 @@ public class MessageController extends HttpServlet {
         // To be implemented
     }
 
-    private void adminDelete(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        // To be implemented
-    }
-
     // Customer role methods
     private void customerGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // To be implemented
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        int senderID = Integer.parseInt(request.getParameter("senderID"));
+        int receiverID = Integer.parseInt(request.getParameter("receiverID"));
+
+        List<Message> messages = MessageDAO.getMessagesBetweenUsers(senderID, receiverID);
+
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                .create();
+        String data = gson.toJson(messages);
+
+        try (PrintWriter out = response.getWriter()) {
+            out.write(data);
+            out.flush(); // ✅ đảm bảo tất cả dữ liệu được đẩy ra
+            // ✅ kết thúc stream chính xác
+        }
     }
 
     private void customerPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // To be implemented
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        String content = request.getParameter("content");
+        int senderID = Integer.parseInt(request.getParameter("senderID"));
+        int receiverID = Integer.parseInt(request.getParameter("receiverID"));
+
+        if (content != null && !content.isEmpty()) {
+            Message message = new Message();
+            message.setContent(content);
+            message.setUserID(senderID);
+            message.setUserReceiveID(receiverID);
+            message.setStatus(true);
+            MessageDAO.create(message);
+        }
     }
 
     private void customerPut(HttpServletRequest request, HttpServletResponse response)
@@ -125,28 +129,80 @@ public class MessageController extends HttpServlet {
         // To be implemented
     }
 
-    private void customerDelete(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        // To be implemented
-    }
-
     // Staff role methods
     private void staffGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // To be implemented
+        String action = request.getParameter("action");
+        switch (action) {
+            case "getMessages" -> {
+                List<User> users = UserDAO.getCustomerHasMessages();
+                List<Message> messages = MessageDAO.getMessagesBetweenUsers(8, users.getFirst().getUserId());
+                request.setAttribute("users", users);
+                request.setAttribute("messages", messages);
+                request.setAttribute("action", "getMessages");
+
+                request.getRequestDispatcher("staff/managePage.jsp").forward(request, response);
+            }
+
+            case "getUsers" -> {
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+
+                List<User> users = UserDAO.getCustomerHasMessages();
+
+                Gson gson = new GsonBuilder()
+                        .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                        .create();
+                String data = gson.toJson(users);
+
+                try (PrintWriter out = response.getWriter()) {
+                    out.write(data);
+                    out.flush(); // ✅ đảm bảo tất cả dữ liệu được đẩy ra
+                    // ✅ kết thúc stream chính xác
+                }
+            }
+            case "getUserMessages" -> {
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+
+                int senderID = Integer.parseInt(request.getParameter("senderID"));
+                int receiverID = Integer.parseInt(request.getParameter("receiverID"));
+
+                List<Message> messages = MessageDAO.getMessagesBetweenUsers(senderID, receiverID);
+
+                Gson gson = new GsonBuilder()
+                        .registerTypeAdapter(LocalDateTime.class, new LocalDateTimeAdapter())
+                        .create();
+                String data = gson.toJson(messages);
+
+                try (PrintWriter out = response.getWriter()) {
+                    out.write(data);
+                    out.flush(); // ✅ đảm bảo tất cả dữ liệu được đẩy ra
+                    // ✅ kết thúc stream chính xác
+                }
+            }
+        }
     }
 
     private void staffPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // To be implemented
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        String content = request.getParameter("content");
+        int receiverID = Integer.parseInt(request.getParameter("receiverID"));
+
+        if (content != null && !content.isEmpty()) {
+            Message message = new Message();
+            message.setContent(content);
+            message.setUserID(8);
+            message.setUserReceiveID(receiverID);
+            message.setStatus(true);
+            MessageDAO.create(message);
+        }
     }
 
     private void staffPut(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        // To be implemented
-    }
-
-    private void staffDelete(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // To be implemented
     }
