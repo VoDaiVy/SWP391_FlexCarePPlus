@@ -13,7 +13,7 @@ import models.Service;
 import utils.ConfigGetter;
 
 public class HomeController extends HttpServlet {
-//set actor
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
