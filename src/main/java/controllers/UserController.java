@@ -112,7 +112,7 @@ public class UserController extends HttpServlet {
 
     private void customerGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // To be implemented
+        
     }
 
     private void customerPost(HttpServletRequest request, HttpServletResponse response)
@@ -123,7 +123,13 @@ public class UserController extends HttpServlet {
     // Staff role methods
     private void staffGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // To be implemented
+        List<User> users = UserDAO.getCustomers();
+        List<UserDetailDTO> userDetailDTOs = new ArrayList<>();
+        for (User user : users) {
+            userDetailDTOs.add(new UserDetailDTO(UserDetailDAO.getByUserId(user.getUserId()), user));
+        }
+        request.setAttribute("userDetailDTOs", userDetailDTOs);
+        request.getRequestDispatcher("staff/users.jsp").forward(request, response);
     }
 
     private void staffPost(HttpServletRequest request, HttpServletResponse response)

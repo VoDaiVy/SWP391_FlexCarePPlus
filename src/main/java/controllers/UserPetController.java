@@ -7,11 +7,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import daos.UserPetDAO;
 import daos.PetDAO;
+import daos.UserDAO;
+import daos.UserDetailDAO;
 import models.UserPet;
 import models.Pet;
 import dtos.UserPetDTO;
 import dtos.UserDetailDTO;
+import java.util.ArrayList;
 import java.util.List;
+import models.User;
+import models.UserDetail;
 
 public class UserPetController extends HttpServlet {
 
@@ -284,18 +289,21 @@ public class UserPetController extends HttpServlet {
     // Staff role methods
     private void staffGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String action = request.getParameter("action");
-
-        if (action == null || action.isEmpty()) {
-            List<UserPet> userPets = UserPetDAO.getAll();
-            request.setAttribute("userPets", userPets);
-            request.getRequestDispatcher("/staff/userpet/list.jsp").forward(request, response);
-        } else if ("view".equals(action)) {
-            int userPetID = Integer.parseInt(request.getParameter("userPetID"));
-            UserPet userPet = UserPetDAO.getById(userPetID);
-            request.setAttribute("userPet", userPet);
-            request.getRequestDispatcher("/staff/userpet/view.jsp").forward(request, response);
+        String userID = request.getParameter("userID");
+        User user = UserDAO.getById(Integer.parseInt(userID));
+        UserDetail userDetail = UserDetailDAO.getByUserId(Integer.parseInt(userID));
+        UserDetailDTO userDetailDTO = new UserDetailDTO(userDetail, user);
+        List<UserPet> userPets = UserPetDAO.getByUserId(Integer.parseInt(userID));
+        List<UserPetDTO> userPetDTOs = new ArrayList<>();
+        
+        for (UserPet userPet : userPets) {
+            Pet pet = PetDAO.getById(userPet.getPetID());
+            userPetDTOs.add(new UserPetDTO(userPet, pet));
         }
+        
+        request.setAttribute("userDetailDTO", userDetailDTO);
+        request.setAttribute("userPetDTOs", userPetDTOs);
+        request.getRequestDispatcher("staff/userPets.jsp").forward(request, response);
     }
 
     private void staffPost(HttpServletRequest request, HttpServletResponse response)
