@@ -237,4 +237,59 @@ public class UserDAO {
         }
         return users;
     }
+
+    public static List<User> getCustomerHasMessages() {
+        List<User> users = new ArrayList<>();
+        String sql = "WITH LatestMessage AS (\n"
+                + "    SELECT \n"
+                + "        u.UserID, \n"
+                + "        u.UserName, \n"
+                + "        u.Email, \n"
+                + "        MAX(m.TimeChat) AS LastMessageTime\n"
+                + "    FROM Users u\n"
+                + "    JOIN Message m ON u.UserID = m.UserID OR u.UserID = m.UserReceiveID\n"
+                + "    WHERE u.Status = 1 AND u.Role = 'customer'\n"
+                + "    GROUP BY u.UserID, u.UserName, u.Email\n"
+                + ")\n"
+                + "SELECT u.UserID, u.UserName, u.Email\n"
+                + "FROM LatestMessage lm\n"
+                + "JOIN Users u ON u.UserID = lm.UserID\n"
+                + "ORDER BY lm.LastMessageTime DESC;";
+        try (Connection conn = DBConnection.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                User user = new User();
+                user.setUserId(rs.getInt("UserID"));
+                user.setUserName(rs.getString("UserName"));
+                user.setEmail(rs.getString("Email"));
+                users.add(user);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error retrieving all users except admin: " + e.getMessage());
+        }
+        return users;
+    }
+    
+    public static List<User> getCustomers() {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM [Users] WHERE Role = 'customer'";
+        try (Connection conn = DBConnection.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                User user = new User();
+                user.setUserId(rs.getInt("UserID"));
+                user.setRole(rs.getString("Role"));
+                user.setUserName(rs.getString("UserName"));
+                user.setPassword(rs.getString("Password"));
+                user.setEmail(rs.getString("Email"));
+                user.setStatus(rs.getBoolean("Status"));
+                users.add(user);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error retrieving all users: " + e.getMessage());
+        }
+        return users;
+    }
 }
