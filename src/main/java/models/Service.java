@@ -1,3 +1,4 @@
+
 package models;
 
 public class Service {
@@ -9,8 +10,8 @@ public class Service {
     public boolean status;
 
     public Service() {
-    }    
-    
+    }
+
     public Service(int serviceID, int categoryServiceID, String name, String description, float price, int time, int views, String imgURL, boolean status) {
         this.serviceID = serviceID;
         this.categoryServiceID = categoryServiceID;
@@ -89,17 +90,15 @@ public class Service {
 
     public boolean isStatus() {
         return status;
-    }   
-    
+    }
+
     public void setStatus(boolean status) {
         this.status = status;
     }
-    
-      @Override
+
+    @Override
     public String toString() {
-        return "Service{" + "serviceID=" + serviceID + ", categoryServiceID=" + categoryServiceID + ", name=" + name + 
-                ", description=" + description + ", price=" + price + ", time=" + time + ", views=" + views + 
-                ", imgURL=" + imgURL + ", status=" + status + '}';
+        return "Service{" + "serviceID=" + serviceID + ", categoryServiceID=" + categoryServiceID + ", name=" + name + ", description=" + description + ", price=" + price + ", time=" + time + ", views=" + views + ", imgURL=" + imgURL + ", status=" + status + '}';
     }
     
 }

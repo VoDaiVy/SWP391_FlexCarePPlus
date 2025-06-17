@@ -123,6 +123,7 @@ public class LoginController extends HttpServlet {
             HttpSession session = request.getSession();
             session.setAttribute("userDetailDTO", userDetailDTO);
             session.setAttribute("actor", userDetailDTO.getUser().getRole());
+            System.out.println(userDetailDTO.getUser().getRole());
             session.setAttribute("wallet", WalletDAO.getByUserId(userDetailDTO.getUser().getUserId()));
             switch (userDetailDTO.getUser().getRole()) {
                 case "customer" -> {
@@ -132,7 +133,7 @@ public class LoginController extends HttpServlet {
                     response.sendRedirect("admin");
                 }
                 case "staff" -> {
-                    response.sendRedirect("staff/homepage.jsp");
+                    response.sendRedirect("staff?action=getBookings");
                 }
             }
         } else {
