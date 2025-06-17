@@ -1,0 +1,202 @@
+.custom-form {
+    padding: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    max-width: 220px;
+    font-family: 'Arial', sans-serif;
+}
+.card-body-height {
+    height: 100%; /* Đặt chiều cao của thẻ con bằng với thẻ cha */
+    display: flex; /* Sử dụng flex để đảm bảo nội dung bên trong được sắp xếp */
+    flex-direction: column; /* Giữ các phần tử xếp theo cột */
+}
+
+.card-body-height .table-responsive {
+    max-height: 600px; /* Để bảng chiếm hết không gian còn lại */
+    overflow-y: auto; /* Nếu nội dung quá dài, bảng sẽ có thanh cuộn dọc */
+}
+.custom-form div.mb-2 {
+    padding: 10px 0;
+}
+.custom-form input[type="radio"] {
+    accent-color: #81c408;
+}
+.custom-form label {
+    margin-left: 10px;
+    color: #555;
+    font-size: 18px;
+    font-weight: 500;
+}
+.custom-form button {
+    background-color: #81c408;
+    color: #fff;
+    font-size: 18px;
+    font-weight: 500;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+.custom-form button:hover {
+    background-color: #6da306;
+}
+i {
+    margin-right: 5px;
+}
+
+.page-header {
+    position: relative;
+    background: none;
+}
+
+.table-custom {
+    width: 100%; /* Bảng chiếm toàn bộ chiều ngang */
+    table-layout: auto; /* Tự động điều chỉnh kích thước các cột */
+    text-align: center; /* Căn giữa nội dung */
+}
+
+.table-custom th, .table-custom td {
+    padding: 10px 15px; /* Tạo khoảng cách trong các ô */
+}
+
+.column-title {
+    width: 30%; /* Cột Title chiếm 30% */
+}
+
+.column-sale {
+    width: 15%; /* Cột Sale chiếm 15% */
+}
+
+.column-date {
+    width: 25%; /* Cột Date Creation chiếm 25% */
+}
+
+.column-button {
+    width: 15%; /* Cột chứa nút chiếm 15% */
+}
+
+.btn-customedit {
+    background-color: #28a745; /* Màu xanh lá */
+    color: white; /* Màu chữ */
+    border: none; /* Không viền */
+    border-radius: 5px; /* Bo góc nút */
+    padding: 5px 10px; /* Kích thước nút */
+    font-size: 14px; /* Kích thước chữ */
+    cursor: pointer; /* Hình dạng con trỏ khi hover */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Hiệu ứng hover */
+}
+
+.btn-customedit:hover {
+    background-color: #81c408;/* Màu nền khi hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Đổ bóng khi hover */
+}
+
+.btn-customdelete {
+    background-color: red; /* Màu xanh lá */
+    color: white; /* Màu chữ */
+    border: none; /* Không viền */
+    border-radius: 5px; /* Bo góc nút */
+    padding: 5px 10px; /* Kích thước nút */
+    font-size: 14px; /* Kích thước chữ */
+    cursor: pointer; /* Hình dạng con trỏ khi hover */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Hiệu ứng hover */
+}
+
+.btn-customdelete:hover {
+    background-color: #FF416C;/* Màu nền khi hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Đổ bóng khi hover */
+}
+
+.btn-customview {
+    background-color: #0099cc; /* Màu xanh dương */
+    width: auto; /* Auto width based on content */
+    max-width: 170px; /* Limit the maximum width */
+    color: white; /* Màu chữ */
+    word-wrap: break-word; /* Tự động xuống dòng */
+    white-space: normal; /* Đảm bảo văn bản có thể xuống dòng */
+    border: none; /* Không viền */
+    border-radius: 5px; /* Bo góc nút */
+    padding: 5px 10px; /* Kích thước nút */
+    font-size: 14px; /* Kích thước chữ */
+    cursor: pointer; /* Hình dạng con trỏ khi hover */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Hiệu ứng hover */
+    display: flex; /* Sử dụng flexbox */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    justify-content: center; /* Căn giữa theo chiều ngang */
+    text-align: center; /* Căn giữa nội dung */
+    word-break: break-word; /* Chia từ khi quá dài */
+}
+
+.btn-customview:hover {
+    background-color: #00ccff; /* Màu nền khi hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Đổ bóng khi hover */
+}
+
+.custom-modal-width {
+    max-width: 300px; /* Giới hạn chiều rộng modal */
+}
+#CSSDescription {
+    width: 600px; /* Điều chỉnh chiều rộng cột theo ý muốn */
+    word-wrap: break-word; /* Tự động xuống dòng khi vượt quá chiều rộng */
+    white-space: normal; /* Đảm bảo văn bản có thể xuống dòng */
+}
+#CSSNameVoucher {
+    width: 1000px; /* Điều chỉnh chiều rộng cột theo ý muốn */
+    word-wrap: break-word; /* Tự động xuống dòng khi vượt quá chiều rộng */
+    white-space: normal; /* Đảm bảo văn bản có thể xuống dòng */
+}
+#ingredientModal {
+    position: fixed; /* Keeps it in a fixed position */
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-height: 95vh; /* Limits the height to 80% of the viewport */
+    width: 500px;
+    z-index: 1050;
+    overflow-y: auto; /* Allows scrolling inside the modal */
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+#ingredientModal .modal-content {
+    border: none; /* Xóa đường viền mặc định */
+}
+
+#CSSButtonIngredients {
+    display: block;
+    width: 100%;
+    text-align: center;
+    padding: 10px;
+    background-color: #28a745; /* Màu nền cho nút */
+    color: white; /* Màu chữ */
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+}
+
+#CSSButtonIngredients:hover {
+    background-color: #218838; /* Hiệu ứng khi hover */
+}
+
+#create {
+    max-height: 800px; /* Đặt chiều cao tối đa cho modal body */
+    overflow-y: auto; /* Kích hoạt thanh kéo khi vượt quá chiều cao */
+    padding-right: 15px; /* Thêm khoảng trống để tránh chồng lấn với scrollbar */
+}
+
+#ingredient-list .list-group-item {
+    display: flex;
+    align-items: center;
+    padding: 10px 15px; /* Add some padding for better spacing */
+    font-size: 14px; /* Slightly smaller font for a clean look */
+    border-bottom: 1px solid #eee; /* Subtle separator between items */
+    background-color: white;
+    padding-left: 25px; /* Indent the checkbox a bit */
+}
+
+.ingredient-item {
+    margin-right: 10px; /* Space between checkbox and label */
+    accent-color: #28a745; /* Green color for the checkbox */
+}

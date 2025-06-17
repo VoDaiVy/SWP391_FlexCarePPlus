@@ -20,13 +20,6 @@ public class UserPetDTO {
         this.petName = userPet.getPetName();
     }
     
-    public UserPetDTO(UserPet userPet, Pet pet) {
-        this.userPetID = userPet.getUserPetID();
-        this.user = UserDAO.getById(userPet.getUserID());
-        this.pet = pet;
-        this.petName = userPet.getPetName();
-    }
-    
     // Constructor from model with just IDs
     public UserPetDTO(UserPet userPet) {
         this.userPetID = userPet.getUserPetID();
