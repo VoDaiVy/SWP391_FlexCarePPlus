@@ -1,6 +1,5 @@
 package controllers;
 
-
 import daos.BookingDetailDAO;
 import daos.UserDAO;
 import java.io.IOException;
@@ -18,7 +17,14 @@ public class AdminController extends HttpServlet {
         if (action == null) {
             getDashBoard(request, response);     
         } else {
-            request.getRequestDispatcher("user").forward(request, response);
+            switch (action) {
+                case "getUsers" -> {
+                    request.getRequestDispatcher("user").forward(request, response);
+                }
+                case "getNotifications" -> {
+                    request.getRequestDispatcher("notification").forward(request, response);
+                }
+            }
         }
     }
 
@@ -27,7 +33,7 @@ public class AdminController extends HttpServlet {
             throws ServletException, IOException {
         request.getRequestDispatcher("user").forward(request, response);
     }
-    
+
     private void getDashBoard(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // 1. Lấy tháng và năm từ request, nếu không có thì lấy tháng/năm hiện tại
@@ -42,8 +48,10 @@ public class AdminController extends HttpServlet {
         int daysInMonth = java.time.Month.of(month).length(java.time.Year.isLeap(year));
         // Khởi tạo mảng mặc định 0 cho từng ngày trong tháng
         float[] revenueByDay = new float[daysInMonth];
-        for (int i = 0; i < daysInMonth; i++) revenueByDay[i] = 0;
 
+        for (int i = 0; i < daysInMonth; i++) {
+            revenueByDay[i] = 0;
+        }
         float totalRevenue = 0;
         for (models.Booking booking : bookings) {
             if (booking.dateBooked != null) {
@@ -58,8 +66,10 @@ public class AdminController extends HttpServlet {
         // 3. Format data thành chuỗi JS array, đảm bảo đủ số ngày trong tháng
         StringBuilder revenueData = new StringBuilder();
         for (int i = 0; i < daysInMonth; i++) {
-            if (i > 0) revenueData.append(",");
-            revenueData.append((int)revenueByDay[i]);
+            if (i > 0) {
+                revenueData.append(",");
+            }
+            revenueData.append((int) revenueByDay[i]);
         }
         request.setAttribute("revenueData", revenueData.toString());
         request.setAttribute("selectedMonth", month);
