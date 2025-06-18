@@ -7,10 +7,19 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import daos.UserPetDAO;
 import daos.PetDAO;
+import daos.UserDAO;
+import daos.UserDetailDAO;
 import models.UserPet;
 import models.Pet;
 import dtos.UserPetDTO;
+<<<<<<< HEAD
+import dtos.UserDetailDTO;
+import java.util.ArrayList;
+=======
+>>>>>>> 48c3917932497a638cb6f83adf973c2929f548aa
 import java.util.List;
+import models.User;
+import models.UserDetail;
 
 public class UserPetController extends HttpServlet {
 
@@ -295,6 +304,18 @@ public class UserPetController extends HttpServlet {
     // Staff role methods
     private void staffGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+<<<<<<< HEAD
+        String userID = request.getParameter("userID");
+        User user = UserDAO.getById(Integer.parseInt(userID));
+        UserDetail userDetail = UserDetailDAO.getByUserId(Integer.parseInt(userID));
+        UserDetailDTO userDetailDTO = new UserDetailDTO(userDetail, user);
+        List<UserPet> userPets = UserPetDAO.getByUserId(Integer.parseInt(userID));
+        List<UserPetDTO> userPetDTOs = new ArrayList<>();
+        
+        for (UserPet userPet : userPets) {
+            Pet pet = PetDAO.getById(userPet.getPetID());
+            userPetDTOs.add(new UserPetDTO(userPet, pet));
+=======
         String action = request.getParameter("action");
         
         if (action == null || action.isEmpty()) {
@@ -306,7 +327,12 @@ public class UserPetController extends HttpServlet {
             UserPet userPet = UserPetDAO.getById(userPetID);
             request.setAttribute("userPet", userPet);
             request.getRequestDispatcher("/staff/userpet/view.jsp").forward(request, response);
+>>>>>>> 48c3917932497a638cb6f83adf973c2929f548aa
         }
+        
+        request.setAttribute("userDetailDTO", userDetailDTO);
+        request.setAttribute("userPetDTOs", userPetDTOs);
+        request.getRequestDispatcher("staff/userPets.jsp").forward(request, response);
     }
 
     private void staffPost(HttpServletRequest request, HttpServletResponse response)

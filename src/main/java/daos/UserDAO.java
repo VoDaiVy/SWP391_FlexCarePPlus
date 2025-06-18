@@ -270,4 +270,29 @@ public class UserDAO {
         }
         return users;
     }
+<<<<<<< HEAD
+    
+    public static List<User> getCustomers() {
+        List<User> users = new ArrayList<>();
+        String sql = "SELECT * FROM [Users] WHERE Role = 'customer'";
+        try (Connection conn = DBConnection.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                User user = new User();
+                user.setUserId(rs.getInt("UserID"));
+                user.setRole(rs.getString("Role"));
+                user.setUserName(rs.getString("UserName"));
+                user.setPassword(rs.getString("Password"));
+                user.setEmail(rs.getString("Email"));
+                user.setStatus(rs.getBoolean("Status"));
+                users.add(user);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error retrieving all users: " + e.getMessage());
+        }
+        return users;
+    }
+=======
+>>>>>>> 48c3917932497a638cb6f83adf973c2929f548aa
 }

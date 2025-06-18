@@ -9,6 +9,8 @@
     <link type="text/css" href="${pageContext.request.contextPath}/staff/assets/css/managerPage.css" rel="stylesheet">
     <!-- Content -->
     <div class="content container-fluid">
+<<<<<<< HEAD
+=======
         <!-- Page Header -->
         <!-- End Page Header -->
 
@@ -105,6 +107,7 @@
         <!-- End Card -->
 
 
+>>>>>>> 48c3917932497a638cb6f83adf973c2929f548aa
         <div class="row">
             <div class="col-lg-3 mb-3 mb-lg-5">
                 <a class="card card-hover-shadow mb-4" href="staff?action=getBookings">
@@ -935,6 +938,16 @@
                                 card.className = 'card card-hover-shadow';
                                 card.setAttribute('onclick', `changeUserID(` + u.userID + `, '` + u.userName + `')`);
 
+<<<<<<< HEAD
+                                card.innerHTML =
+                                        '<div class="card-body ' + (u.userID === selectedUserID ? 'bg-light' : '') + '">' +
+                                        '<div class="d-flex align-items-center justify-content-between">' +
+                                        '<div class="flex-grow-1">' +
+                                        '<p class="text-hover-primary ' + (u.userID === selectedUserID ? 'text-primary' : '') + '">' + u.userName + '</p>' +
+                                        '</div>' +
+                                        '</div>' +
+                                        '</div>';
+=======
                                 card.innerHTML = 
                                     '<div class="card-body ' + (u.userID === selectedUserID ? 'bg-light' : '') + '">' +
                                       '<div class="d-flex align-items-center justify-content-between">' +
@@ -943,6 +956,7 @@
                                         '</div>' +
                                       '</div>' +
                                     '</div>';
+>>>>>>> 48c3917932497a638cb6f83adf973c2929f548aa
                                 listUsersDiv.appendChild(card);
                             });
                         })
