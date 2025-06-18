@@ -15,7 +15,7 @@ public class AdminController extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getParameter("action");
         if (action == null) {
-            getDashBoard(request, response);
+            getDashBoard(request, response);     
         } else {
             switch (action) {
                 case "getUsers" -> {
@@ -48,10 +48,10 @@ public class AdminController extends HttpServlet {
         int daysInMonth = java.time.Month.of(month).length(java.time.Year.isLeap(year));
         // Khởi tạo mảng mặc định 0 cho từng ngày trong tháng
         float[] revenueByDay = new float[daysInMonth];
+
         for (int i = 0; i < daysInMonth; i++) {
             revenueByDay[i] = 0;
         }
-
         float totalRevenue = 0;
         for (models.Booking booking : bookings) {
             if (booking.dateBooked != null) {
@@ -74,7 +74,7 @@ public class AdminController extends HttpServlet {
         request.setAttribute("revenueData", revenueData.toString());
         request.setAttribute("selectedMonth", month);
         request.setAttribute("selectedYear", year);
-        request.setAttribute("totalRevenue", (int) totalRevenue);
+        request.setAttribute("totalRevenue", (int)totalRevenue);
 
         // 4. Đếm số lượng booking và user
         int numUsers = UserDAO.countCustomers();
