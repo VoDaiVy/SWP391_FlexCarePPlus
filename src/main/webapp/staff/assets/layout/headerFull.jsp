@@ -17,6 +17,27 @@
             <!-- Menu giữa -->
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                 <li class="nav-item">
+<<<<<<< HEAD
+                    <a href="staff?action=getBookings" class="nav-link${(empty param.action || param.action == 'getBookings' || param.action == 'getMessages') ? ' active' : ''}">Manager Dashboard</a>
+                </li>
+                <li class="nav-item">
+                    <a href="staff?action=getCustomers" class="nav-link${param.action == 'getCustomers' ? ' active' : ''}">View Customers</a>
+                </li>
+                <script>
+                    // Hiệu ứng active cho nav-link khi click (giữ lại khi reload nhờ server-side đã xử lý)
+                    document.addEventListener('DOMContentLoaded', function () {
+                        var navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+                        navLinks.forEach(function (link) {
+                            link.addEventListener('click', function () {
+                                navLinks.forEach(function (l) {
+                                    l.classList.remove('active');
+                                });
+                                this.classList.add('active');
+                            });
+                        });
+                    });
+                </script>
+=======
                     <a href="#"
                        class="nav-link active">Manager Dashboard</a>
                 </li> 
@@ -24,6 +45,7 @@
                     <a href="staff?action=getCustomers"
                        class="nav-link">View Customers</a>
                 </li> 
+>>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
             </ul>
             <!-- Avatar/Sign In sát phải -->
             <c:choose>

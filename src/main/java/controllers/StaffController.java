@@ -50,7 +50,7 @@ public class StaffController extends HttpServlet {
     }
 
     private void getBookings(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("staff/managePage.jsp").forward(request, response);
+        request.getRequestDispatcher("bookingdetail").forward(request, response);
     }
 
     private void getMessages(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

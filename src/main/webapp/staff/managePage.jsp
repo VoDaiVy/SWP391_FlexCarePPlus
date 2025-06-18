@@ -16,21 +16,32 @@
                         <div class="d-flex align-items-center justify-content-between">
                             <img
                                 class="w-25 rounded me-3"
+<<<<<<< HEAD
+                                src="https://cdn-icons-png.flaticon.com/512/616/616408.png"
+                                alt="Pet Paw Calendar" /> <!-- Booking: paw calendar -->
+=======
                                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbjn72SrsaiEVrU7UPjmW9dp7QwapTenbILhKbq6jUJ_3EyS5GZE_DFvMR_J6wFAaWQUE&usqp=CAU"
                                 alt="Image Description"
                                 />
 
+>>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                             <div class="flex-grow-1">
                                 <h3 class="text-hover-primary mb-1">Booking</h3>
                                 <span class="text-body">View Booking</span>
                             </div>
+<<<<<<< HEAD
+=======
 
+>>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                             <div class="ms-3">
                                 <i class="tio-chevron-right tio-lg text-body text-hover-primary"></i>
                             </div>
                         </div>
+<<<<<<< HEAD
+=======
 
                         <!-- End Row -->
+>>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                     </div>
                 </a>
                 <!-- End Card -->
@@ -39,20 +50,31 @@
                         <div class="d-flex align-items-center justify-content-between">
                             <img
                                 class="w-25 rounded me-3"
+<<<<<<< HEAD
+                                src="https://cdn-icons-png.flaticon.com/512/616/616408.png"
+                                alt="Pet Chat" style="filter: hue-rotate(120deg);" /> <!-- Messages: paw chat (color shifted for demo) -->
+=======
                                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbjn72SrsaiEVrU7UPjmW9dp7QwapTenbILhKbq6jUJ_3EyS5GZE_DFvMR_J6wFAaWQUE&usqp=CAU"
                                 alt="Image Description"
                                 />
 
+>>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                             <div class="flex-grow-1">
                                 <h3 class="text-hover-primary mb-1">Messages</h3>
                                 <span class="text-body">Support customer</span>
                             </div>
+<<<<<<< HEAD
+=======
 
+>>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                             <div class="ms-3">
                                 <i class="tio-chevron-right tio-lg text-body text-hover-primary"></i>
                             </div>
                         </div>
+<<<<<<< HEAD
+=======
                         <!-- End Row -->
+>>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                     </div>
                 </a>
                 <!-- Card -->
@@ -61,20 +83,31 @@
                         <div class="d-flex align-items-center justify-content-between">
                             <img
                                 class="w-25 rounded me-3"
+<<<<<<< HEAD
+                                src="https://cdn-icons-png.flaticon.com/512/616/616408.png"
+                                alt="Veterinary Services" style="filter: hue-rotate(240deg);" /> <!-- Services: paw stethoscope (color shifted for demo) -->
+=======
                                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbjn72SrsaiEVrU7UPjmW9dp7QwapTenbILhKbq6jUJ_3EyS5GZE_DFvMR_J6wFAaWQUE&usqp=CAU"
                                 alt="Image Description"
                                 />
 
+>>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                             <div class="flex-grow-1">
                                 <h3 class="text-hover-primary mb-1">Services</h3>
                                 <span class="text-body"></span>
                             </div>
+<<<<<<< HEAD
+=======
 
+>>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                             <div class="ms-3">
                                 <i class="tio-chevron-right tio-lg text-body text-hover-primary"></i>
                             </div>
                         </div>
+<<<<<<< HEAD
+=======
                         <!-- End Row -->
+>>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                     </div>
                 </a>
                 <!-- End Card -->
@@ -85,24 +118,66 @@
                         <div class="d-flex align-items-center justify-content-between">
                             <img
                                 class="w-25 rounded me-3"
+<<<<<<< HEAD
+                                src="https://cdn-icons-png.flaticon.com/512/616/616408.png"
+                                alt="Pet Policy" style="filter: grayscale(1) brightness(0.7);" /> <!-- Policies: paw document (grayscale for demo) -->
+=======
                                 src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbjn72SrsaiEVrU7UPjmW9dp7QwapTenbILhKbq6jUJ_3EyS5GZE_DFvMR_J6wFAaWQUE&usqp=CAU"
                                 alt="Image Description"
                                 />
 
+>>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                             <div class="flex-grow-1">
                                 <h3 class="text-hover-primary mb-1">Policies</h3>
                                 <span class="text-body">View Booking</span>
                             </div>
+<<<<<<< HEAD
+=======
 
+>>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                             <div class="ms-3">
                                 <i class="tio-chevron-right tio-lg text-body text-hover-primary"></i>
                             </div>
                         </div>
+<<<<<<< HEAD
+=======
                         <!-- End Row -->
+>>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                     </div>
                 </a>
             </div>
 
+<<<<<<< HEAD
+            <c:if test="${not empty services}">
+                <div class="col-lg-9">
+                    <div class="timeline-container" style="overflow-x:auto; padding-bottom: 8px;">
+                        <form id="dateForm" class="d-flex align-items-center justify-content-center mb-3" method="get" action="bookingdetail">
+                            <input type="hidden" name="action" value="getBookings" />
+                            <label for="bookingDate" class="me-2 mb-0 fw-bold">Chọn ngày:</label>
+                            <input type="date" id="bookingDate" name="date" class="form-control" style="max-width: 180px;"
+                                   value="${selectedDate}" required />
+                            <button type="submit" class="btn btn-primary ms-2">Xem lịch</button>
+                        </form>
+                        <h2 class="mb-4 text-center">
+                            Schedule Booking Service
+                            <span id="selected-date-label">
+                                <c:choose>
+                                    <c:when test="${not empty selectedDate}">
+                                        <fmt:parseDate value="${selectedDate}" pattern="yyyy-MM-dd" var="parsedDate"/>
+                                        <fmt:formatDate value="${parsedDate}" pattern="dd/MM/yyyy"/>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <fmt:formatDate value="${now}" pattern="dd/MM/yyyy"/>
+                                    </c:otherwise>
+                                </c:choose>
+                            </span>
+                        </h2>
+                        <div class="timeline-inner" style="width: 100%; min-width: 0; display: flex; flex-direction: column;">
+                            <div class="time-header" id="time-header"></div>
+                            <div id="services-container"></div>
+                        </div>
+                    </div>
+=======
             <c:if test="${action eq 'getBookings'}">
                 <div class="col-lg-9 mb-3 mb-lg-5">
                     <!-- Card -->
@@ -172,11 +247,51 @@
                         <!-- End Body -->
                     </div>
                     <!-- End Card -->
+>>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                 </div>
             </c:if>
 
             <c:if test="${action eq 'getMessages'}">
                 <div class="col-lg-9">
+<<<<<<< HEAD
+                    <div class="card h-100 shadow-sm">
+                        <div class="card-header bg-white border-bottom-0 d-flex align-items-center">
+                            <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Chat Icon" class="me-2" style="width:32px;height:32px;">
+                            <h4 class="card-header-title mb-0">Pet Chat Support</h4>
+                        </div>
+                        <div class="card-body d-flex p-0" style="height: 70vh;">
+                            <!-- User List -->
+                            <div id="listUsers" class="border-end bg-light" style="width: 240px; overflow-y: auto;">
+                                <c:forEach var="u" items="${users}" varStatus="status">
+                                    <div class="user-list-item px-3 py-2 d-flex align-items-center card-hover-shadow ${status.first ? 'bg-white border-start border-3 border-success' : ''}" style="cursor:pointer;">
+                                        <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="User" class="rounded-circle me-2" style="width:36px;height:36px;object-fit:cover;">
+                                        <span class="flex-grow-1 text-truncate ${status.first ? 'fw-bold text-success' : ''}">${u.userName}</span>
+                                    </div>
+                                </c:forEach>
+                            </div>
+                            <!-- Chat Area -->
+                            <div class="flex-grow-1 d-flex flex-column bg-white">
+                                <div class="border-bottom px-4 py-3 d-flex align-items-center" style="min-height:60px;">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="User" class="rounded-circle me-2" style="width:36px;height:36px;object-fit:cover;">
+                                    <h5 id="nameChatUser" class="mb-0 fw-bold">${users[0].userName}</h5>
+                                </div>
+                                <div id="chatMessages" class="flex-grow-1 overflow-auto px-4 py-3 d-flex flex-column gap-2" style="background:#f8f9fa;">
+                                    <c:forEach var="m" items="${messages}">
+                                        <div class="d-flex ${m.userID == 8 ? 'justify-content-end' : 'justify-content-start'}">
+                                            <div class="chat-bubble ${m.userID == 8 ? 'bg-success text-white' : 'bg-light text-dark'} px-3 py-2 rounded-3 shadow-sm" style="max-width:60%;">
+                                                ${m.content}
+                                            </div>
+                                        </div>
+                                    </c:forEach>
+                                </div>
+                                <div class="border-top px-4 py-3 bg-white">
+                                    <form class="d-flex gap-2" onsubmit="sendMessage(); return false;">
+                                        <input type="text" id="chatInput" class="form-control rounded-pill" placeholder="Type your message..." autocomplete="off">
+                                        <button class="btn btn-success rounded-pill px-4" type="submit">
+                                            <i class="fas fa-paper-plane"></i> Send
+                                        </button>
+                                    </form>
+=======
                     <!-- Card -->
                     <div class="card h-100">
                         <!-- Header -->
@@ -228,12 +343,16 @@
                                         </div>
                                     </div>
 
+>>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                                 </div>
                             </div>
                         </div>
                     </div>
+<<<<<<< HEAD
+=======
                     <!-- End Card -->
 
+>>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                 </div>
             </c:if>
 
@@ -746,6 +865,414 @@
     </style>
 
     <script>
+<<<<<<< HEAD
+
+        document.addEventListener('DOMContentLoaded', function () {
+        var selectedUserID = null;
+        let lastMessageCount = 0;
+        let lastUserListStr = '';
+        if (${not empty users}) {
+        selectedUserID = ${users[0].userId};
+        }
+
+        const chatMessages = document.getElementById('chatMessages');
+        const listUsersDiv = document.getElementById('listUsers');
+        const chatInput = document.getElementById('chatInput');
+        function scrollToBottom() {
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        window.sendMessage = function () {
+        const text = chatInput.value.trim();
+        if (!text)
+                return;
+        chatInput.value = '';
+        fetch('message', {
+        method: 'POST',
+                headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                receiverID: selectedUserID,
+                        content: text
+                })
+        })
+                .then(() => {
+                getMessages(selectedUserID, true); // fetch ngay sau gửi
+                scrollToBottom();
+                })
+                .catch(error => console.error('Send error:', error));
+        };
+        chatInput.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter') {
+        e.preventDefault();
+        sendMessage();
+        }
+        });
+        window.changeUserID = function (userID, userName) {
+        const nameChatUser = document.getElementById('nameChatUser');
+        nameChatUser.innerHTML = userName;
+        selectedUserID = userID;
+        getMessages(selectedUserID, true); // fetch ngay khi đổi user
+        };
+        function getMessages(userID, forceUpdate) {
+        fetch('message?action=getUserMessages&senderID=8&receiverID=' + selectedUserID, {
+        method: 'GET',
+                headers: {
+                'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                }
+        })
+                .then(response => response.json())
+                .then(datas => {
+                if (userID !== selectedUserID)
+                        return;
+                if (forceUpdate || datas.length !== lastMessageCount) {
+                lastMessageCount = datas.length;
+                chatMessages.innerHTML = '';
+                datas.forEach(data => {
+                // Render exactly as initial HTML (chat bubble, alignment, color)
+                const isStaff = data.userID === 8;
+                const wrapper = document.createElement('div');
+                wrapper.className = 'd-flex ' + (isStaff ? 'justify-content-end' : 'justify-content-start');
+                const bubble = document.createElement('div');
+                bubble.className = 'chat-bubble ' + (isStaff ? 'bg-success text-white' : 'bg-light text-dark') + ' px-3 py-2 rounded-3 shadow-sm';
+                bubble.style.maxWidth = '60%';
+                bubble.innerHTML = data.content;
+                wrapper.appendChild(bubble);
+                chatMessages.appendChild(wrapper);
+                });
+                scrollToBottom();
+                }
+                })
+                .catch(error => console.error('Error: vào đây' + selectedUserID, error));
+        }
+
+        function getUsers(forceUpdate) {
+        fetch('message?action=getUsers', {
+        method: 'GET',
+                headers: {
+                'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                }
+        })
+                .then(response => response.json())
+                .then(datas => {
+                const datasStr = JSON.stringify(datas);
+                if (forceUpdate || datasStr !== lastUserListStr) {
+                lastUserListStr = datasStr;
+                listUsersDiv.innerHTML = '';
+                datas.forEach(u => {
+                const card = document.createElement('div');
+                card.className = 'card card-hover-shadow';
+                card.setAttribute('onclick', `changeUserID(` + u.userID + `, '` + u.userName + `')`);
+                card.innerHTML =
+                        '<div class="user-list-item px-3 py-2 d-flex align-items-center card-hover-shadow ' + (u.userID === selectedUserID ? 'bg-white border-start border-3 border-success' : '') + '" style="cursor:pointer;">' +
+                        '<img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="User" class="rounded-circle me-2" style="width:36px;height:36px;object-fit:cover;">' +
+                        '<span class="flex-grow-1 text-truncate ' + (u.userID === selectedUserID ? 'fw-bold text-success' : '') + '">' + u.userName + '</span>' +
+                        '</div>';
+                listUsersDiv.appendChild(card);
+                });
+                }
+                })
+                .catch(error => {
+                console.error('Error fetching users:', error);
+                });
+        }
+
+        // Polling mỗi 2s, chỉ update khi có thay đổi
+        setInterval(() => {
+        getUsers(false);
+        getMessages(selectedUserID, false);
+        }, 2000);
+        });
+    </script>
+</c:if>
+
+<c:if test="${not empty services}">
+    <style>
+        body {
+            padding: 0;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f4f6fb;
+        }
+        .timeline-container {
+            max-width: 1100px;
+            margin: 40px auto;
+            background: #fff;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(60,60,100,0.08);
+            padding: 32px 24px 24px 24px;
+            user-select: none;
+        }
+        .time-header {
+            display: flex;
+            border-bottom: 2px solid #dee2e6;
+            padding-bottom: 5px;
+            background: #f8f9fa;
+            border-radius: 8px 8px 0 0;
+            min-width: 0;
+            width: 100%;
+        }
+        .time-hour {
+            flex: 1 1 0;
+            text-align: center;
+            font-size: 13px;
+            color: #6c757d;
+            border-right: 1px solid #dee2e6;
+            padding: 2px 0;
+            font-weight: 500;
+        }
+        .service-row {
+            display: flex;
+            align-items: center;
+            position: relative;
+            height: 54px;
+            border-bottom: 1px solid #f1f3f6;
+            margin-bottom: 8px;
+            transition: background 0.2s;
+        }
+        .service-row:hover {
+            background: #f8f9fa;
+        }
+        .service-label {
+            width: 140px;
+            min-width: 140px;
+            max-width: 140px;
+            font-weight: 600;
+            color: #343a40;
+            padding-right: 10px;
+            font-size: 15px;
+            letter-spacing: 0.5px;
+        }
+        .time-row {
+            flex-grow: 1;
+            position: relative;
+            display: flex;
+            background: #f8f9fa;
+            border: 1px solid #e9ecef;
+            border-radius: 6px;
+            height: 40px;
+            overflow: hidden;
+            min-width: 0;
+            width: 100%;
+        }
+        .time-cell {
+            flex: 1 1 0;
+            border-right: 1px solid #e9ecef;
+            height: 100%;
+        }
+        .booking-bar {
+            position: absolute;
+            top: 5px;
+            height: 30px;
+            border-radius: 8px;
+            color: #fff;
+            padding: 0 10px;
+            font-size: 13px;
+            line-height: 30px;
+            overflow: hidden;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+            user-select: none;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 2px solid #fff;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .booking-bar:hover {
+            transform: scale(1.06);
+            z-index: 10;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+            border-color: #dee2e6;
+        }
+        .booking-time {
+            font-size: 12px;
+            opacity: 0.85;
+            margin-left: 6px;
+            font-weight: 400;
+        }
+    </style>
+
+    <script
+        src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+        integrity="sha384-zrZ5xJ9eEjE7yqkJxXQIrBOMDhY0iY8hN6HsS8L+VqCZh1kZQETOTkR5EnlHjvlj"
+        crossorigin="anonymous"
+    ></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"
+        integrity="sha384-Ns3ZqvQFR+Pmi1igLy3uENJ5St6Cvw5nK+DlGXtKlPL88q5tht8V2PP9JKcpPH9L"
+        crossorigin="anonymous"
+    ></script>
+
+    <script>
+        // Dữ liệu thực tế từ backend (services, bookingDetails)
+        // Tạo mảng màu cho các service (cố định hoặc random)
+        var serviceColors = [
+                '#FF6F61', '#6B5B95', '#88B04B', '#FFA500', '#009B77', '#F7CAC9', '#92A8D1', '#955251', '#B565A7', '#DD4124', '#45B8AC', '#EFC050'
+        ];
+        // Convert Java List<Service> to JS array
+        var services = [
+        <c:forEach var="s" items="${services}" varStatus="loop">
+        {
+        id: ${s.serviceID},
+                name: '<c:out value="${s.name}"/>',
+                color: serviceColors[${loop.index} % serviceColors.length]
+        }<c:if test="${!loop.last}">,</c:if>
+        </c:forEach>
+        ];
+        // Convert Java List<BookingDetail> to JS array
+        var bookingServices = [
+        <c:forEach var="b" items="${bookingDetails}" varStatus="loop">
+        {
+        id: ${b.bookingDetailID},
+                serviceId: ${b.serviceID},
+                start: (function(){
+                var t = '<c:out value="${b.startTime}"/>';
+                if (!t) return null;
+                var parts = t.split(":");
+                return parseInt(parts[0], 10) + parseInt(parts[1], 10) / 60;
+                })(),
+                end: (function(){
+                var t = '<c:out value="${b.endTime}"/>';
+                if (!t) return null;
+                var parts = t.split(":");
+                return parseInt(parts[0], 10) + parseInt(parts[1], 10) / 60;
+                })(),
+                name: 'Booking #' + ${b.bookingDetailID}
+        }<c:if test="${!loop.last}">,</c:if>
+        </c:forEach>
+        ];
+        var hourWidth = 35; // pixel per hour
+        var timelineStart = 7;
+        var timelineEnd = 22;
+        var timeHeader = document.getElementById('time-header');
+        var servicesContainer = document.getElementById('services-container');
+        // Tạo header trục thời gian 0-23
+        function renderTimeHeader() {
+        // Thêm cột trống đầu tiên để căn lề cho label dịch vụ
+        var emptyDiv = document.createElement('div');
+        emptyDiv.style.width = '140px';
+        emptyDiv.style.minWidth = '140px';
+        emptyDiv.style.maxWidth = '140px';
+        emptyDiv.style.flex = '0 0 140px';
+        timeHeader.appendChild(emptyDiv);
+        for (var h = timelineStart; h <= timelineEnd; h++) {
+        var hourDiv = document.createElement('div');
+        hourDiv.className = 'time-hour';
+        hourDiv.textContent = h + 'h';
+        timeHeader.appendChild(hourDiv);
+        }
+        }
+
+        // Hàm chuyển số thực sang chuỗi giờ:phút (8.75 => 8h45)
+        function formatHour(h) {
+        var hour = Math.floor(h);
+        var min = Math.round((h - hour) * 60);
+        return min === 0 ? (hour + 'h') : (hour + 'h' + (min < 10 ? '0' : '') + min);
+        }
+
+        function renderServices() {
+        services.forEach(function (service) {
+        var row = document.createElement('div');
+        row.className = 'service-row';
+        var label = document.createElement('div');
+        label.className = 'service-label';
+        label.textContent = service.name;
+        var timeRow = document.createElement('div');
+        timeRow.className = 'time-row';
+        // Tạo ô giờ trống để tạo lưới (chỉ từ 7h đến 22h)
+        for (var i = timelineStart; i <= timelineEnd; i++) {
+        var cell = document.createElement('div');
+        cell.className = 'time-cell';
+        timeRow.appendChild(cell);
+        }
+
+        // Lấy booking của service
+        var bookings = bookingServices.filter(function (b) {
+        return b.serviceId === service.id && b.start !== null && b.end !== null;
+        });
+        bookings.forEach(function (booking) {
+        // Nếu booking nằm ngoài khung giờ thì cắt lại
+        var start = Math.max(booking.start, timelineStart);
+        var end = Math.min(booking.end, timelineEnd);
+        if (end <= start) return;
+        var totalHours = timelineEnd - timelineStart + 1;
+        var leftPercent = ((start - timelineStart) / totalHours) * 100;
+        var widthPercent = ((end - start) / totalHours) * 100;
+        var bar = document.createElement('div');
+        bar.className = 'booking-bar';
+        bar.style.left = leftPercent + '%';
+        bar.style.width = widthPercent + '%';
+        bar.style.backgroundColor = service.color;
+        bar.setAttribute('data-bs-toggle', 'tooltip');
+        bar.setAttribute('title', booking.name + ': ' + formatHour(booking.start) + ' - ' + formatHour(booking.end));
+        bar.innerHTML = '';
+        timeRow.appendChild(bar);
+        });
+        row.appendChild(label);
+        row.appendChild(timeRow);
+        servicesContainer.appendChild(row);
+        });
+        }
+
+        // Khởi tạo tooltip Bootstrap
+        function enableTooltips() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        }
+
+        // Hiển thị ngày đã chọn lên tiêu đề
+        function setSelectedDateLabel() {
+        var dateInput = document.getElementById('bookingDate');
+        var label = document.getElementById('selected-date-label');
+        if (dateInput && label) {
+        var val = dateInput.value;
+        if (val) {
+        var d = new Date(val);
+        var day = d.getDate().toString().padStart(2, '0');
+        var month = (d.getMonth() + 1).toString().padStart(2, '0');
+        var year = d.getFullYear();
+        label.textContent = day + '/' + month + '/' + year;
+        } else {
+        label.textContent = '';
+        }
+        }
+        }
+
+        // Render toàn bộ
+        renderTimeHeader();
+        renderServices();
+        enableTooltips();
+        setSelectedDateLabel();
+        var dateInput = document.getElementById('bookingDate');
+        if (dateInput) {
+        dateInput.addEventListener('change', setSelectedDateLabel);
+        }
+    </script>
+    <script>
+        // Nếu không có selectedDate (hoặc rỗng/null), set ngày hiện tại cho input date và label
+        document.addEventListener('DOMContentLoaded', function() {
+        var dateInput = document.getElementById('bookingDate');
+        var label = document.getElementById('selected-date-label');
+        if (!dateInput.value) {
+        var today = new Date();
+        var yyyy = today.getFullYear();
+        var mm = String(today.getMonth() + 1).padStart(2, '0');
+        var dd = String(today.getDate()).padStart(2, '0');
+        var iso = yyyy + '-' + mm + '-' + dd;
+        dateInput.value = iso;
+        if (label) {
+        label.textContent = dd + '/' + mm + '/' + yyyy;
+        }
+        }
+        });
+=======
         document.addEventListener('DOMContentLoaded', function () {
             var selectedUserID = null;
 
@@ -861,6 +1388,7 @@
             }, 500);
         });
 
+>>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
     </script>
 </c:if>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>
