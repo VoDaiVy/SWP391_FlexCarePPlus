@@ -9,6 +9,105 @@
     <link type="text/css" href="${pageContext.request.contextPath}/staff/assets/css/managerPage.css" rel="stylesheet">
     <!-- Content -->
     <div class="content container-fluid">
+<<<<<<< HEAD
+=======
+        <!-- Page Header -->
+        <!-- End Page Header -->
+
+        <!-- Card -->
+        <div class="card card-body mb-3 mb-lg-5">
+            <div class="row gx-lg-4">
+                <div class="col-sm-6 col-lg-3">
+                    <div class="media">
+                        <div class="media-body">
+                            <h6 class="card-subtitle">Total sales</h6>
+                            <span class="card-title h3"><fmt:formatNumber value="${sessionScope.revenue}" type="number" groupingUsed="true" /><strong><span class="text-xs/sp14 font-medium mr-px">₫</span></strong></span>
+                            <div class="d-flex align-items-center">
+                                <span class="badge badge-soft-success">
+                                    <i class=""></i> 4.3%
+                                </span>
+                            </div>
+                        </div>
+
+                        <span class="icon icon-sm icon-soft-secondary icon-circle ml-3">
+                            <i class="tio-shop"></i>
+                        </span>
+                    </div>
+
+                    <div class="d-lg-none">
+                        <hr />
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-lg-3 column-divider-sm">
+                    <div class="media">
+                        <div class="media-body">
+                            <h6 class="card-subtitle">Total orders</h6>
+                            <span class="card-title h3">${sessionScope.countOrders}</span>
+
+                            <div class="d-flex align-items-center">
+                                <span class="badge badge-soft-success ml-2">
+                                    <i class="tio-trending-up"></i> 12.5%
+                                </span>
+                            </div>
+                        </div>
+
+                        <span class="icon icon-sm icon-soft-secondary icon-circle ml-3">
+                            <i class="tio-website"></i>
+                        </span>
+                    </div>
+
+                    <div class="d-lg-none">
+                        <hr />
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-lg-3 column-divider-lg">
+                    <div class="media">
+                        <div class="media-body">
+                            <h6 class="card-subtitle">Total customers</h6>
+                            <span class="card-title h3">${sessionScope.countCustomers}</span>
+
+                            <div class="d-flex align-items-center">
+                                <span class="badge badge-soft-success ml-2">
+                                    <i class="tio-trending-up"></i> 5.5%
+                                </span>
+                            </div>
+                        </div>
+
+                        <span class="icon icon-sm icon-soft-secondary icon-circle ml-3">
+                            <i class="tio-label-off"></i>
+                        </span>
+                    </div>
+
+                    <div class="d-sm-none">
+                        <hr />
+                    </div>
+                </div>
+
+                <div class="col-sm-6 col-lg-3 column-divider-sm">
+                    <div class="media">
+                        <div class="media-body">
+                            <h6 class="card-subtitle">Total products</h6>
+                            <span class="card-title h3">${sessionScope.countDishes}</span>
+                            <div class="d-flex align-items-center">
+                                <span class="badge badge-soft-danger ml-2">
+                                    <i class="tio-trending-down"></i> 4.4%
+                                </span>
+                            </div>
+                        </div>
+
+                        <span class="icon icon-sm icon-soft-secondary icon-circle ml-3">
+                            <i class="tio-users-switch"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- End Card -->
+
+
+>>>>>>> 48c3917932497a638cb6f83adf973c2929f548aa
         <div class="row">
             <div class="col-lg-3 mb-3 mb-lg-5">
                 <a class="card card-hover-shadow mb-4" href="staff?action=getBookings">
@@ -839,6 +938,7 @@
                                 card.className = 'card card-hover-shadow';
                                 card.setAttribute('onclick', `changeUserID(` + u.userID + `, '` + u.userName + `')`);
 
+<<<<<<< HEAD
                                 card.innerHTML =
                                         '<div class="card-body ' + (u.userID === selectedUserID ? 'bg-light' : '') + '">' +
                                         '<div class="d-flex align-items-center justify-content-between">' +
@@ -847,6 +947,16 @@
                                         '</div>' +
                                         '</div>' +
                                         '</div>';
+=======
+                                card.innerHTML = 
+                                    '<div class="card-body ' + (u.userID === selectedUserID ? 'bg-light' : '') + '">' +
+                                      '<div class="d-flex align-items-center justify-content-between">' +
+                                        '<div class="flex-grow-1">' +
+                                          '<p class="text-hover-primary ' + (u.userID === selectedUserID ? 'text-primary' : '') + '">' + u.userName + '</p>' +
+                                        '</div>' +
+                                      '</div>' +
+                                    '</div>';
+>>>>>>> 48c3917932497a638cb6f83adf973c2929f548aa
                                 listUsersDiv.appendChild(card);
                             });
                         })

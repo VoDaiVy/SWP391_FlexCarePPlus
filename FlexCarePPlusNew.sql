@@ -206,7 +206,10 @@ ImgURL varchar(MAX),
 constraint FK_NewsImage_News foreign key (NewsID) references News(NewsID)
 )
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 48c3917932497a638cb6f83adf973c2929f548aa
 WITH LatestMessage AS (
     SELECT 
         u.UserID, 
@@ -223,6 +226,7 @@ FROM LatestMessage lm
 JOIN Users u ON u.UserID = lm.UserID
 ORDER BY lm.LastMessageTime DESC;
 
+<<<<<<< HEAD
 ALTER TABLE Room
 DROP CONSTRAINT FK_Room_Service;
 
@@ -233,3 +237,5 @@ ADD CONSTRAINT FK_Room_CategoryService
 FOREIGN KEY (CategoryServiceID) REFERENCES CategoryService(CategoryServiceID);
 
 EXEC sp_help 'Room';
+=======
+>>>>>>> 48c3917932497a638cb6f83adf973c2929f548aa

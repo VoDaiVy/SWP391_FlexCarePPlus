@@ -5,16 +5,13 @@ import java.time.format.DateTimeFormatter;
 import models.Booking;
 import models.Service;
 import models.User;
-import models.UserDetail;
 
 public class FeedbackServiceDTO {
     private int feedbackServiceID;
     private User user;               // Instead of userID
-    private UserDetail userDetail;
     private Booking booking;         // Instead of bookingID
     private Service service;         // Instead of serviceID
     private LocalDateTime dateCreated;
-    private String dateCreatedString;
     private int rating;
     private String comment;
     private boolean status;
@@ -110,22 +107,6 @@ public class FeedbackServiceDTO {
     public void setStatus(boolean status) {
         this.status = status;
     }
-
-    public UserDetail getUserDetail() {
-        return userDetail;
-    }
-
-    public void setUserDetail(UserDetail userDetail) {
-        this.userDetail = userDetail;
-    }
-
-    public String getDateCreatedString() {
-        return dateCreatedString;
-    }
-
-    public void setDateCreatedString(String dateCreatedString) {
-        this.dateCreatedString = dateCreatedString;
-    }
     
     // Convert DTO back to original model (without the linked objects)
     public models.FeedbackService toFeedbackService() {
@@ -140,10 +121,4 @@ public class FeedbackServiceDTO {
         feedbackService.setStatus(this.status);
         return feedbackService;
     }
-
-    @Override
-    public String toString() {
-        return "FeedbackServiceDTO{" + "feedbackServiceID=" + feedbackServiceID + ", user=" + user + ", userDetail=" + userDetail + ", booking=" + booking + ", service=" + service + ", dateCreated=" + dateCreated + ", dateCreatedString=" + dateCreatedString + ", rating=" + rating + ", comment=" + comment + ", status=" + status + '}';
-    }
-    
 }

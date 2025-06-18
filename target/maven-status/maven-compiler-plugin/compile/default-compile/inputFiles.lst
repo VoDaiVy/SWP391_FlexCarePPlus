@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 D:\Java code\FlexCarePPlus\src\main\java\models\Room.java
 D:\Java code\FlexCarePPlus\src\main\java\utils\VnPayEncryption.java
 D:\Java code\FlexCarePPlus\src\main\java\controllers\UserPetController.java
@@ -87,3 +88,95 @@ D:\Java code\FlexCarePPlus\src\main\java\daos\NewsDAO.java
 D:\Java code\FlexCarePPlus\src\main\java\daos\PolicyDAO.java
 D:\Java code\FlexCarePPlus\src\main\java\dtos\ServiceDTO.java
 D:\Java code\FlexCarePPlus\src\main\java\models\ServiceImage.java
+=======
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/controllers/MedicalRecordsController.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/controllers/LoginController.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/daos/NewsImageDAO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/filters/AccessFilter.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/controllers/BookingDetailController.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/controllers/NewsImageController.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/controllers/UserDetailController.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/controllers/UserController.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/dtos/BookingDetailDTO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/controllers/NotificationController.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/controllers/HomeController.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/utils/S3Uploader.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/controllers/CategoryServiceController.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/daos/NotificationUserDAO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/models/Policy.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/daos/WalletDAO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/dtos/NewsImageDTO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/dtos/PetDTO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/controllers/NewsController.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/daos/DAOFactory.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/controllers/UserPetController.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/models/News.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/models/Message.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/daos/BookingDAO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/controllers/BookingController.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/utils/Email.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/models/ServiceImage.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/models/UserPet.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/daos/MessageDAO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/models/Notification.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/dtos/NotificationUserDTO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/daos/FeedbackServiceDAO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/models/NotificationUser.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/controllers/WalletTransferController.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/controllers/NotificationUserController.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/daos/NewsDAO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/dtos/MedicalRecordsDTO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/utils/DateTimeUtils.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/dtos/UserPetDTO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/utils/VnPayEncryption.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/models/UserDetail.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/daos/BookingDetailDAO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/dtos/ServiceDTO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/utils/DBConnection.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/dtos/BookingDTO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/dtos/UserDetailDTO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/models/MedicalRecords.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/dtos/MessageDTO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/controllers/ServiceImageController.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/dtos/ServiceImageDTO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/utils/LocalDateTimeAdapter.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/controllers/WalletController.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/models/Pet.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/models/BookingDetail.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/daos/MedicalRecordsDAO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/controllers/FeedbackServiceController.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/daos/UserDAO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/models/GoogleAccount.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/daos/CategoryServiceDAO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/controllers/AdminController.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/daos/UserPetDAO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/models/CategoryService.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/models/WalletTransfer.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/dtos/RoomDTO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/daos/WalletTransferDAO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/models/User.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/daos/UserDetailDAO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/dtos/FeedbackServiceDTO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/daos/RoomDAO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/controllers/StaffController.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/models/Wallet.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/controllers/MessageController.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/daos/PetDAO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/models/NewsImage.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/daos/NotificationDAO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/daos/ServiceDAO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/models/Service.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/models/Room.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/controllers/PolicyController.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/utils/GoogleLogin.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/utils/Common.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/utils/ConfigGetter.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/models/Booking.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/controllers/RoomController.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/dtos/WalletTransferDTO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/models/FeedbackService.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/controllers/PetController.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/daos/ServiceImageDAO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/daos/PolicyDAO.java
+/Users/vodaivy/Desktop/SWP391_FlexCarePPlus/src/main/java/controllers/ServiceController.java
+>>>>>>> 48c3917932497a638cb6f83adf973c2929f548aa
