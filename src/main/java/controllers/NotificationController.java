@@ -1,10 +1,13 @@
 package controllers;
 
+import daos.NotificationDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
+import models.Notification;
 
 public class NotificationController extends HttpServlet {
 
@@ -91,7 +94,12 @@ public class NotificationController extends HttpServlet {
     // Admin role methods
     private void adminGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // To be implemented
+        // Lấy tất cả thông báo từ DAO
+        List<Notification> notifications = NotificationDAO.getAll();
+        // Đưa vào request scope
+        request.setAttribute("notifications", notifications);
+        // Forward tới trang JSP hiển thị danh sách thông báo
+        request.getRequestDispatcher("adminPages/notifications.jsp").forward(request, response);
     }
 
     private void adminPost(HttpServletRequest request, HttpServletResponse response)
