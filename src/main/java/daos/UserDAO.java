@@ -270,7 +270,6 @@ public class UserDAO {
         }
         return users;
     }
-<<<<<<< HEAD
     
     public static List<User> getCustomers() {
         List<User> users = new ArrayList<>();
@@ -293,6 +292,4 @@ public class UserDAO {
         }
         return users;
     }
-=======
->>>>>>> 48c3917932497a638cb6f83adf973c2929f548aa
 }

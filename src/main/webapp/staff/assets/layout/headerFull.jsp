@@ -16,7 +16,6 @@
         <div class="collapse navbar-collapse">
             <!-- Menu giữa -->
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
-<<<<<<< HEAD
                 <li class="nav-item">
                     <a href="#"
                        class="nav-link active">Manager Dashboard</a>
@@ -25,8 +24,6 @@
                     <a href="staff?action=getCustomers"
                        class="nav-link">View Customers</a>
                 </li> 
-=======
->>>>>>> 48c3917932497a638cb6f83adf973c2929f548aa
             </ul>
             <!-- Avatar/Sign In sát phải -->
             <c:choose>
