@@ -1,3 +1,4 @@
+    
 package daos;
 
 import java.sql.Connection;
@@ -240,6 +241,36 @@ public class BookingDAO {
             
         } catch (SQLException e) {
             System.out.println("Error retrieving bookings by state: " + e.getMessage());
+        }
+        return bookings;
+    }
+
+    // Get bookings by month and year
+    public static List<Booking> getByMonthYear(int month, int year) {
+        List<Booking> bookings = new ArrayList<>();
+        String sql = "SELECT * FROM Booking WHERE MONTH(DateBooked) = ? AND YEAR(DateBooked) = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, month);
+            ps.setInt(2, year);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Booking booking = new Booking();
+                booking.setBookingID(rs.getInt("BookingID"));
+                booking.setUserID(rs.getInt("UserID"));
+                Timestamp dateBookedTimestamp = rs.getTimestamp("DateBooked");
+                if (dateBookedTimestamp != null) {
+                    booking.setDateBooked(dateBookedTimestamp.toLocalDateTime());
+                }
+                booking.setTotalPrice(rs.getFloat("TotalPrice"));
+                booking.setPaid(rs.getFloat("Paid"));
+                booking.setState(rs.getString("State"));
+                booking.setNote(rs.getString("Note"));
+                booking.setStatus(rs.getBoolean("Status"));
+                bookings.add(booking);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error retrieving bookings by month/year: " + e.getMessage());
         }
         return bookings;
     }

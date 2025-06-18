@@ -17,7 +17,6 @@
             <!-- Menu giữa -->
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-<<<<<<< HEAD
                     <a href="staff?action=getBookings" class="nav-link${(empty param.action || param.action == 'getBookings' || param.action == 'getMessages') ? ' active' : ''}">Manager Dashboard</a>
                 </li>
                 <li class="nav-item">
@@ -37,15 +36,6 @@
                         });
                     });
                 </script>
-=======
-                    <a href="#"
-                       class="nav-link active">Manager Dashboard</a>
-                </li> 
-                <li class="nav-item">
-                    <a href="staff?action=getCustomers"
-                       class="nav-link">View Customers</a>
-                </li> 
->>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
             </ul>
             <!-- Avatar/Sign In sát phải -->
             <c:choose>
