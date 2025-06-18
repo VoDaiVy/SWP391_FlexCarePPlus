@@ -1,8 +1,3 @@
-<!--Ngân hàng: NCB
-Số thẻ: 9704198526191432198
-Tên chủ thẻ:NGUYEN VAN A
-Ngày phát hành:07/15
-Mật khẩu OTP:123456-->
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
