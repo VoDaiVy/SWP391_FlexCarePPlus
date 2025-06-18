@@ -67,6 +67,47 @@ public class BookingDetailDAO {
         }
         return false;
     }
+        // Get all booking details for a specific date (matching only the date part of DateStartService)
+    public static List<BookingDetail> getByDate(java.time.LocalDate date) {
+        List<BookingDetail> bookingDetails = new ArrayList<>();
+        String sql = "SELECT * FROM BookingDetail WHERE CAST(DateStartService AS DATE) = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, date.toString());
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                BookingDetail bookingDetail = new BookingDetail();
+                bookingDetail.setBookingDetailID(rs.getInt("BookingDetailID"));
+                bookingDetail.setBookingID(rs.getInt("BookingID"));
+                bookingDetail.setServiceID(rs.getInt("ServiceID"));
+                bookingDetail.setRoomID(rs.getInt("RoomID"));
+                bookingDetail.setStockBooking(rs.getInt("StockBooking"));
+                // Handle SQL Timestamp to LocalDateTime conversion
+                java.sql.Timestamp dateStartServiceTimestamp = rs.getTimestamp("DateStartService");
+                if (dateStartServiceTimestamp != null) {
+                    bookingDetail.setDateStartService(dateStartServiceTimestamp.toLocalDateTime());
+                }
+                java.sql.Timestamp dateEndServiceTimestamp = rs.getTimestamp("DateEndService");
+                if (dateEndServiceTimestamp != null) {
+                    bookingDetail.setDateEndService(dateEndServiceTimestamp.toLocalDateTime());
+                }
+                java.sql.Time startTimeValue = rs.getTime("StartTime");
+                if (startTimeValue != null) {
+                    bookingDetail.setStartTime(startTimeValue.toLocalTime());
+                }
+                java.sql.Time endTimeValue = rs.getTime("EndTime");
+                if (endTimeValue != null) {
+                    bookingDetail.setEndTime(endTimeValue.toLocalTime());
+                }
+                bookingDetail.setPrice(rs.getFloat("Price"));
+                bookingDetail.setUserPetID(rs.getInt("UserPetID"));
+                bookingDetails.add(bookingDetail);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error retrieving booking details by date: " + e.getMessage());
+        }
+        return bookingDetails;
+    }
       // Get a booking detail by ID
     public static BookingDetail getById(int bookingDetailID) {
         String sql = "SELECT * FROM BookingDetail WHERE BookingDetailID = ?";

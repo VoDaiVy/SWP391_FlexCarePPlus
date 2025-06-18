@@ -205,3 +205,31 @@ NewsID int not null,
 ImgURL varchar(MAX),
 constraint FK_NewsImage_News foreign key (NewsID) references News(NewsID)
 )
+
+
+WITH LatestMessage AS (
+    SELECT 
+        u.UserID, 
+        u.UserName, 
+        u.Email, 
+        MAX(m.TimeChat) AS LastMessageTime
+    FROM Users u
+    JOIN Message m ON u.UserID = m.UserID OR u.UserID = m.UserReceiveID
+    WHERE u.Status = 1 AND u.Role = 'customer'
+    GROUP BY u.UserID, u.UserName, u.Email
+)
+SELECT u.UserID, u.UserName, u.Email
+FROM LatestMessage lm
+JOIN Users u ON u.UserID = lm.UserID
+ORDER BY lm.LastMessageTime DESC;
+
+ALTER TABLE Room
+DROP CONSTRAINT FK_Room_Service;
+
+EXEC sp_rename 'Room.ServiceID', 'CategoryServiceID', 'COLUMN';
+
+ALTER TABLE Room
+ADD CONSTRAINT FK_Room_CategoryService
+FOREIGN KEY (CategoryServiceID) REFERENCES CategoryService(CategoryServiceID);
+
+EXEC sp_help 'Room';
