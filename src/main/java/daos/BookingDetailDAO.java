@@ -435,4 +435,16 @@ public class BookingDetailDAO {
         }
         return false;
     }
+    
+    public static int countBooking() {
+        String sql = "SELECT COUNT(*) FROM BookingDetail";
+        try (Connection conn = DBConnection.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error counting bookingDetail: " + e.getMessage());
+        }
+        return 0;
+    }
 }
