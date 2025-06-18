@@ -16,32 +16,16 @@
                         <div class="d-flex align-items-center justify-content-between">
                             <img
                                 class="w-25 rounded me-3"
-<<<<<<< HEAD
                                 src="https://cdn-icons-png.flaticon.com/512/616/616408.png"
                                 alt="Pet Paw Calendar" /> <!-- Booking: paw calendar -->
-=======
-                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbjn72SrsaiEVrU7UPjmW9dp7QwapTenbILhKbq6jUJ_3EyS5GZE_DFvMR_J6wFAaWQUE&usqp=CAU"
-                                alt="Image Description"
-                                />
-
->>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                             <div class="flex-grow-1">
                                 <h3 class="text-hover-primary mb-1">Booking</h3>
                                 <span class="text-body">View Booking</span>
                             </div>
-<<<<<<< HEAD
-=======
-
->>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                             <div class="ms-3">
                                 <i class="tio-chevron-right tio-lg text-body text-hover-primary"></i>
                             </div>
                         </div>
-<<<<<<< HEAD
-=======
-
-                        <!-- End Row -->
->>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                     </div>
                 </a>
                 <!-- End Card -->
@@ -50,31 +34,16 @@
                         <div class="d-flex align-items-center justify-content-between">
                             <img
                                 class="w-25 rounded me-3"
-<<<<<<< HEAD
                                 src="https://cdn-icons-png.flaticon.com/512/616/616408.png"
                                 alt="Pet Chat" style="filter: hue-rotate(120deg);" /> <!-- Messages: paw chat (color shifted for demo) -->
-=======
-                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbjn72SrsaiEVrU7UPjmW9dp7QwapTenbILhKbq6jUJ_3EyS5GZE_DFvMR_J6wFAaWQUE&usqp=CAU"
-                                alt="Image Description"
-                                />
-
->>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                             <div class="flex-grow-1">
                                 <h3 class="text-hover-primary mb-1">Messages</h3>
                                 <span class="text-body">Support customer</span>
                             </div>
-<<<<<<< HEAD
-=======
-
->>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                             <div class="ms-3">
                                 <i class="tio-chevron-right tio-lg text-body text-hover-primary"></i>
                             </div>
                         </div>
-<<<<<<< HEAD
-=======
-                        <!-- End Row -->
->>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                     </div>
                 </a>
                 <!-- Card -->
@@ -83,31 +52,16 @@
                         <div class="d-flex align-items-center justify-content-between">
                             <img
                                 class="w-25 rounded me-3"
-<<<<<<< HEAD
                                 src="https://cdn-icons-png.flaticon.com/512/616/616408.png"
                                 alt="Veterinary Services" style="filter: hue-rotate(240deg);" /> <!-- Services: paw stethoscope (color shifted for demo) -->
-=======
-                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbjn72SrsaiEVrU7UPjmW9dp7QwapTenbILhKbq6jUJ_3EyS5GZE_DFvMR_J6wFAaWQUE&usqp=CAU"
-                                alt="Image Description"
-                                />
-
->>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                             <div class="flex-grow-1">
                                 <h3 class="text-hover-primary mb-1">Services</h3>
                                 <span class="text-body"></span>
                             </div>
-<<<<<<< HEAD
-=======
-
->>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                             <div class="ms-3">
                                 <i class="tio-chevron-right tio-lg text-body text-hover-primary"></i>
                             </div>
                         </div>
-<<<<<<< HEAD
-=======
-                        <!-- End Row -->
->>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                     </div>
                 </a>
                 <!-- End Card -->
@@ -118,36 +72,20 @@
                         <div class="d-flex align-items-center justify-content-between">
                             <img
                                 class="w-25 rounded me-3"
-<<<<<<< HEAD
                                 src="https://cdn-icons-png.flaticon.com/512/616/616408.png"
                                 alt="Pet Policy" style="filter: grayscale(1) brightness(0.7);" /> <!-- Policies: paw document (grayscale for demo) -->
-=======
-                                src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQbjn72SrsaiEVrU7UPjmW9dp7QwapTenbILhKbq6jUJ_3EyS5GZE_DFvMR_J6wFAaWQUE&usqp=CAU"
-                                alt="Image Description"
-                                />
-
->>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                             <div class="flex-grow-1">
                                 <h3 class="text-hover-primary mb-1">Policies</h3>
                                 <span class="text-body">View Booking</span>
                             </div>
-<<<<<<< HEAD
-=======
-
->>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                             <div class="ms-3">
                                 <i class="tio-chevron-right tio-lg text-body text-hover-primary"></i>
                             </div>
                         </div>
-<<<<<<< HEAD
-=======
-                        <!-- End Row -->
->>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                     </div>
                 </a>
             </div>
 
-<<<<<<< HEAD
             <c:if test="${not empty services}">
                 <div class="col-lg-9">
                     <div class="timeline-container" style="overflow-x:auto; padding-bottom: 8px;">
@@ -177,83 +115,11 @@
                             <div id="services-container"></div>
                         </div>
                     </div>
-=======
-            <c:if test="${action eq 'getBookings'}">
-                <div class="col-lg-9 mb-3 mb-lg-5">
-                    <!-- Card -->
-                    <div class="card h-100">
-                        <!-- Header -->
-                        <div class="card-header">
-                            <h4 class="card-header-title">Đơn hàng</h4>
-                        </div>
-                        <!-- End Header -->
-
-                        <!-- Body -->
-                        <!-- Body -->
-                        <div class="card-body-height">
-                            <!-- Table -->
-                            <div class="table-responsive">
-                                <table class="table table-borderless table-thead-bordered table-nowrap table-align-middle card-table table-custom">
-                                    <thead class="thead-light">
-                                        <tr>
-                                            <th class="text-center column-image"></th>
-                                            <th class="text-center column-name">Khách hàng</th>
-                                            <th class="text-center column-price">Thời gian</th>
-                                            <th class="text-center column-status">Trạng thái</th>
-                                            <th class="text-center column-button"></th>
-
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <c:forEach var="order" items="${orders}">
-                                            <tr>
-                                                <td class="text-center column-image"><img src="${pageContext.request.contextPath}/staff/asset/img/order.jpg" alt="Order" class="avatar avatar-xl" height="10%"></td>
-                                                <td class="text-center column-name">${order.userName}</td>
-                                                <td class="text-center column-type">${order.dateCreated}</td>
-                                                <td class="text-right column-description" id="CSSDescription" style="color:
-                                                    <c:choose>
-                                                        <c:when test="${order.status == 'Đơn hàng mới'}">
-                                                            black
-                                                        </c:when>
-                                                        <c:otherwise>
-                                                            green
-                                                        </c:otherwise>
-                                                    </c:choose>">
-                                                    ${order.status}
-                                                </td>
-
-                                                <td class="text-center column-button">
-                                                    <a href="OrderDetailServlet?actor=ownerRestaurant&action=getOrderDetail&orderID=${order.orderID}">
-                                                        <button class="btn btn-customdetail" style="background-color: #28a745; /* Màu xanh lá */
-                                                                color: white; /* Màu chữ */
-                                                                border: none; /* Không viền */
-                                                                border-radius: 5px; /* Bo góc nút */
-                                                                padding: 5px 10px; /* Kích thước nút */
-                                                                font-size: 14px; /* Kích thước chữ */
-                                                                cursor: pointer; /* Hình dạng con trỏ khi hover */
-                                                                transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Hiệu ứng hover */">
-                                                            <i class="fas fa-edit"></i>Detail
-                                                        </button>
-                                                    </a>
-                                                </td>
-                                            </tr>
-
-                                        </c:forEach>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!-- End Table -->
-                        </div>
-                        <!-- End Body -->
-                    </div>
-                    <!-- End Card -->
->>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                 </div>
             </c:if>
 
             <c:if test="${action eq 'getMessages'}">
                 <div class="col-lg-9">
-<<<<<<< HEAD
                     <div class="card h-100 shadow-sm">
                         <div class="card-header bg-white border-bottom-0 d-flex align-items-center">
                             <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" alt="Chat Icon" class="me-2" style="width:32px;height:32px;">
@@ -291,68 +157,10 @@
                                             <i class="fas fa-paper-plane"></i> Send
                                         </button>
                                     </form>
-=======
-                    <!-- Card -->
-                    <div class="card h-100">
-                        <!-- Header -->
-                        <div class="card-header">
-                            <h4 class="card-header-title">Chat box</h4>
-                        </div>
-
-                        <div class="card-body-height">
-                            <div class="container-fluid" style="padding-left: 12px">
-                                <!-- Table -->
-                                <div class="row">
-                                    <div id="listUsers" class="col-lg-3" style="overflow-y: auto; padding: 0">
-                                        <c:forEach var="u" items="${users}" varStatus="status">
-                                            <div class="card card-hover-shadow ${status.first ? 'bg-light' : ''}">
-                                                <div class="card-body">
-                                                    <div class="d-flex align-items-center justify-content-between">
-                                                        <div class="flex-grow-1">
-                                                            <p class="text-hover-primary ${status.first ? 'text-primary' : ''}">${u.userName}</p>
-                                                        </div>
-                                                        <div class="ms-3">
-                                                            <i class="tio-chevron-right tio-lg text-body text-hover-primary"></i>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </c:forEach>
-                                    </div>
-
-                                    <div class="col-lg-9" style="padding: 0">
-                                        <div class="card h-100">
-                                            <div class="card-header">
-                                                <h4 id="nameChatUser" class="card-header-title">${users[0].userName}</h4>
-                                            </div>
-
-                                            <div class="card-body d-flex flex-column" style="height: 75vh">
-                                                <!-- Chat messages -->
-                                                <div id="chatMessages" class="flex-grow-1 overflow-auto mb-3 d-flex flex-column">
-                                                    <c:forEach var="m" items="${messages}">
-                                                        <div class="message ${m.userID == 8 ? "user" : "bot"}">${m.content}</div>
-                                                    </c:forEach>
-                                                </div>
-
-                                                <!-- Input -->
-                                                <div class="chat-input d-flex">
-                                                    <input type="text" id="chatInput" class="form-control me-2" placeholder="Enter your message">
-                                                    <button class="btn btn-primary" onclick="sendMessage()">Send</button>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
->>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                                 </div>
                             </div>
                         </div>
                     </div>
-<<<<<<< HEAD
-=======
-                    <!-- End Card -->
-
->>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
                 </div>
             </c:if>
 
@@ -865,7 +673,6 @@
     </style>
 
     <script>
-<<<<<<< HEAD
 
         document.addEventListener('DOMContentLoaded', function () {
         var selectedUserID = null;
@@ -1272,123 +1079,6 @@
         }
         }
         });
-=======
-        document.addEventListener('DOMContentLoaded', function () {
-            var selectedUserID = null;
-
-            if (${not empty users}) {
-                selectedUserID = ${users[0].userId};
-            }
-
-            const chatMessages = document.getElementById('chatMessages');
-            const listUsersDiv = document.getElementById('listUsers');
-            const chatInput = document.getElementById('chatInput');
-
-            function scrollToBottom() {
-                chatMessages.scrollTop = chatMessages.scrollHeight;
-            }
-
-            window.sendMessage = function () {
-                const text = chatInput.value.trim();
-                if (!text)
-                    return;
-                chatInput.value = '';
-
-                fetch('message', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded'
-                    },
-                    body: new URLSearchParams({
-                        receiverID: selectedUserID,
-                        content: text
-                    })
-                })
-                        .then(() => {
-                            getMessages(selectedUserID);
-                            scrollToBottom();
-                        })
-                        .catch(error => console.error('Send error:', error));
-            };
-
-            chatInput.addEventListener('keydown', function (e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    sendMessage();
-                }
-            });
-
-            window.changeUserID = function (userID, userName) {
-                const nameChatUser = document.getElementById('nameChatUser');
-                nameChatUser.innerHTML = userName;
-                selectedUserID = userID;
-                console.log('User selected:', userID);
-            };
-
-            function getMessages(userID) {
-                fetch('message?action=getUserMessages&senderID=8&receiverID=' + selectedUserID, {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                })
-                        .then(response => response.json())
-                        .then(datas => {
-                            if (userID !== selectedUserID) {
-                                return;
-                            }
-                            chatMessages.innerHTML = '';
-                            datas.forEach(data => {
-                                const msgDiv = document.createElement('div');
-                                msgDiv.className = 'message ' + (data.userID === 8 ? 'user' : 'bot');
-                                msgDiv.innerHTML = data.content;
-                                chatMessages.appendChild(msgDiv);
-                            });
-                        })
-                        .catch(error => console.error('Error: vào đây' + selectedUserID, error));
-            }
-
-            function getUsers() {
-                fetch('message?action=getUsers', {
-                    method: 'GET',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    }
-                })
-                        .then(response => response.json())
-                        .then(datas => {
-                            listUsersDiv.innerHTML = ''; // Clear existing content
-
-                            datas.forEach(u => {
-                                const card = document.createElement('div');
-                                card.className = 'card card-hover-shadow';
-                                card.setAttribute('onclick', `changeUserID(` + u.userID + `, '` + u.userName + `')`);
-
-                                card.innerHTML =
-                                        '<div class="card-body ' + (u.userID === selectedUserID ? 'bg-light' : '') + '">' +
-                                        '<div class="d-flex align-items-center justify-content-between">' +
-                                        '<div class="flex-grow-1">' +
-                                        '<p class="text-hover-primary ' + (u.userID === selectedUserID ? 'text-primary' : '') + '">' + u.userName + '</p>' +
-                                        '</div>' +
-                                        '</div>' +
-                                        '</div>';
-                                listUsersDiv.appendChild(card);
-                            });
-                        })
-                        .catch(error => {
-                            console.error('Error fetching users:', error);
-                        });
-            }
-
-            setInterval(() => {
-                getUsers();
-                getMessages(selectedUserID);
-            }, 500);
-        });
-
->>>>>>> 81fea04b829f4661506c561b87504c6bf2363ca1
     </script>
 </c:if>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0/dist/js/bootstrap.bundle.min.js"></script>

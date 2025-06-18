@@ -42,9 +42,20 @@
             }
 
             .chart-container {
-                width: 80%;
+                width: 100%;
+                height: 400px;
                 margin: auto;
                 padding-top: 50px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+            .chart-container canvas {
+                width: 100% !important;
+                height: 100% !important;
+                max-width: 100%;
+                max-height: 100%;
+                display: block;
             }
             h1, .stats {
                 text-align: center;
@@ -110,7 +121,7 @@
                                         <div class="d-flex">
                                             <div class="flex-grow-1">
                                                 <p class="text-truncate font-size-14 mb-2">Số lượng đặt dịch vụ</p>
-                                                <h4 class="mb-2">${totalorder} 12222</h4>
+                                                <h4 class="mb-2">${numBookings}</h4>
                                             </div>
                                             <div class="avatar-sm">
                                                 <span class="avatar-title bg-light text-primary rounded-3">
@@ -128,8 +139,8 @@
                                     <div class="card-body d-flex flex-column">
                                         <div class="d-flex">
                                             <div class="flex-grow-1">
-                                                <p class="text-truncate font-size-14 mb-2">Số lượng người dùng</p>
-                                                <h4 class="mb-2">${totaluser} 2100</h4>
+                                                <p class="text-truncate font-size-14 mb-2">Số lượng khách hàng</p>
+                                                <h4 class="mb-2">${numUsers}</h4>
                                             </div>
                                             <div class="avatar-sm">
                                                 <span class="avatar-title bg-light text-primary rounded-3">
@@ -188,45 +199,84 @@
 
 
                                 </div>
+                                <!-- Form chọn tháng/năm -->
+                                <form method="get" action="admin">
+                                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                                        <label for="month">Tháng:</label>
+                                        <select name="month" id="month">
+                                            <c:forEach var="m" begin="1" end="12">
+                                                <option value="${m}" <c:if test="${selectedMonth == m}">selected</c:if>>${m}</option>
+                                            </c:forEach>
+                                        </select>
+                                        <label for="year">Năm:</label>
+                                        <select name="year" id="year">
+                                            <c:forEach var="y" begin="2020" end="2030">
+                                                <option value="${y}" <c:if test="${selectedYear == y}">selected</c:if>>${y}</option>
+                                            </c:forEach>
+                                        </select>
+                                        <button type="submit" class="btn btn-primary">Xem</button>
+                                    </div>
+                                </form>
+                                <div style="margin-bottom: 10px; font-weight: bold; font-size: 18px; text-align: center;">
+                                    Tổng doanh thu tháng này: <span style="color: #007bff;"><c:out value="${totalRevenue}"/></span> VNĐ
+                                </div>
                                 <div class="chart-container">
                                     <canvas id="revenueChart" width="400" height="200"></canvas>
                                 </div>
-                            </div>
-                            <script>
-                                // Dữ liệu từ server (ví dụ)
-                                const labels = ${revenueday};
-                                const revenueData = ${revenue};
-
-                                // Thiết lập biểu đồ
-                                document.addEventListener("DOMContentLoaded", function () {
+                                <script>
+                                    // Lấy dữ liệu doanh thu từ backend (JSTL)
+                                    const revenueData = [<c:out value="${revenueData}"/>];
+                                    const daysInMonth = revenueData.length;
+                                    const month = <c:out value="${selectedMonth}"/>;
+                                    const year = <c:out value="${selectedYear}"/>;
+                                    // Tạo mảng ngày đúng cho tháng/năm đã chọn
+                                    function getDaysArray(year, month) {
+                                        // month: 1-12 (JS Date expects 0-11)
+                                        const numDays = new Date(year, month, 0).getDate();
+                                        return Array.from({length: numDays}, (_, i) => `Ngày`+ (i+1));
+                                    }
+                                    const dayLabels = getDaysArray(year, month);
                                     const ctx = document.getElementById('revenueChart').getContext('2d');
-                                    new Chart(ctx, {
+                                    const revenueChart = new Chart(ctx, {
                                         type: 'bar',
                                         data: {
-                                            labels: labels,
-                                            datasets: [
-                                                {
-                                                    label: 'Revenue',
-                                                    data: revenueData,
-                                                    backgroundColor: 'rgba(54, 162, 235, 0.5)',
-                                                    borderColor: 'rgba(54, 162, 235, 1)',
-                                                    borderWidth: 1
-                                                }
-                                            ]
+                                            labels: dayLabels,
+                                            datasets: [{
+                                                label: 'Doanh thu (VNĐ)',
+                                                data: revenueData,
+                                                backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                                                borderColor: 'rgba(54, 162, 235, 1)',
+                                                borderWidth: 1
+                                            }]
                                         },
                                         options: {
                                             responsive: true,
+                                            plugins: {
+                                                legend: {display: false},
+                                                title: {
+                                                    display: true,
+                                                    text: `Biểu đồ doanh thu tháng ` + month + `/` + year
+                                                }
+                                            },
                                             scales: {
                                                 y: {
                                                     beginAtZero: true,
-                                                    max: ${maxrevenue}
+                                                    title: {
+                                                        display: true,
+                                                        text: 'Doanh thu (VNĐ)'
+                                                    }
+                                                },
+                                                x: {
+                                                    title: {
+                                                        display: true,
+                                                        text: `Ngày trong tháng ${month}`
+                                                    }
                                                 }
                                             }
                                         }
                                     });
-                                });
-                            </script>
-
+                                </script>
+                            </div>
                         </div>
                         <!-- end row -->
                     </div>
