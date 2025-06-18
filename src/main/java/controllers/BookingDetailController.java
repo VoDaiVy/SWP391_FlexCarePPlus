@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import daos.BookingDAO;
 import daos.BookingDetailDAO;
 import daos.RoomDAO;
+import daos.ServiceDAO;
 import models.Booking;
 import models.BookingDetail;
 import models.Room;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Date;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import models.Service;
 
 public class BookingDetailController extends HttpServlet {
 
@@ -375,25 +377,19 @@ public class BookingDetailController extends HttpServlet {
     // Staff role methods
     private void staffGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String action = request.getParameter("action");
-        
-        if (action == null || action.isEmpty()) {
-            List<BookingDetail> bookingDetails = BookingDetailDAO.getAll();
-            request.setAttribute("bookingDetails", bookingDetails);
-            request.getRequestDispatcher("/staff/bookingdetail/list.jsp").forward(request, response);
-        } else if ("view".equals(action)) {
-            int bookingDetailID = Integer.parseInt(request.getParameter("bookingDetailID"));
-            BookingDetail bookingDetail = BookingDetailDAO.getById(bookingDetailID);
-            request.setAttribute("bookingDetail", bookingDetail);
-            request.getRequestDispatcher("/staff/bookingdetail/view.jsp").forward(request, response);
-        } else if ("edit".equals(action)) {
-            int bookingDetailID = Integer.parseInt(request.getParameter("bookingDetailID"));
-            BookingDetail bookingDetail = BookingDetailDAO.getById(bookingDetailID);
-            List<Room> rooms = RoomDAO.getAll();
-            request.setAttribute("bookingDetail", bookingDetail);
-            request.setAttribute("rooms", rooms);
-            request.getRequestDispatcher("/staff/bookingdetail/edit.jsp").forward(request, response);
+        String dateParam = request.getParameter("date");
+        java.time.LocalDate date;
+        if (dateParam == null || dateParam.isEmpty()) {
+            date = java.time.LocalDate.now();
+        } else {
+            date = java.time.LocalDate.parse(dateParam);
         }
+        List<Service> services = ServiceDAO.getAll();
+        List<BookingDetail> bookingDetails = BookingDetailDAO.getByDate(date);
+        request.setAttribute("services", services);
+        request.setAttribute("bookingDetails", bookingDetails);
+        request.setAttribute("selectedDate", date.toString());
+        request.getRequestDispatcher("/staff/managePage.jsp").forward(request, response);
     }
 
     private void staffPost(HttpServletRequest request, HttpServletResponse response)

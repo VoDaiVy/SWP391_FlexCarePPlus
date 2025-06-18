@@ -25,6 +25,21 @@ public class StaffController extends HttpServlet {
             case "getMessages" -> {
                 getMessages(request, response);
             }
+            case "getCustomers" -> {
+                getCustomers(request, response);
+            }
+            case "getCustomerPets" -> {
+                getCustomerPets(request, response);
+            } 
+            case "getMedicalRecords" -> {
+                getMedicalRecords(request, response);
+            } 
+            case "getMedicalDetail" -> {
+                getMedicalDetail(request, response);
+            } 
+            case "createMedicalRecord" -> {
+                createMedicalRecord(request, response);
+            } 
         }
     }
 
@@ -35,10 +50,26 @@ public class StaffController extends HttpServlet {
     }
 
     private void getBookings(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.getRequestDispatcher("staff/managePage.jsp").forward(request, response);
+        request.getRequestDispatcher("bookingdetail").forward(request, response);
     }
 
     private void getMessages(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getRequestDispatcher("message").forward(request, response);
+    }
+    
+    private void getCustomers(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("user").forward(request, response);
+    }
+    private void getCustomerPets(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("userpet").forward(request, response);
+    }
+    private void getMedicalRecords(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("medicalrecords").forward(request, response);
+    }
+    private void getMedicalDetail(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("medicalrecords").forward(request, response);
+    }
+    private void createMedicalRecord(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("medicalrecords").forward(request, response);
     }
 }
