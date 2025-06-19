@@ -1,10 +1,10 @@
 package dtos;
 
-import models.Service;
+import models.CategoryService;
 
 public class RoomDTO {
     private int roomID;
-    private Service service;     // Instead of serviceID
+    private CategoryService categoryService;     // Instead of serviceID
     private String name;
     private int roomNumber;
     private boolean status;
@@ -12,18 +12,18 @@ public class RoomDTO {
     public RoomDTO() {
     }
 
-    public RoomDTO(int roomID, Service service, String name, int roomNumber, boolean status) {
+    public RoomDTO(int roomID, CategoryService categoryService, String name, int roomNumber, boolean status) {
         this.roomID = roomID;
-        this.service = service;
+        this.categoryService = categoryService;
         this.name = name;
         this.roomNumber = roomNumber;
         this.status = status;
     }
     
     // Constructor that takes a Room model
-    public RoomDTO(models.Room room, Service service) {
+    public RoomDTO(models.Room room, CategoryService categoryService) {
         this.roomID = room.getRoomID();
-        this.service = service;
+        this.categoryService = categoryService;
         this.name = room.getName();
         this.roomNumber = room.getRoomNumber();
         this.status = room.isStatus();
@@ -37,12 +37,12 @@ public class RoomDTO {
         this.roomID = roomID;
     }
 
-    public Service getService() {
-        return service;
+    public CategoryService getCategoryService() {
+        return categoryService;
     }
 
-    public void setService(Service service) {
-        this.service = service;
+    public void setCategoryService(CategoryService categoryService) {
+        this.categoryService = categoryService;
     }
 
     public String getName() {
@@ -73,7 +73,7 @@ public class RoomDTO {
     public models.Room toRoom() {
         models.Room room = new models.Room();
         room.setRoomID(this.roomID);
-        room.setServiceID(this.service != null ? this.service.getServiceID() : 0);
+        room.setCategoryServiceID(this.categoryService != null ? this.categoryService.getCategoryServiceID(): 0);
         room.setName(this.name);
         room.setRoomNumber(this.roomNumber);
         room.setStatus(this.status);
