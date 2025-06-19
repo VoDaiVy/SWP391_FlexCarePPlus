@@ -10,7 +10,7 @@ public class Booking {
     public float totalPrice, paid;
     public String state, note;
     public boolean status;
-    public static enum BookingState {CANCEL, BOOKED, FINISHED};
+    public static enum BookingState {CANCEL, CART, PENDINGPAYMENT, BOOKED, FINISHED, NEXTBOOKING};
     
     public Booking() {
     }

@@ -2,7 +2,7 @@
 package models;
 
 public class Room {
-    public int roomID, serviceID;
+    public int roomID, categoryServiceID;
     public String name;
     public int roomNumber;
     public boolean status;
@@ -10,9 +10,9 @@ public class Room {
     public Room() {
     }
 
-    public Room(int roomID, int serviceID, String name, int roomNumber, boolean status) {
+    public Room(int roomID, int categoryServiceID, String name, int roomNumber, boolean status) {
         this.roomID = roomID;
-        this.serviceID = serviceID;
+        this.categoryServiceID = categoryServiceID;
         this.name = name;
         this.roomNumber = roomNumber;
         this.status = status;
@@ -26,12 +26,12 @@ public class Room {
         this.roomID = roomID;
     }
 
-    public int getServiceID() {
-        return serviceID;
+    public int getCategoryServiceID() {
+        return categoryServiceID;
     }
 
-    public void setServiceID(int serviceID) {
-        this.serviceID = serviceID;
+    public void setCategoryServiceID(int categoryServiceID) {
+        this.categoryServiceID = categoryServiceID;
     }
 
     public String getName() {
