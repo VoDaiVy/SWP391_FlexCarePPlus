@@ -55,6 +55,7 @@
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">
+
                                         <button id="btnCreateNotification" class="btn btn-primary mb-3">Tạo thông báo</button>
                                         <!-- Popup tạo thông báo -->
                                         <div id="createNotificationModal" class="modal" tabindex="-1" style="display:none; background:rgba(0,0,0,0.3); position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:1050; align-items:center; justify-content:center;">
@@ -106,6 +107,8 @@
                                                     };
                                                 }
                                             </script>
+
+                                        <table class="table table-bordered table-hover">
                                             <thead class="thead-light">
                                                 <tr>
                                                     <th scope="col">#</th>
@@ -164,10 +167,15 @@
                                                                 '<td>' + noti.content + '</td>' +
                                                                 '<td>' + noti.dateCreated + '</td>' +
                                                                 '<td>' +
+
                                                                 '<form method="post" action="admin" style="display:inline;">' +
                                                                 '<input type="hidden" name="notificationID" value="' + noti.notificationID + '" />' +
                                                                 '<input type="hidden" name="object" value="notification"/>' +
                                                                 '<input type="hidden" name="action" value="delete" />' +
+
+                                                                '<form method="post" action="NotificationServlet?actor=admin&action=delete" style="display:inline;">' +
+                                                                '<input type="hidden" name="notificationID" value="' + noti.notificationID + '" />' +
+
                                                                 '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Bạn có chắc muốn xóa thông báo này?\');">Xóa</button>' +
                                                                 '</form>' +
                                                                 '</td>' +
@@ -193,6 +201,9 @@
                                                     currentPage = page;
                                                     renderTable();
                                                 };
+
+                                                }
+
                                             </script>
                                         </table>
                                     </div>

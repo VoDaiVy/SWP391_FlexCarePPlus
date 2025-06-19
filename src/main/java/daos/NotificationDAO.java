@@ -204,4 +204,11 @@ public class NotificationDAO {
         }
         return 0;
     }
+    
+    public static void main(String[] args) {
+        List<Notification> notifications = getAll();
+        for (Notification notification : notifications) {
+            System.out.println(notification);
+        }
+    }
 }
