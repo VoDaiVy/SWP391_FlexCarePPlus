@@ -55,6 +55,59 @@
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">
+
+                                        <button id="btnCreateNotification" class="btn btn-primary mb-3">Tạo thông báo</button>
+                                        <!-- Popup tạo thông báo -->
+                                        <div id="createNotificationModal" class="modal" tabindex="-1" style="display:none; background:rgba(0,0,0,0.3); position:fixed; top:0; left:0; width:100vw; height:100vh; z-index:1050; align-items:center; justify-content:center;">
+                                            <div class="modal-dialog" style="max-width:700px; width:90vw; margin:auto;">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title">Tạo thông báo mới</h5>
+                                                        <button type="button" class="btn-close" id="closeCreateModal" aria-label="Close"></button>
+                                                    </div>
+                                                    <form method="post" action="admin">
+                                                        <input name="object" value="notification" hidden/>
+                                                        <input name="action" value="create" hidden/>
+                                                        <div class="modal-body">
+                                                            <div class="mb-3">
+                                                                <label for="content" class="form-label">Nội dung</label>
+                                                                <textarea class="form-control" id="content" name="content" rows="3" required></textarea>
+                                                            </div>
+                                                        </div>
+                                                        <div class="modal-footer">
+                                                            <button type="submit" class="btn btn-success">Tạo mới</button>
+                                                            <button type="button" class="btn btn-secondary" id="cancelCreateModal">Hủy</button>
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <table class="table table-bordered table-hover">
+                                            <script>
+                                                // Popup create notification logic
+                                                const btnCreate = document.getElementById('btnCreateNotification');
+                                                const modal = document.getElementById('createNotificationModal');
+                                                const closeBtn = document.getElementById('closeCreateModal');
+                                                const cancelBtn = document.getElementById('cancelCreateModal');
+                                                if (btnCreate && modal && closeBtn && cancelBtn) {
+                                                    btnCreate.onclick = function () {
+                                                        modal.style.display = 'flex';
+                                                    };
+                                                    closeBtn.onclick = function () {
+                                                        modal.style.display = 'none';
+                                                    };
+                                                    cancelBtn.onclick = function () {
+                                                        modal.style.display = 'none';
+                                                    };
+                                                    // Đóng popup khi click ra ngoài
+                                                    window.onclick = function (event) {
+                                                        if (event.target === modal) {
+                                                            modal.style.display = 'none';
+                                                        }
+                                                    };
+                                                }
+                                            </script>
+
                                         <table class="table table-bordered table-hover">
                                             <thead class="thead-light">
                                                 <tr>
@@ -114,8 +167,15 @@
                                                                 '<td>' + noti.content + '</td>' +
                                                                 '<td>' + noti.dateCreated + '</td>' +
                                                                 '<td>' +
+
+                                                                '<form method="post" action="admin" style="display:inline;">' +
+                                                                '<input type="hidden" name="notificationID" value="' + noti.notificationID + '" />' +
+                                                                '<input type="hidden" name="object" value="notification"/>' +
+                                                                '<input type="hidden" name="action" value="delete" />' +
+
                                                                 '<form method="post" action="NotificationServlet?actor=admin&action=delete" style="display:inline;">' +
                                                                 '<input type="hidden" name="notificationID" value="' + noti.notificationID + '" />' +
+
                                                                 '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Bạn có chắc muốn xóa thông báo này?\');">Xóa</button>' +
                                                                 '</form>' +
                                                                 '</td>' +
@@ -140,7 +200,10 @@
                                                 window.gotoPage = function (page) {
                                                     currentPage = page;
                                                     renderTable();
+                                                };
+
                                                 }
+
                                             </script>
                                         </table>
                                     </div>

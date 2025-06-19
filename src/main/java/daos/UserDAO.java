@@ -1,3 +1,4 @@
+
 package daos;
 
 import java.sql.Connection;
@@ -15,7 +16,8 @@ public class UserDAO {
     // Create a new user
     public static boolean create(User user) {
         String sql = "INSERT INTO [Users] (Role, UserName, Password, Email, Status) VALUES (?, ?, ?, ?, ?)";
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             ps.setString(1, user.getRole());
             ps.setString(2, user.getUserName());
@@ -70,7 +72,9 @@ public class UserDAO {
     public static List<User> getAll() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM [Users]";
-        try (Connection conn = DBConnection.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+        try (Connection conn = DBConnection.getConnection();
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 User user = new User();
@@ -219,7 +223,9 @@ public class UserDAO {
     public static List<User> adminGetAll() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM [Users] WHERE Role <> 'admin'";
-        try (Connection conn = DBConnection.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+        try (Connection conn = DBConnection.getConnection();
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 User user = new User();
@@ -255,7 +261,9 @@ public class UserDAO {
                 + "FROM LatestMessage lm\n"
                 + "JOIN Users u ON u.UserID = lm.UserID\n"
                 + "ORDER BY lm.LastMessageTime DESC;";
-        try (Connection conn = DBConnection.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+        try (Connection conn = DBConnection.getConnection();
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 User user = new User();
@@ -274,7 +282,9 @@ public class UserDAO {
     public static List<User> getCustomers() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT * FROM [Users] WHERE Role = 'customer'";
-        try (Connection conn = DBConnection.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+        try (Connection conn = DBConnection.getConnection();
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
 
             while (rs.next()) {
                 User user = new User();
@@ -296,7 +306,9 @@ public class UserDAO {
 
     public static int countCustomers() {
         String sql = "SELECT COUNT(*) FROM [Users] WHERE Role = 'customer'";
-        try (Connection conn = DBConnection.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
+        try (Connection conn = DBConnection.getConnection();
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery(sql)) {
             if (rs.next()) {
                 return rs.getInt(1);
             }
@@ -304,5 +316,21 @@ public class UserDAO {
             System.out.println("Error counting customers: " + e.getMessage());
         }
         return 0;
+    }
+
+    // Lấy danh sách userID của tất cả user có role khác admin
+    public static List<Integer> getAllUserIds() {
+        List<Integer> userIds = new ArrayList<>();
+        String sql = "SELECT UserID FROM [Users] WHERE Role <> 'admin'";
+        try (Connection conn = DBConnection.getConnection();
+                PreparedStatement ps = conn.prepareStatement(sql)) {
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                userIds.add(rs.getInt("UserID"));
+            }
+        } catch (SQLException e) {
+            System.out.println("Error retrieving user IDs except role: " + e.getMessage());
+        }
+        return userIds;
     }
 }
