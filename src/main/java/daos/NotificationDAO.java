@@ -17,7 +17,7 @@ public class NotificationDAO {
     
     // Create a new notification
     public static boolean create(Notification notification) {
-        String sql = "INSERT INTO Notification (Content, DateCreated) VALUES (?, ?)";
+        String sql = "INSERT INTO Notifications (Content, DateCreated) VALUES (?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             
@@ -53,7 +53,7 @@ public class NotificationDAO {
     
     // Get a notification by ID
     public static Notification getById(int notificationID) {
-        String sql = "SELECT * FROM Notification WHERE NotificationID = ?";
+        String sql = "SELECT * FROM Notifications WHERE NotificationID = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
@@ -83,7 +83,7 @@ public class NotificationDAO {
     // Get all notifications
     public static List<Notification> getAll() {
         List<Notification> notifications = new ArrayList<>();
-        String sql = "SELECT * FROM Notification ORDER BY DateCreated DESC";
+        String sql = "SELECT * FROM Notifications ORDER BY DateCreated DESC";
         try (Connection conn = DBConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -111,7 +111,7 @@ public class NotificationDAO {
     // Get recent notifications (limit by count)
     public static List<Notification> getRecent(int limit) {
         List<Notification> notifications = new ArrayList<>();
-        String sql = "SELECT * FROM Notification ORDER BY DateCreated DESC LIMIT ?";
+        String sql = "SELECT * FROM Notifications ORDER BY DateCreated DESC LIMIT ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
@@ -140,7 +140,7 @@ public class NotificationDAO {
     
     // Update a notification
     public static boolean update(Notification notification) {
-        String sql = "UPDATE Notification SET Content = ? WHERE NotificationID = ?";
+        String sql = "UPDATE Notifications SET Content = ? WHERE NotificationID = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
@@ -158,7 +158,7 @@ public class NotificationDAO {
     
     // Delete a notification
     public static boolean delete(int notificationID) {
-        String sql = "DELETE FROM Notification WHERE NotificationID = ?";
+        String sql = "DELETE FROM Notifications WHERE NotificationID = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
@@ -174,7 +174,7 @@ public class NotificationDAO {
     
     // Delete notifications older than a specified number of days
     public static boolean deleteOlderThan(int days) {
-        String sql = "DELETE FROM Notification WHERE DateCreated < DATE_SUB(NOW(), INTERVAL ? DAY)";
+        String sql = "DELETE FROM Notifications WHERE DateCreated < DATE_SUB(NOW(), INTERVAL ? DAY)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
@@ -190,7 +190,7 @@ public class NotificationDAO {
     
     // Count total notifications
     public static int countTotal() {
-        String sql = "SELECT COUNT(*) AS TotalNotifications FROM Notification";
+        String sql = "SELECT COUNT(*) AS TotalNotifications FROM Notifications";
         try (Connection conn = DBConnection.getConnection();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
