@@ -38,11 +38,11 @@ constraint FK_ServiceImage_Service foreign key (ServiceID) references Service(Se
 
 create table Room(
 RoomID int identity(1,1) primary key,
-ServiceID int not null,
+CategoryServiceID  int not null,
 Name nvarchar(100) null,
 RoomNumber int null,
 Status bit null,
-constraint FK_Room_Service foreign key (ServiceID) references Service(ServiceID)
+constraint FK_Room_CategoryService foreign key (CategoryServiceID) references CategoryService(CategoryServiceID)
 )
 
 create table Users(
@@ -187,7 +187,6 @@ UserID int,
 Amount money,
 IsRefunded bit
 )
-
 
 create table News(
 NewsID int identity(1,1) primary key,

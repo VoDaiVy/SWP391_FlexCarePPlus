@@ -1,4 +1,3 @@
-
 package utils;
 
 import java.nio.charset.StandardCharsets;
@@ -6,7 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 public class Common {
-    
+
     public static String encryptMD5(String sToEncrypt) {
         try {
             byte[] bytes = sToEncrypt.getBytes(StandardCharsets.UTF_8);
@@ -27,5 +26,18 @@ public class Common {
         } catch (NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static String escapeJsonString(String input) {
+        if (input == null) {
+            return "";
+        }
+        return input.replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\b", "\\b")
+                .replace("\f", "\\f")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+                .replace("\t", "\\t");
     }
 }

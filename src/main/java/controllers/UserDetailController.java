@@ -137,7 +137,9 @@ public class UserDetailController extends HttpServlet {
             case "getAvailablePets" ->
                 getAvailablePets(request, response);
         }
-    }    private void customerPost(HttpServletRequest request, HttpServletResponse response)
+    }    
+    
+    private void customerPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
         switch (action) {
@@ -194,7 +196,8 @@ public class UserDetailController extends HttpServlet {
             throws ServletException, IOException {
         // To be implemented
     }    
-      private void getUserDetail(HttpServletRequest request, HttpServletResponse response)
+    
+    private void getUserDetail(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         UserDetailDTO userDetailDTO = (UserDetailDTO) request.getSession().getAttribute("userDetailDTO");
         

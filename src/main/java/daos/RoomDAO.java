@@ -14,11 +14,11 @@ public class RoomDAO {
     
     // Create a new room
     public static boolean create(Room room) {
-        String sql = "INSERT INTO Room (ServiceID, Name, RoomNumber, Status) VALUES (?, ?, ?, ?)";
+        String sql = "INSERT INTO Room (categoryServiceID, Name, RoomNumber, Status) VALUES (?, ?, ?, ?)";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             
-            ps.setInt(1, room.getServiceID());
+            ps.setInt(1, room.getCategoryServiceID());
             ps.setString(2, room.getName());
             ps.setInt(3, room.getRoomNumber());
             ps.setBoolean(4, room.isStatus());
@@ -52,7 +52,7 @@ public class RoomDAO {
             if (rs.next()) {
                 Room room = new Room();
                 room.setRoomID(rs.getInt("RoomID"));
-                room.setServiceID(rs.getInt("ServiceID"));
+                room.setCategoryServiceID(rs.getInt("CategoryServiceID"));
                 room.setName(rs.getString("Name"));
                 room.setRoomNumber(rs.getInt("RoomNumber"));
                 room.setStatus(rs.getBoolean("Status"));
@@ -75,7 +75,7 @@ public class RoomDAO {
             while (rs.next()) {
                 Room room = new Room();
                 room.setRoomID(rs.getInt("RoomID"));
-                room.setServiceID(rs.getInt("ServiceID"));
+                room.setCategoryServiceID(rs.getInt("CategoryServiceID"));
                 room.setName(rs.getString("Name"));
                 room.setRoomNumber(rs.getInt("RoomNumber"));
                 room.setStatus(rs.getBoolean("Status"));
@@ -90,7 +90,7 @@ public class RoomDAO {
       // Get rooms by service ID
     public static List<Room> getByServiceId(int serviceID) {
         List<Room> rooms = new ArrayList<>();
-        String sql = "SELECT * FROM Room WHERE ServiceID = ?";
+        String sql = "SELECT * FROM Room WHERE CategoryServiceID = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
@@ -100,7 +100,7 @@ public class RoomDAO {
             while (rs.next()) {
                 Room room = new Room();
                 room.setRoomID(rs.getInt("RoomID"));
-                room.setServiceID(rs.getInt("ServiceID"));
+                room.setCategoryServiceID(rs.getInt("CategoryServiceID"));
                 room.setName(rs.getString("Name"));
                 room.setRoomNumber(rs.getInt("RoomNumber"));
                 room.setStatus(rs.getBoolean("Status"));
@@ -115,7 +115,7 @@ public class RoomDAO {
       // Get available rooms by service ID
     public static List<Room> getAvailableRoomsByServiceId(int serviceID) {
         List<Room> rooms = new ArrayList<>();
-        String sql = "SELECT * FROM Room WHERE ServiceID = ? AND Status = 1";
+        String sql = "SELECT * FROM Room WHERE CategoryServiceID = ? AND Status = 1";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
@@ -125,7 +125,7 @@ public class RoomDAO {
             while (rs.next()) {
                 Room room = new Room();
                 room.setRoomID(rs.getInt("RoomID"));
-                room.setServiceID(rs.getInt("ServiceID"));
+                room.setCategoryServiceID(rs.getInt("CategoryServiceID"));
                 room.setName(rs.getString("Name"));
                 room.setRoomNumber(rs.getInt("RoomNumber"));
                 room.setStatus(rs.getBoolean("Status"));
@@ -139,11 +139,11 @@ public class RoomDAO {
     }
       // Update a room
     public static boolean update(Room room) {
-        String sql = "UPDATE Room SET ServiceID = ?, Name = ?, RoomNumber = ?, Status = ? WHERE RoomID = ?";
+        String sql = "UPDATE Room SET CategoryServiceID = ?, Name = ?, RoomNumber = ?, Status = ? WHERE RoomID = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
-            ps.setInt(1, room.getServiceID());
+            ps.setInt(1, room.getCategoryServiceID());
             ps.setString(2, room.getName());
             ps.setInt(3, room.getRoomNumber());
             ps.setBoolean(4, room.isStatus());
@@ -189,7 +189,7 @@ public class RoomDAO {
     }
       // Count rooms for a service
     public static int countRoomsByServiceId(int serviceID) {
-        String sql = "SELECT COUNT(*) AS RoomCount FROM Room WHERE ServiceID = ?";
+        String sql = "SELECT COUNT(*) AS RoomCount FROM Room WHERE CategoryServiceID = ?";
         try (Connection conn = DBConnection.getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
             
@@ -222,5 +222,31 @@ public class RoomDAO {
             System.out.println("Error checking room availability: " + e.getMessage());
         }
         return false;
+    }
+    
+    // Get rooms by category service ID
+    public static List<Room> getByCategoryServiceId(int categoryServiceID) {
+        List<Room> rooms = new ArrayList<>();
+        String sql = "SELECT * FROM Room WHERE categoryServiceID = ? AND Status = 1";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setInt(1, categoryServiceID);
+            ResultSet rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                Room room = new Room();
+                room.setRoomID(rs.getInt("RoomID"));
+                room.setCategoryServiceID(rs.getInt("categoryServiceID"));
+                room.setName(rs.getString("Name"));
+                room.setRoomNumber(rs.getInt("RoomNumber"));
+                room.setStatus(rs.getBoolean("Status"));
+                rooms.add(room);
+            }
+            
+        } catch (SQLException e) {
+            System.out.println("Error retrieving rooms by category service ID: " + e.getMessage());
+        }
+        return rooms;
     }
 }

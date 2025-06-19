@@ -97,14 +97,10 @@ public class AdminController extends HttpServlet {
         int daysInMonth = java.time.Month.of(month).length(java.time.Year.isLeap(year));
         // Khởi tạo mảng mặc định 0 cho từng ngày trong tháng
         float[] revenueByDay = new float[daysInMonth];
-
         for (int i = 0; i < daysInMonth; i++) {
             revenueByDay[i] = 0;
         }
 
-        for (int i = 0; i < daysInMonth; i++) {
-            revenueByDay[i] = 0;
-        }
         float totalRevenue = 0;
         for (models.Booking booking : bookings) {
             if (booking.dateBooked != null) {
