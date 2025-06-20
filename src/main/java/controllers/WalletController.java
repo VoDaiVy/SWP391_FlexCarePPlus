@@ -246,16 +246,16 @@ public class WalletController extends HttpServlet {
                 }
             }
         }
-//        String queryUrl = query.toString();
-//        String vnp_SecureHash = VnPayEncryption.hmacSHA512(VnPayEncryption.secretKey, hashData.toString());
-//        queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
-//        String paymentUrl = VnPayEncryption.vnp_PayUrl + "?" + queryUrl;
-//        com.google.gson.JsonObject job = new JsonObject();
-//        job.addProperty("code", "00");
-//        job.addProperty("message", "success");
-//        job.addProperty("data", paymentUrl);
-//        Gson gson = new Gson();
-//        response.getWriter().write(gson.toJson(job));
+        String queryUrl = query.toString();
+        String vnp_SecureHash = VnPayEncryption.hmacSHA512(VnPayEncryption.secretKey, hashData.toString());
+        queryUrl += "&vnp_SecureHash=" + vnp_SecureHash;
+        String paymentUrl = VnPayEncryption.vnp_PayUrl + "?" + queryUrl;
+        com.google.gson.JsonObject job = new JsonObject();
+        job.addProperty("code", "00");
+        job.addProperty("message", "success");
+        job.addProperty("data", paymentUrl);
+        Gson gson = new Gson();
+        response.getWriter().write(gson.toJson(job));
     }
 
     private void depositResult(HttpServletRequest request, HttpServletResponse response)
