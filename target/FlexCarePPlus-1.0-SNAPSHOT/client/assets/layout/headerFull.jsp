@@ -39,7 +39,7 @@
             <c:choose>
                 <c:when test="${not empty sessionScope.userDetailDTO}">
                     <div class="nav-item dropdown ms-lg-3 d-flex align-items-center me-4 me-lg-5" style="margin-right:16px;">
-                        <!-- Bell Notification Icon (đưa lên trước) -->
+                        <!-- Bell Notification Icon -->
                         <div class="dropdown d-flex align-items-center" style="height: 56px; margin-right: 16px;">
                             <a href="#"
                                class="nav-link p-0 position-relative d-flex align-items-center justify-content-center"
@@ -63,6 +63,14 @@
                                 </li>
                                 <li><a class="dropdown-item text-center" href="#">Xem tất cả</a></li>
                             </ul>
+                        </div>
+                        <!-- Cart Icon  -->
+                        <div class="d-flex align-items-center" style="height: 56px; margin-right: 16px;">
+                            <a href="${pageContext.request.contextPath}/booking?action=viewCart"
+                               class="nav-link p-0 position-relative d-flex align-items-center justify-content-center"
+                               style="width: 56px; height: 87px;">
+                                <i class="bi bi-cart3" style="font-size: 2rem; color: #7ac143;"></i> 
+                            </a>
                         </div>
                         <!-- User Avatar with Dropdown -->
                         <a href="#" class="nav-link dropdown-toggle p-0" data-bs-toggle="dropdown"
@@ -98,3 +106,60 @@
     </div>
 </nav>
 <!-- Navbar End -->
+
+<script>
+    // Chỉ thực hiện khi đã đăng nhập và có icon giỏ hàng
+    document.addEventListener('DOMContentLoaded', function () {
+        const cartIcon = document.querySelector('.bi-cart3');
+        if (cartIcon) {
+            const savedCartCount = localStorage.getItem('cartCount');
+            if (savedCartCount && parseInt(savedCartCount) > 0) {
+                updateCartBadge(parseInt(savedCartCount));
+            }
+            
+            function updateCartCount() {
+                fetch('booking?action=getCartCount')
+                        .then(response => response.json())
+                        .then(data => {
+                            localStorage.setItem('cartCount', data.count);
+
+                            updateCartBadge(data.count);
+                        })
+                        .catch(error => console.error('Error updating cart count:', error));
+            }
+
+            function updateCartBadge(count) {
+                const badgeContainer = cartIcon.closest('a');
+                let badgeElement = badgeContainer.querySelector('.badge');
+
+                if (count > 0) {
+                    if (badgeElement) {
+                        badgeElement.textContent = count;
+                    } else {
+                        badgeElement = document.createElement('span');
+                        badgeElement.className = 'position-absolute translate-middle badge rounded-pill bg-danger';
+                        badgeElement.style.fontSize = '0.8rem';
+                        badgeElement.style.left = '75%';
+                        badgeElement.style.top = '32%';
+                        badgeElement.textContent = count;
+
+                        const visually = document.createElement('span');
+                        visually.className = 'visually-hidden';
+                        visually.textContent = 'items in cart';
+
+                        badgeElement.appendChild(visually);
+                        badgeContainer.appendChild(badgeElement);
+                    }
+                } else {
+                    if (badgeElement) {
+                        badgeElement.remove();
+                    }
+                }
+            }
+
+            updateCartCount();
+
+            setInterval(updateCartCount, 15000);
+        }
+    });
+</script>
