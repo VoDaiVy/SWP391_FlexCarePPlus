@@ -139,7 +139,6 @@ public class MessageController extends HttpServlet {
                 List<Message> messages = MessageDAO.getMessagesBetweenUsers(8, users.getFirst().getUserId());
                 request.setAttribute("users", users);
                 request.setAttribute("messages", messages);
-                request.setAttribute("action", "getMessages");
                 request.getRequestDispatcher("staff/managePage.jsp").forward(request, response);
             }
 
