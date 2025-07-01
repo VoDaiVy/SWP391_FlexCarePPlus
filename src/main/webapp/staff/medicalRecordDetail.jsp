@@ -1,9 +1,3 @@
-<%-- 
-    Document   : medicalRecordDetail
-    Created on : May 27, 2025, 8:48:30 PM
-    Author     : MIQUANGGA
---%>
-
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
@@ -13,7 +7,7 @@
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.15.4/css/all.css"/>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.4.1/font/bootstrap-icons.css" rel="stylesheet">
     <link type="text/css" href="${pageContext.request.contextPath}/staff/assets/css/managerPage.css" rel="stylesheet">
-<body>
+    <body>
     <div class="container py-5">
         <!-- Pet Info Card -->
         <div class="row justify-content-center mb-4">

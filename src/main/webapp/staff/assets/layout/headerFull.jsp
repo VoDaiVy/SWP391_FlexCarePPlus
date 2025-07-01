@@ -22,6 +22,9 @@
                 <li class="nav-item">
                     <a href="staff?action=getCustomers" class="nav-link${param.action == 'getCustomers' ? ' active' : ''}">View Customers</a>
                 </li>
+                <li class="nav-item">
+                    <a href="staff?action=getNews" class="nav-link${param.action == 'getNews' ? ' active' : ''}">News</a>
+                </li>
                 <script>
                     // Hiệu ứng active cho nav-link khi click (giữ lại khi reload nhờ server-side đã xử lý)
                     document.addEventListener('DOMContentLoaded', function () {

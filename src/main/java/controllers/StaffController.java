@@ -40,6 +40,9 @@ public class StaffController extends HttpServlet {
             case "createMedicalRecord" -> {
                 createMedicalRecord(request, response);
             } 
+            case "getNews" -> {
+                getNews(request, response);
+            } 
         }
     }
 
@@ -71,5 +74,8 @@ public class StaffController extends HttpServlet {
     }
     private void createMedicalRecord(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getRequestDispatcher("medicalrecords").forward(request, response);
+    }
+    private void getNews(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("news").forward(request, response);
     }
 }
