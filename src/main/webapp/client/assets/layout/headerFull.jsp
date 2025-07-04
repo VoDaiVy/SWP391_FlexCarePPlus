@@ -112,7 +112,11 @@
     document.addEventListener('DOMContentLoaded', function () {
         const cartIcon = document.querySelector('.bi-cart3');
         if (cartIcon) {
-            const savedCartCount = localStorage.getItem('cartCount');  
+            const savedCartCount = localStorage.getItem('cartCount');
+            if (savedCartCount && parseInt(savedCartCount) > 0) {
+                updateCartBadge(parseInt(savedCartCount));
+            }
+            
             function updateCartCount() {
                 fetch('booking?action=getCartCount')
                         .then(response => response.json())
