@@ -65,8 +65,7 @@
                                                         <button type="button" class="btn-close" id="closeCreateModal" aria-label="Close"></button>
                                                     </div>
                                                     <form method="post" action="admin">
-                                                        <input name="object" value="notification" hidden/>
-                                                        <input name="action" value="create" hidden/>
+                                                        <input name="action" value="createNotification" hidden/>
                                                         <div class="modal-body">
                                                             <div class="mb-3">
                                                                 <label for="content" class="form-label">Nội dung</label>
@@ -166,8 +165,7 @@
                                                                 '<td>' +
                                                                 '<form method="post" action="admin" style="display:inline;">' +
                                                                 '<input type="hidden" name="notificationID" value="' + noti.notificationID + '" />' +
-                                                                '<input type="hidden" name="object" value="notification"/>' +
-                                                                '<input type="hidden" name="action" value="delete" />' +
+                                                                '<input type="hidden" name="action" value="deleteNotification" />' +
                                                                 '<button type="submit" class="btn btn-danger btn-sm" onclick="return confirm(\'Bạn có chắc muốn xóa thông báo này?\');">Xóa</button>' +
                                                                 '</form>' +
                                                                 '</td>' +
