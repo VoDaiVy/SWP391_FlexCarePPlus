@@ -42,7 +42,7 @@
                         <li><a href="${pageContext.request.contextPath}/OrderServlet?actor=admin&action=management">Quản Lý Phòng Dịch Vụ</a></li>
                         <li><a href="${pageContext.request.contextPath}/OrderServlet?actor=admin&action=management">Quản Lý Dịch Vụ</a></li>
                         <li><a href="admin?action=getNotifications">Quản Lý Thông Báo</a></li>
-                        <li><a href="${pageContext.request.contextPath}/PolicyServlet?actor=admin&action=management">Quản Lý Chính Sách</a></li>
+                        <li><a href="admin?action=getPolicies">Quản Lý Chính Sách</a></li>
                     </ul>
                 </li>
             </ul>

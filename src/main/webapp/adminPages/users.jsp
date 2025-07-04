@@ -125,7 +125,7 @@
                                                                 </c:if>
 
                                                                 <c:if test="${userDTO.user.status == false}">
-                                                                    <form action="admin" method="GET" style="display: inline;">
+                                                                    <form action="admin" method="post" style="display: inline;">
                                                                         <input type="hidden" name="id" value="${userDTO.user.userId}">
                                                                         <input type="hidden" name="action" value="allowUser">
 
