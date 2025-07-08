@@ -232,4 +232,7 @@
         <servlet-name>WalletTransferServlet</servlet-name>
         <url-pattern>/wallettransfer</url-pattern>
     </servlet-mapping>
+    <welcome-file-list>
+        <welcome-file>home</welcome-file>
+    </welcome-file-list>
 </web-app>
