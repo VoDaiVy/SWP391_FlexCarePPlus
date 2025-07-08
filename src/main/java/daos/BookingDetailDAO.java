@@ -318,7 +318,7 @@ public class BookingDetailDAO {
     }    // Update a booking detail
 
     public static boolean update(BookingDetail bookingDetail) {
-        String sql = "UPDATE BookingDetail SET RoomID = ?, StockBooking = ?, DateStartService = ?, DateEndService = ?, StartTime = ?, EndTime = ?, Price = ?, UserPetID = ? WHERE BookingID = ? AND ServiceID = ? AND BookingDetailID = ?";
+        String sql = "UPDATE BookingDetail SET RoomID = ?, StockBooking = ?, DateStartService = ?, DateEndService = ?, StartTime = ?, EndTime = ?, Price = ?, UserPetID = ? WHERE BookingID = ? AND ServiceID = ?";
         try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
             ps.setInt(1, bookingDetail.getRoomID());
@@ -358,7 +358,6 @@ public class BookingDetailDAO {
             ps.setInt(8, bookingDetail.getUserPetID());
             ps.setInt(9, bookingDetail.getBookingID());
             ps.setInt(10, bookingDetail.getServiceID());
-            ps.setInt(11, bookingDetail.getBookingDetailID());
 
             int rowsAffected = ps.executeUpdate();
             return rowsAffected > 0;
@@ -585,124 +584,4 @@ public class BookingDetailDAO {
         }
         return 0;
     }
-    
-    public static boolean isPetBusyLodging(int userPetId, LocalDate date, LocalTime startTime, LocalTime endTime, String[] states) {
-        try {
-            List<BookingDetail> allBookingDetails = getByDateAndStatesForBooking(date, states);
-
-            LocalDateTime dateStart = LocalDateTime.of(date, startTime);
-            LocalDateTime dateEnd = LocalDateTime.of(date, endTime);
-
-            for (BookingDetail detail : allBookingDetails) {
-                if (detail.getUserPetID() == userPetId) {
-                    LocalDateTime bookingStart = detail.dateStartService;
-                    LocalDateTime bookingEnd = detail.dateEndService;
-                    
-                    if (!(dateEnd.isBefore(bookingStart) || dateStart.isAfter(bookingEnd))) {
-                        return true;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-    
-    public static boolean isPetBusyLodging(int userPetId, LocalDate date, LocalTime startTime, LocalTime endTime, String[] states, int excludeBookingDetailId) {
-        try {
-            List<BookingDetail> allBookingDetails = getByDateAndStatesForBooking(date, states);
-            
-            LocalDateTime dateStart = LocalDateTime.of(date, startTime);
-            LocalDateTime dateEnd = LocalDateTime.of(date, endTime);
-            
-            for (BookingDetail detail : allBookingDetails) {
-                if (detail.getBookingDetailID() == excludeBookingDetailId) {
-                    continue;
-                }
-                if (detail.getUserPetID() == userPetId) {
-                    LocalDateTime bookingStart = detail.dateStartService;
-                    LocalDateTime bookingEnd = detail.dateEndService;
-                    
-                    if (!(dateEnd.isBefore(bookingStart) || dateStart.isAfter(bookingEnd))) {
-                        return true;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-    
-    public static List<BookingDetail> getByDateAndStatesForBooking(LocalDate date, String[] states) {
-        List<BookingDetail> bookingDetails = new ArrayList<>();
-
-        // Tạo chuỗi IN cho câu truy vấn SQL
-        StringBuilder placeholders = new StringBuilder();
-        for (int i = 0; i < states.length; i++) {
-            placeholders.append("?");
-            if (i < states.length - 1) {
-                placeholders.append(",");
-            }
-        }
-
-        String sql = "SELECT bd.* FROM BookingDetail bd "
-                + "INNER JOIN Booking b ON bd.BookingID = b.BookingID "
-                + "WHERE CAST(bd.DateStartService AS DATE) <= ? AND CAST(bd.DateEndService AS DATE) >= ?"
-                + "AND b.Status = 1 "
-                + "AND b.State IN (" + placeholders.toString() + ")";
-
-        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setDate(1, java.sql.Date.valueOf(date));
-            ps.setDate(2, java.sql.Date.valueOf(date));
-
-            // Set các tham số cho state
-            for (int i = 0; i < states.length; i++) {
-                ps.setString(i + 3, states[i]);
-            }
-
-            ResultSet rs = ps.executeQuery();
-
-            while (rs.next()) {
-                BookingDetail bookingDetail = new BookingDetail();
-                bookingDetail.setBookingDetailID(rs.getInt("BookingDetailID"));
-                bookingDetail.setBookingID(rs.getInt("BookingID"));
-                bookingDetail.setServiceID(rs.getInt("ServiceID"));
-                bookingDetail.setRoomID(rs.getInt("RoomID"));
-                bookingDetail.setStockBooking(rs.getInt("StockBooking"));
-
-                Timestamp dateStartTimestamp = rs.getTimestamp("DateStartService");
-                if (dateStartTimestamp != null) {
-                    bookingDetail.setDateStartService(dateStartTimestamp.toLocalDateTime());
-                }
-
-                Timestamp dateEndTimestamp = rs.getTimestamp("DateEndService");
-                if (dateEndTimestamp != null) {
-                    bookingDetail.setDateEndService(dateEndTimestamp.toLocalDateTime());
-                }
-
-                Time startTime = rs.getTime("StartTime");
-                if (startTime != null) {
-                    bookingDetail.setStartTime(startTime.toLocalTime());
-                }
-
-                Time endTime = rs.getTime("EndTime");
-                if (endTime != null) {
-                    bookingDetail.setEndTime(endTime.toLocalTime());
-                }
-
-                bookingDetail.setPrice(rs.getFloat("Price"));
-                bookingDetail.setUserPetID(rs.getInt("UserPetID"));
-
-                bookingDetails.add(bookingDetail);
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Error retrieving booking details by date and states: " + e.getMessage());
-        }
-        return bookingDetails;
-    }
-
 }

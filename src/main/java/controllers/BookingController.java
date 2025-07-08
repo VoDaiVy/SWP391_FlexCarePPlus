@@ -512,24 +512,11 @@ public class BookingController extends HttpServlet {
 
             for (int i = 0; i < lodgingDays; i++) {
                 LocalDate currentDate = bookingDate.plusDays(i);
-
-                LocalTime currentStart, currentEnd;
-                if (i == 0) { // Ngày đầu tiên
-                    currentStart = bookingTime;
-                    currentEnd = LocalTime.of(23, 59, 59);
-                } else if (i == lodgingDays - 1) { // Ngày cuối cùng
-                    currentStart = LocalTime.MIN;
-                    currentEnd = endTime;
-                } else { // Ngày ở giữa
-                    currentStart = LocalTime.MIN;
-                    currentEnd = LocalTime.of(23, 59, 59);
-                }
-
-                boolean busyOnThisDay = BookingDetailDAO.isPetBusyLodging(
+                boolean busyOnThisDay = BookingDetailDAO.isPetBusy(
                         userPetId,
                         currentDate,
-                        currentStart,
-                        currentEnd,
+                        bookingTime,
+                        endTime,
                         new String[]{
                             Booking.BookingState.BOOKED.toString(),
                             Booking.BookingState.CART.toString(),
@@ -543,7 +530,6 @@ public class BookingController extends HttpServlet {
                     break;
                 }
             }
-
 
             if (isPetBusy) {
                 out.print("{\"success\": false, \"message\": \"Pet is already scheduled for another service during the selected lodging period. Please select a different time or pet.\"}");
@@ -992,25 +978,13 @@ public class BookingController extends HttpServlet {
             boolean isPetBusy = false;
 
             for (int i = 0; i <= lodgingDays; i++) {
-                LocalDate currentDate = checkInDate.plusDays(i);      
+                LocalDate currentDate = checkInDate.plusDays(i);
 
-                LocalTime currentStart, currentEnd;
-                if (i == 0) { // Ngày đầu tiên
-                    currentStart = checkInTime;
-                    currentEnd = LocalTime.of(23, 59, 59);
-                } else if (i == lodgingDays - 1) { // Ngày cuối cùng
-                    currentStart = LocalTime.MIN;
-                    currentEnd = checkInTime;
-                } else { // Ngày ở giữa
-                    currentStart = LocalTime.MIN;
-                    currentEnd = LocalTime.of(23, 59, 59);
-                }
-                
-                boolean busyOnThisDay = BookingDetailDAO.isPetBusyLodging(
+                boolean busyOnThisDay = BookingDetailDAO.isPetBusy(
                         userPetId,
                         currentDate,
-                        currentStart,
-                        currentEnd,
+                        checkInTime,
+                        checkInTime,
                         new String[]{
                             Booking.BookingState.BOOKED.toString(),
                             Booking.BookingState.CART.toString(),

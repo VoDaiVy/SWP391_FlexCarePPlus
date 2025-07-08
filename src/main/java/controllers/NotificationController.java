@@ -14,7 +14,7 @@ public class NotificationController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String actor = (String)request.getSession().getAttribute("actor");
+        String actor = (String) request.getSession().getAttribute("actor");
         switch (actor) {
             case "admin":
                 adminGet(request, response);
@@ -34,7 +34,7 @@ public class NotificationController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String actor = (String)request.getSession().getAttribute("actor");
+        String actor = (String) request.getSession().getAttribute("actor");
         switch (actor) {
             case "admin":
                 adminPost(request, response);
@@ -54,7 +54,7 @@ public class NotificationController extends HttpServlet {
     @Override
     protected void doPut(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String actor = (String)request.getSession().getAttribute("actor");
+        String actor = (String) request.getSession().getAttribute("actor");
         switch (actor) {
             case "admin":
                 adminPut(request, response);
@@ -74,7 +74,7 @@ public class NotificationController extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String actor = (String)request.getSession().getAttribute("actor");
+        String actor = (String) request.getSession().getAttribute("actor");
         switch (actor) {
             case "admin":
                 adminDelete(request, response);
@@ -104,7 +104,44 @@ public class NotificationController extends HttpServlet {
 
     private void adminPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // To be implemented
+        String action = request.getParameter("action");
+        switch (action) {
+            case "createNotification" -> {
+                // 1. Lấy nội dung thông báo từ form
+                String content = request.getParameter("content");
+                if (content != null && !content.trim().isEmpty()) {
+                    // 2. Tạo notification mới
+                    models.Notification notification = new models.Notification();
+                    notification.setContent(content);
+                    daos.NotificationDAO.create(notification);
+
+                    // 3. Lấy danh sách userID của tất cả user KHÔNG phải admin
+                    java.util.List<Integer> userIds = daos.UserDAO.getAllUserIds();
+                    // 4. Gửi notification tới từng user (NotificationUser)
+                    for (Integer userId : userIds) {
+                        models.NotificationUser nu = new models.NotificationUser();
+                        nu.setUserID(userId);
+                        nu.setNotificationID(notification.getNotificationID());
+                        nu.setStatus(true);
+                        nu.setHasRead(false);
+                        daos.NotificationUserDAO.create(nu);
+                    }
+                }
+                // 5. Quay lại trang danh sách thông báo
+                response.sendRedirect("admin?action=getNotifications");
+            }
+            case "deleteNotification" -> {
+                // Xóa notification và các bản ghi liên quan trong NotificationUser
+                int notificationId = Integer.parseInt(request.getParameter("notificationID"));
+
+                // Xóa tất cả các bản ghi NotificationUser liên quan
+                daos.NotificationUserDAO.deleteAllForNotification(notificationId);
+                // Xóa notification
+                daos.NotificationDAO.delete(notificationId);
+
+                response.sendRedirect("admin?action=getNotifications");
+            }
+        }
     }
 
     private void adminPut(HttpServletRequest request, HttpServletResponse response)
