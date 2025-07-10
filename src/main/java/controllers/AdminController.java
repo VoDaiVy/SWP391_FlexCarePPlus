@@ -49,6 +49,15 @@ public class AdminController extends HttpServlet {
                 case "getServiceDetail" -> {
                     request.getRequestDispatcher("service").forward(request, response);
                 }
+                case "getServiceImages" -> {
+                    request.getRequestDispatcher("serviceimage").forward(request, response);
+                }
+                case "getRooms" -> {
+                    request.getRequestDispatcher("room").forward(request, response);
+                }
+                case "getFeedbacks" -> {
+                    request.getRequestDispatcher("feedbackservice").forward(request, response);
+                }
             }
         }
     }
@@ -96,6 +105,24 @@ public class AdminController extends HttpServlet {
             }
             case "deleteService" -> {
                 request.getRequestDispatcher("service").forward(request, response);
+            }
+            case "addServiceImage" -> {
+                request.getRequestDispatcher("serviceimage").forward(request, response);
+            }
+            case "deleteServiceImage" -> {
+                request.getRequestDispatcher("serviceimage").forward(request, response);
+            }
+            case "createRoom" -> {
+                request.getRequestDispatcher("room").forward(request, response);
+            }
+            case "updateRoom" -> {
+                request.getRequestDispatcher("room").forward(request, response);
+            }
+            case "deleteRoom" -> {
+                request.getRequestDispatcher("room").forward(request, response);
+            }
+            case "toggleFeedbackStatus" -> {
+                request.getRequestDispatcher("feedbackservice").forward(request, response);
             }
         }
     }
