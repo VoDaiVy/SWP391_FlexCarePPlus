@@ -245,6 +245,20 @@
             width: 2rem;
             height: 2rem;
         }
+        
+        /* Image Preview */
+        .image-preview-container {
+            margin-top: 15px;
+            text-align: center;
+        }
+        
+        .image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            border: 1px solid #dee2e6;
+            display: none;
+        }
     </style>
 </head>
 
@@ -300,10 +314,10 @@
                         </div>
                     </div>
 
-                    <form id="serviceForm" action="${pageContext.request.contextPath}/admin/service" method="post" enctype="multipart/form-data">
-                        <input type="hidden" name="action" value="${not empty service ? 'edit' : 'add'}">
+                    <form id="serviceForm" action="admin" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="action" value="${not empty service ? 'updateService' : 'createService'}">
                         <c:if test="${not empty service}">
-                            <input type="hidden" name="serviceID" value="${service.serviceID}">
+                            <input type="hidden" name="id" value="${service.serviceID}">
                         </c:if>
 
                         <div class="row">
@@ -340,6 +354,31 @@
                                             </div>
                                         </div>
                                     </div>
+                                    
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="servicePrice" class="form-label">Price <span class="required">*</span></label>
+                                                <div class="input-group">
+                                                    <span class="input-group-text">$</span>
+                                                    <input type="number" class="form-control" id="servicePrice" name="price" 
+                                                           value="${not empty service ? service.price : '0.00'}" step="0.01" min="0" required>
+                                                </div>
+                                                <div class="form-text">Enter the price for this service</div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="mb-3">
+                                                <label for="serviceTime" class="form-label">Service Time (minutes)</label>
+                                                <div class="input-group">
+                                                    <input type="number" class="form-control" id="serviceTime" name="time" 
+                                                           value="${not empty service ? service.time : '0'}" min="0">
+                                                    <span class="input-group-text">min</span>
+                                                </div>
+                                                <div class="form-text">Estimated time to complete this service</div>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                     <div class="mb-3">
                                         <label for="serviceDescription" class="form-label">Description</label>
@@ -352,66 +391,31 @@
                                 <!-- Image Management -->
                                 <div class="form-section">
                                     <h5 class="section-title">
-                                        <i class="fas fa-images me-2"></i>Service Images
+                                        <i class="fas fa-images me-2"></i>Service Image
                                     </h5>
 
-                                    <!-- Image Upload Area -->
-                                    <div class="image-upload-area" id="imageUploadArea">
-                                        <div class="upload-icon">
-                                            <i class="fas fa-cloud-upload-alt"></i>
-                                        </div>
-                                        <div class="upload-text">
-                                            <h6>Drag and drop images here or click to browse</h6>
-                                            <p class="mb-0">Supports: JPG, PNG, GIF (Max 5MB each)</p>
-                                        </div>
-                                        <input type="file" id="imageInput" name="images" multiple accept="image/*" style="display: none;">
-                                    </div>
-
-                                    <!-- Upload Progress -->
-                                    <div class="upload-progress" id="uploadProgress">
-                                        <div class="d-flex justify-content-between align-items-center mb-2">
-                                            <span class="text-muted">Uploading images...</span>
-                                            <span class="text-muted" id="progressText">0%</span>
-                                        </div>
-                                        <div class="progress">
-                                            <div class="progress-bar" role="progressbar" style="width: 0%" id="progressBar"></div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Current Image</label>
+                                        <div>
+                                            <c:choose>
+                                                <c:when test="${not empty service && not empty service.imgURL}">
+                                                    <img src="${service.imgURL}" alt="Service Image" class="image-preview" style="display: block; max-height: 200px;">
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <p class="text-muted">No image available</p>
+                                                </c:otherwise>
+                                            </c:choose>
                                         </div>
                                     </div>
 
-                                    <!-- Existing Images Gallery -->
-                                    <div class="image-gallery" id="imageGallery">
-                                        <c:if test="${not empty service && not empty service.images}">
-                                            <c:forEach var="image" items="${service.images}" varStatus="status">
-                                                <div class="image-item" data-image-id="${image.id}">
-                                                    <img src="${image.url}" alt="Service Image ${status.index + 1}">
-                                                    <c:if test="${image.isPrimary}">
-                                                        <div class="primary-badge">Primary</div>
-                                                    </c:if>
-                                                    <div class="image-overlay">
-                                                        <div class="image-actions">
-                                                            <c:if test="${!image.isPrimary}">
-                                                                <button type="button" class="btn btn-sm btn-success set-primary-btn" 
-                                                                        data-image-id="${image.id}" title="Set as Primary">
-                                                                    <i class="fas fa-star"></i>
-                                                                </button>
-                                                            </c:if>
-                                                            <button type="button" class="btn btn-sm btn-danger delete-image-btn" 
-                                                                    data-image-id="${image.id}" title="Delete Image">
-                                                                <i class="fas fa-trash"></i>
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </c:forEach>
-                                        </c:if>
-                                    </div>
-
-                                    <!-- Loading Spinner -->
-                                    <div class="loading-spinner" id="loadingSpinner">
-                                        <div class="spinner-border text-primary" role="status">
-                                            <span class="visually-hidden">Loading...</span>
+                                    <div class="mb-3">
+                                        <label for="imageFile" class="form-label">Upload New Image</label>
+                                        <input type="file" class="form-control" id="imageFile" name="imageFile" accept="image/*" onchange="previewImage(this)">
+                                        <div class="form-text">Select an image file (JPG, PNG, GIF) - Max 5MB</div>
+                                        
+                                        <div class="image-preview-container">
+                                            <img id="imagePreview" class="image-preview" alt="Image Preview">
                                         </div>
-                                        <p class="mt-2 text-muted">Processing images...</p>
                                     </div>
                                 </div>
 
@@ -454,20 +458,9 @@
                                         </div>
                                         
                                         <div class="mb-3">
-                                            <label class="form-label text-muted">Created Date</label>
-                                            <div class="fw-bold">
-                                                <fmt:formatDate value="${service.createdDate}" pattern="MMM dd, yyyy HH:mm" />
-                                            </div>
+                                            <label class="form-label text-muted">Views</label>
+                                            <div class="fw-bold">${service.views}</div>
                                         </div>
-                                        
-                                        <c:if test="${not empty service.lastModified}">
-                                            <div class="mb-3">
-                                                <label class="form-label text-muted">Last Modified</label>
-                                                <div class="fw-bold">
-                                                    <fmt:formatDate value="${service.lastModified}" pattern="MMM dd, yyyy HH:mm" />
-                                                </div>
-                                            </div>
-                                        </c:if>
                                     </div>
                                 </c:if>
 
@@ -510,7 +503,7 @@
                                 </div>
                                 <div class="col-md-6">
                                     <div class="d-flex gap-2 justify-content-md-end">
-                                        <a href="${pageContext.request.contextPath}/admin/service" class="btn btn-secondary">
+                                        <a href="admin?action=getServices" class="btn btn-secondary">
                                             <i class="fas fa-times me-2"></i>Cancel
                                         </a>
                                         <button type="submit" class="btn btn-primary" id="submitBtn">
@@ -580,11 +573,9 @@
         var serviceId = document.getElementById('serviceId').value;
         var autoSaveEnabled = true;
         var autoSaveInterval;
-        var uploadedImages = [];
 
         // Initialize page
         document.addEventListener('DOMContentLoaded', function () {
-            initializeImageUpload();
             initializeStatusToggle();
             initializeFormValidation();
             initializeAutoSave();
@@ -594,306 +585,46 @@
             showMessages();
         });
 
-        // Image Upload Functionality
-        function initializeImageUpload() {
-            var uploadArea = document.getElementById('imageUploadArea');
-            var imageInput = document.getElementById('imageInput');
-
-            // Click to upload
-            uploadArea.addEventListener('click', function() {
-                imageInput.click();
-            });
-
-            // File input change
-            imageInput.addEventListener('change', function(e) {
-                handleFiles(e.target.files);
-            });
-
-            // Drag and drop
-            uploadArea.addEventListener('dragover', function(e) {
-                e.preventDefault();
-                uploadArea.classList.add('dragover');
-            });
-
-            uploadArea.addEventListener('dragleave', function(e) {
-                e.preventDefault();
-                uploadArea.classList.remove('dragover');
-            });
-
-            uploadArea.addEventListener('drop', function(e) {
-                e.preventDefault();
-                uploadArea.classList.remove('dragover');
-                handleFiles(e.dataTransfer.files);
-            });
-        }
-
-        // Handle file uploads
-        function handleFiles(files) {
-            if (files.length === 0) return;
-
-            var validFiles = [];
-            for (var i = 0; i < files.length; i++) {
-                var file = files[i];
-                if (validateFile(file)) {
-                    validFiles.push(file);
-                }
-            }
-
-            if (validFiles.length > 0) {
-                uploadImages(validFiles);
+        // Preview image from file input
+        function previewImage(input) {
+            var preview = document.getElementById('imagePreview');
+            
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    
+                    // Clear URL input when file is selected
+                    document.getElementById('imgURL').value = '';
+                };
+                
+                reader.readAsDataURL(input.files[0]);
+            } else {
+                preview.style.display = 'none';
             }
         }
-
-        // Validate file
-        function validateFile(file) {
-            var allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-            var maxSize = 5 * 1024 * 1024; // 5MB
-
-            if (!allowedTypes.includes(file.type)) {
-                alert('Invalid file type. Please upload JPG, PNG, or GIF images.');
-                return false;
+        
+        // Preview image from URL
+        function previewImageURL(input) {
+            var preview = document.getElementById('imagePreview');
+            
+            if (input.value.trim() !== '') {
+                preview.src = input.value;
+                preview.style.display = 'block';
+                
+                // Clear file input when URL is entered
+                document.getElementById('imageFile').value = '';
+                
+                // Handle image load error
+                preview.onerror = function() {
+                    preview.style.display = 'none';
+                    alert('Invalid image URL or image cannot be loaded');
+                };
+            } else {
+                preview.style.display = 'none';
             }
-
-            if (file.size > maxSize) {
-                alert('File size too large. Maximum size is 5MB.');
-                return false;
-            }
-
-            return true;
-        }
-
-        // Upload images
-        function uploadImages(files) {
-            var formData = new FormData();
-            for (var i = 0; i < files.length; i++) {
-                formData.append('images', files[i]);
-            }
-            
-            if (serviceId) {
-                formData.append('serviceId', serviceId);
-            }
-
-            showUploadProgress();
-
-            fetch('/admin/service/upload-images', {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => response.json())
-            .then(data => {
-                hideUploadProgress();
-                if (data.success) {
-                    addImagesToGallery(data.images);
-                    uploadedImages = uploadedImages.concat(data.images);
-                } else {
-                    alert('Upload failed: ' + data.message);
-                }
-            })
-            .catch(error => {
-                hideUploadProgress();
-                alert('Upload error: ' + error.message);
-            });
-        }
-
-        // Show upload progress
-        function showUploadProgress() {
-            document.getElementById('uploadProgress').style.display = 'block';
-            document.getElementById('loadingSpinner').style.display = 'block';
-            
-            // Simulate progress
-            var progress = 0;
-            var progressBar = document.getElementById('progressBar');
-            var progressText = document.getElementById('progressText');
-            
-            var interval = setInterval(function() {
-                progress += Math.random() * 15;
-                if (progress > 90) progress = 90;
-                
-                progressBar.style.width = progress + '%';
-                progressText.textContent = Math.round(progress) + '%';
-                
-                if (progress >= 90) {
-                    clearInterval(interval);
-                }
-            }, 200);
-        }
-
-        // Hide upload progress
-        function hideUploadProgress() {
-            document.getElementById('uploadProgress').style.display = 'none';
-            document.getElementById('loadingSpinner').style.display = 'none';
-            
-            var progressBar = document.getElementById('progressBar');
-            var progressText = document.getElementById('progressText');
-            progressBar.style.width = '100%';
-            progressText.textContent = '100%';
-            
-            setTimeout(function() {
-                progressBar.style.width = '0%';
-                progressText.textContent = '0%';
-            }, 1000);
-        }
-
-        // Add images to gallery
-        function addImagesToGallery(images) {
-            var gallery = document.getElementById('imageGallery');
-            
-            images.forEach(function(image) {
-                var imageItem = document.createElement('div');
-                imageItem.className = 'image-item';
-                imageItem.setAttribute('data-image-id', image.id);
-                
-                // Create image element
-                var imgElement = document.createElement('img');
-                imgElement.src = image.url;
-                imgElement.alt = 'Service Image';
-                imageItem.appendChild(imgElement);
-                
-                // Create primary badge if needed
-                if (image.isPrimary) {
-                    var primaryBadge = document.createElement('div');
-                    primaryBadge.className = 'primary-badge';
-                    primaryBadge.textContent = 'Primary';
-                    imageItem.appendChild(primaryBadge);
-                }
-                
-                // Create overlay
-                var overlay = document.createElement('div');
-                overlay.className = 'image-overlay';
-                
-                var actions = document.createElement('div');
-                actions.className = 'image-actions';
-                
-                // Set primary button
-                if (!image.isPrimary) {
-                    var setPrimaryBtn = document.createElement('button');
-                    setPrimaryBtn.type = 'button';
-                    setPrimaryBtn.className = 'btn btn-sm btn-success set-primary-btn';
-                    setPrimaryBtn.setAttribute('data-image-id', image.id);
-                    setPrimaryBtn.title = 'Set as Primary';
-                    setPrimaryBtn.innerHTML = '<i class="fas fa-star"></i>';
-                    actions.appendChild(setPrimaryBtn);
-                }
-                
-                // Delete button
-                var deleteBtn = document.createElement('button');
-                deleteBtn.type = 'button';
-                deleteBtn.className = 'btn btn-sm btn-danger delete-image-btn';
-                deleteBtn.setAttribute('data-image-id', image.id);
-                deleteBtn.title = 'Delete Image';
-                deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
-                actions.appendChild(deleteBtn);
-                
-                overlay.appendChild(actions);
-                imageItem.appendChild(overlay);
-                
-                gallery.appendChild(imageItem);
-            });
-            
-            // Reinitialize event listeners for new images
-            initializeImageActions();
-        }
-
-        // Initialize image actions
-        function initializeImageActions() {
-            // Set primary image
-            document.querySelectorAll('.set-primary-btn').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var imageId = this.getAttribute('data-image-id');
-                    setPrimaryImage(imageId);
-                });
-            });
-
-            // Delete image
-            document.querySelectorAll('.delete-image-btn').forEach(function(btn) {
-                btn.addEventListener('click', function() {
-                    var imageId = this.getAttribute('data-image-id');
-                    deleteImage(imageId);
-                });
-            });
-        }
-
-        // Set primary image
-        function setPrimaryImage(imageId) {
-            fetch('/admin/service/set-primary-image', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    serviceId: serviceId,
-                    imageId: imageId
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    updatePrimaryImageUI(imageId);
-                } else {
-                    alert('Failed to set primary image: ' + data.message);
-                }
-            })
-            .catch(error => {
-                alert('Error: ' + error.message);
-            });
-        }
-
-        // Update primary image UI
-        function updatePrimaryImageUI(newPrimaryId) {
-            // Remove all primary badges and buttons
-            document.querySelectorAll('.primary-badge').forEach(function(badge) {
-                badge.remove();
-            });
-            
-            document.querySelectorAll('.set-primary-btn').forEach(function(btn) {
-                btn.style.display = 'inline-block';
-            });
-
-            // Add primary badge to new primary image
-            var newPrimaryItem = document.querySelector('[data-image-id="' + newPrimaryId + '"]');
-            if (newPrimaryItem) {
-                var primaryBadge = document.createElement('div');
-                primaryBadge.className = 'primary-badge';
-                primaryBadge.textContent = 'Primary';
-                newPrimaryItem.appendChild(primaryBadge);
-                
-                var setPrimaryBtn = newPrimaryItem.querySelector('.set-primary-btn');
-                if (setPrimaryBtn) {
-                    setPrimaryBtn.style.display = 'none';
-                }
-            }
-        }
-
-        // Delete image
-        function deleteImage(imageId) {
-            if (!confirm('Are you sure you want to delete this image?')) {
-                return;
-            }
-
-            fetch('/admin/service/delete-image', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    serviceId: serviceId,
-                    imageId: imageId
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    var imageItem = document.querySelector('[data-image-id="' + imageId + '"]');
-                    if (imageItem) {
-                        imageItem.remove();
-                    }
-                } else {
-                    alert('Failed to delete image: ' + data.message);
-                }
-            })
-            .catch(error => {
-                alert('Error: ' + error.message);
-            });
         }
 
         // Initialize status toggle
@@ -931,6 +662,7 @@
         function validateForm() {
             var serviceName = document.getElementById('serviceName').value.trim();
             var categoryId = document.getElementById('categoryServiceID').value;
+            var price = document.getElementById('servicePrice').value;
 
             if (!serviceName) {
                 alert('Please enter service name!');
@@ -941,6 +673,12 @@
             if (!categoryId) {
                 alert('Please select a category!');
                 document.getElementById('categoryServiceID').focus();
+                return false;
+            }
+            
+            if (price === '' || isNaN(price) || parseFloat(price) < 0) {
+                alert('Please enter a valid price!');
+                document.getElementById('servicePrice').focus();
                 return false;
             }
 
@@ -1039,7 +777,8 @@
             document.getElementById('resetFormBtn').addEventListener('click', function() {
                 if (confirm('Are you sure you want to reset the form? All unsaved changes will be lost.')) {
                     document.getElementById('serviceForm').reset();
-                    location.reload();
+                    document.getElementById('imagePreview').style.display = 'none';
+                    initializeStatusToggle();
                 }
             });
 
@@ -1055,7 +794,7 @@
                 deleteBtn.addEventListener('click', function() {
                     var modal = new bootstrap.Modal(document.getElementById('deleteConfirmModal'));
                     document.getElementById('deleteMessage').textContent = 
-                        'This will permanently delete the service and all associated images.';
+                        'This will permanently delete the service.';
                     modal.show();
                 });
             }
@@ -1063,12 +802,9 @@
             // Confirm delete
             document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
                 if (serviceId) {
-                    window.location.href = '/admin/service?action=delete&serviceID=' + serviceId;
+                    window.location.href = '${pageContext.request.contextPath}/admin/service?action=delete&serviceID=' + serviceId;
                 }
             });
-
-            // Initialize existing image actions
-            initializeImageActions();
         }
 
         // Show messages
