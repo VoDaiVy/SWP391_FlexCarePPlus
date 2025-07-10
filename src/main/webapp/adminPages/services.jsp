@@ -240,7 +240,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="float-end d-none d-md-block">
-                                        <a href="${pageContext.request.contextPath}/admin/service-detail" class="btn btn-primary">
+                                        <a href="admin?action=getServiceDetail" class="btn btn-primary">
                                             <i class="fas fa-plus me-2"></i>Add Service
                                         </a>
                                     </div>
@@ -375,12 +375,12 @@
                                                 </div>
                                                 <div class="col-md-2">
                                                     <div class="service-actions">
-                                                        <a href="${pageContext.request.contextPath}/admin/service-detail?serviceID=${service.serviceID}" class="btn btn-warning btn-sm" title="Edit">
+                                                        <a href="admin?action=getServiceDetail&id=${service.serviceID}" class="btn btn-warning btn-sm" title="Edit">
                                                             <i class="fas fa-edit"></i>
                                                         </a>
-                                                        <form action="${pageContext.request.contextPath}/admin/service" method="post" class="d-inline">
-                                                            <input type="hidden" name="action" value="delete">
-                                                            <input type="hidden" name="serviceID" value="${service.serviceID}">
+                                                        <form action="admin" method="post" class="d-inline">
+                                                            <input type="hidden" name="action" value="deleteService">
+                                                            <input type="hidden" name="id" value="${service.serviceID}">
                                                             <button type="submit" class="btn btn-danger btn-sm delete-service-btn" 
                                                                     title="Delete" onclick="return confirm('Are you sure you want to delete this service?');">
                                                                 <i class="fas fa-trash"></i>

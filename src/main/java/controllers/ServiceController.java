@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,6 +16,11 @@ import models.CategoryService;
 import models.Service;
 import models.ServiceImage;
 
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024 * 1, // 1 MB
+        maxFileSize = 1024 * 1024 * 10, // 10 MB
+        maxRequestSize = 1024 * 1024 * 100 // 100 MB
+)
 public class ServiceController extends HttpServlet {
 
     @Override
@@ -126,10 +132,10 @@ public class ServiceController extends HttpServlet {
                 if (idString != null) {
                     int id = Integer.parseInt(request.getParameter("id"));
                     Service service = ServiceDAO.getById(id);
-                    List<ServiceImage> serviceImages = ServiceImageDAO.getByServiceId(id);
                     request.setAttribute("service", service);
-                    request.setAttribute("images", serviceImages);
                 }
+                Map<Integer, CategoryService> categories = CategoryServiceDAO.getMap();
+                request.setAttribute("categories", categories);
                 request.getRequestDispatcher("adminPages/serviceDetail.jsp").forward(request, response);
             }
         }
@@ -137,7 +143,93 @@ public class ServiceController extends HttpServlet {
 
     private void adminPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // To be implemented
+        String action = request.getParameter("action");
+        switch (action) {
+            case "createService" -> {
+                // Tạo mới service
+                Service service = new Service();
+                service.setName(request.getParameter("name"));
+                service.setDescription(request.getParameter("description"));
+                service.setCategoryServiceID(Integer.parseInt(request.getParameter("categoryServiceID")));
+                service.setPrice(Float.parseFloat(request.getParameter("price")));
+                service.setTime(Integer.parseInt(request.getParameter("time")));
+                service.setViews(0);
+                service.setStatus(request.getParameter("status") == null || request.getParameter("status").equals("1") || request.getParameter("status").equalsIgnoreCase("true"));
+
+                // Xử lý ảnh chính
+                jakarta.servlet.http.Part mainImagePart = request.getPart("imageFile");
+                String mainImgURL = null;
+                if (mainImagePart != null && mainImagePart.getSize() > 0) {
+                    try (java.io.InputStream is = mainImagePart.getInputStream()) {
+                        String fileName = mainImagePart.getSubmittedFileName();
+                        mainImgURL = utils.S3Uploader.uploadToS3(is, fileName, mainImagePart.getSize());
+                    }
+                }
+                service.setImgURL(mainImgURL);
+
+                boolean created = ServiceDAO.create(service);
+                if (created) {
+                    // Xử lý upload nhiều ảnh gallery
+                    for (jakarta.servlet.http.Part part : request.getParts()) {
+                        if ("galleryImages".equals(part.getName()) && part.getSize() > 0) {
+                            try (java.io.InputStream is = part.getInputStream()) {
+                                String fileName = part.getSubmittedFileName();
+                                String imgURL = utils.S3Uploader.uploadToS3(is, fileName, part.getSize());
+                                ServiceImage img = new ServiceImage();
+                                img.setServiceID(service.getServiceID());
+                                img.setImgURL(imgURL);
+                                ServiceImageDAO.create(img);
+                            }
+                        }
+                    }
+                    response.sendRedirect("admin?action=getServiceDetail&id=" + service.getServiceID());
+                } else {
+                    request.setAttribute("message", "Tạo dịch vụ thất bại!");
+                    request.setAttribute("type", "danger");
+                    response.sendRedirect("admin?action=getServices");
+                }
+            }
+            case "updateService" -> {
+                // Cập nhật service
+                int id = Integer.parseInt(request.getParameter("id"));
+                Service service = ServiceDAO.getById(id);
+                service.setName(request.getParameter("name"));
+                service.setDescription(request.getParameter("description"));
+                service.setCategoryServiceID(Integer.parseInt(request.getParameter("categoryServiceID")));
+                service.setPrice(Float.parseFloat(request.getParameter("price")));
+                service.setTime(Integer.parseInt(request.getParameter("time")));
+                service.setStatus(request.getParameter("status") == null || request.getParameter("status").equals("1") || request.getParameter("status").equalsIgnoreCase("true"));
+
+                // Xử lý ảnh chính nếu có upload mới
+                jakarta.servlet.http.Part mainImagePart = request.getPart("imageFile");
+                if (mainImagePart != null && mainImagePart.getSize() > 0) {
+                    try (java.io.InputStream is = mainImagePart.getInputStream()) {
+                        String fileName = mainImagePart.getSubmittedFileName();
+                        String mainImgURL = utils.S3Uploader.uploadToS3(is, fileName, mainImagePart.getSize());
+                        service.setImgURL(mainImgURL);
+                    }
+                }
+
+                boolean updated = ServiceDAO.update(service);
+                if (updated) {
+                    response.sendRedirect("admin?action=getServiceDetail&id=" + service.getServiceID());
+                } else {
+                    request.setAttribute("message", "Cập nhật dịch vụ thất bại!");
+                    request.setAttribute("type", "danger");
+                    response.sendRedirect("admin?action=getServices");
+                }
+            }
+            case "deleteService" -> {
+                // Xóa ảnh gallery
+                int serviceID = Integer.parseInt(request.getParameter("id"));
+                Service service = ServiceDAO.getById(serviceID);
+                ServiceDAO.hardDelete(serviceID);
+                if (service.getImgURL() != null) {
+                    utils.S3Uploader.deleteFromS3(service.getImgURL());
+                }
+                response.sendRedirect("admin?action=getServices");
+            }
+        }
     }
 
     private void adminPut(HttpServletRequest request, HttpServletResponse response)
@@ -311,7 +403,7 @@ public class ServiceController extends HttpServlet {
             List<models.ServiceImage> serviceImages = daos.ServiceImageDAO.getByServiceId(serviceId);
 
             List<models.FeedbackService> feedbackServices = daos.FeedbackServiceDAO.getByServiceId(serviceId);
-            
+
             List<dtos.FeedbackServiceDTO> feedbacks = new java.util.ArrayList<>();
             for (models.FeedbackService feedback : feedbackServices) {
                 models.UserDetail userDetail = daos.UserDetailDAO.getByUserId(feedback.getUserID());
