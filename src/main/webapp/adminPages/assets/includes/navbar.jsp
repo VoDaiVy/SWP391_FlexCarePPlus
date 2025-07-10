@@ -40,6 +40,7 @@
                     <ul class="sub-menu" aria-expanded="false">
                         <li><a href="admin?action=getUsers">Quản Lý Người Dùng</a></li>
                         <li><a href="admin?action=getCategoryServices">Quản Lý Loại Hình Dịch Vụ</a></li>
+                        <li><a href="admin?action=getServices">Quản Lý Dịch Vụ</a></li>
                         <li><a href="${pageContext.request.contextPath}/OrderServlet?actor=admin&action=management">Quản Lý Dịch Vụ</a></li>
                         <li><a href="admin?action=getNotifications">Quản Lý Thông Báo</a></li>
                         <li><a href="admin?action=getPolicies">Quản Lý Chính Sách</a></li>

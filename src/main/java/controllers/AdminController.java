@@ -36,6 +36,12 @@ public class AdminController extends HttpServlet {
                 case "getCategoryServices" -> {
                     request.getRequestDispatcher("categoryservice").forward(request, response);
                 }
+                case "getServices" -> {
+                    request.getRequestDispatcher("service").forward(request, response);
+                }
+                case "getServiceDetail" -> {
+                    request.getRequestDispatcher("service").forward(request, response);
+                }
             }
         }
     }
