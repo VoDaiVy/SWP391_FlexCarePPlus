@@ -55,6 +55,9 @@ public class AdminController extends HttpServlet {
                 case "getRooms" -> {
                     request.getRequestDispatcher("room").forward(request, response);
                 }
+                case "getFeedbacks" -> {
+                    request.getRequestDispatcher("feedbackservice").forward(request, response);
+                }
             }
         }
     }
@@ -117,6 +120,9 @@ public class AdminController extends HttpServlet {
             }
             case "deleteRoom" -> {
                 request.getRequestDispatcher("room").forward(request, response);
+            }
+            case "toggleFeedbackStatus" -> {
+                request.getRequestDispatcher("feedbackservice").forward(request, response);
             }
         }
     }
