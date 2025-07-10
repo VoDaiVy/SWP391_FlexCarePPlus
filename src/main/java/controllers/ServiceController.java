@@ -1,5 +1,8 @@
 package controllers;
 
+import daos.CategoryServiceDAO;
+import daos.ServiceDAO;
+import daos.ServiceImageDAO;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -8,6 +11,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import models.CategoryService;
+import models.Service;
+import models.ServiceImage;
 
 public class ServiceController extends HttpServlet {
 
@@ -106,7 +112,27 @@ public class ServiceController extends HttpServlet {
     // Admin role methods
     private void adminGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // To be implemented
+        String action = request.getParameter("action");
+        switch (action) {
+            case "getServices" -> {
+                Map<Integer, CategoryService> categories = CategoryServiceDAO.getMap();
+                List<Service> services = ServiceDAO.getAll();
+                request.setAttribute("categories", categories);
+                request.setAttribute("services", services);
+                request.getRequestDispatcher("adminPages/services.jsp").forward(request, response);
+            }
+            case "getServiceDetail" -> {
+                String idString = request.getParameter("id");
+                if (idString != null) {
+                    int id = Integer.parseInt(request.getParameter("id"));
+                    Service service = ServiceDAO.getById(id);
+                    List<ServiceImage> serviceImages = ServiceImageDAO.getByServiceId(id);
+                    request.setAttribute("service", service);
+                    request.setAttribute("images", serviceImages);
+                }
+                request.getRequestDispatcher("adminPages/serviceDetail.jsp").forward(request, response);
+            }
+        }
     }
 
     private void adminPost(HttpServletRequest request, HttpServletResponse response)
