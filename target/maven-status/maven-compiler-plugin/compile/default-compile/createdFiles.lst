@@ -23,6 +23,7 @@ models\MedicalRecords.class
 utils\LocalDateTimeAdapter.class
 daos\NotificationDAO.class
 daos\ServiceDAO.class
+dtos\NotificationDTO.class
 daos\CategoryServiceDAO.class
 dtos\PetDTO.class
 models\Booking.class
