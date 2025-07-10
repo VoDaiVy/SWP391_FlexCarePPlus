@@ -33,6 +33,9 @@ public class AdminController extends HttpServlet {
                 case "getPolicyDetail" -> {
                     request.getRequestDispatcher("policy").forward(request, response);
                 }
+                case "getCategoryServices" -> {
+                    request.getRequestDispatcher("categoryservice").forward(request, response);
+                }
             }
         }
     }
@@ -62,6 +65,15 @@ public class AdminController extends HttpServlet {
             }
             case "deletePolicy" -> {
                 request.getRequestDispatcher("policy").forward(request, response);
+            }
+            case "createCategoryService" -> {
+                request.getRequestDispatcher("categoryservice").forward(request, response);
+            }
+            case "updateCategoryService" -> {
+                request.getRequestDispatcher("categoryservice").forward(request, response);
+            }
+            case "deleteCategoryService" -> {
+                request.getRequestDispatcher("categoryservice").forward(request, response);
             }
         }
     }
