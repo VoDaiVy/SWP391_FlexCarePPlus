@@ -322,6 +322,12 @@
                         <a href="admin?action=getFeedbacks&serviceID=${service.serviceID}" class="btn btn-outline-warning" id="viewFeedbackBtnTop">
                             <i class="fas fa-comments me-2"></i>View Feedback
                         </a>
+                      
+                    <!-- View Images Button at top of page -->
+                    <div class="mb-3 d-flex justify-content-end">
+                        <a href="admin?action=getServiceImages&serviceID=${service.serviceID}" class="btn btn-outline-info" id="viewImagesBtnTop">
+                            <i class="fas fa-images me-2"></i>View Images
+                        </a>
                     </div>
                     <form id="serviceForm" action="admin" method="post" enctype="multipart/form-data">
                         <input type="hidden" name="action" value="${not empty service ? 'updateService' : 'createService'}">
