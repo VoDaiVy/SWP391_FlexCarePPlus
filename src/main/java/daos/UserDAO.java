@@ -348,4 +348,32 @@ public class UserDAO {
         }
         return users;
     }
+
+    public static Map<Integer, User> adminGetByBookingID(int day, int month, int year) {
+        Map<Integer, User> users = new HashMap<>();
+        String sql = "SELECT DISTINCT u.*\n"
+                + "FROM Users u\n"
+                + "JOIN Booking b ON u.UserID = b.UserID\n"
+                + "WHERE DAY(b.DateBooked) = ? AND MONTH(b.DateBooked) = ? AND YEAR(b.DateBooked) = ?";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, day);
+            ps.setInt(2, month);
+            ps.setInt(3, year);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                User user = new User();
+                user.setUserId(rs.getInt("UserID"));
+                user.setRole(rs.getString("Role"));
+                user.setUserName(rs.getString("UserName"));
+                user.setPassword(rs.getString("Password"));
+                user.setEmail(rs.getString("Email"));
+                user.setStatus(rs.getBoolean("Status"));
+                users.put(user.getUserId(), user);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error retrieving all users booking: " + e.getMessage());
+        }
+        return users;
+    }
 }

@@ -24,34 +24,36 @@ import models.Booking;
 public class CartCleanupServlet extends HttpServlet {
 
     private ScheduledExecutorService scheduler;
-    
+
     @Override
     public void init() throws ServletException {
         super.init();
-        
+
         // Tạo scheduler với một thread
         scheduler = Executors.newScheduledThreadPool(1);
-        
+
         // Lên lịch cho task chạy mỗi 1 phút
         scheduler.scheduleAtFixedRate(() -> {
             try {
                 cleanupExpiredCarts();
+                cleanupExpiredPendingPayments();
+                autoFinishCompletedBookings();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }, 0, 1, TimeUnit.MINUTES);
-        
+
         System.out.println("Cart cleanup scheduler initialized.");
     }
-    
+
     private void cleanupExpiredCarts() {
         try {
             // Lấy tất cả booking có trạng thái CART
             List<Booking> cartBookings = BookingDAO.getByState(Booking.BookingState.CART.toString());
-            
+
             // Thời gian hiện tại
             LocalDateTime now = LocalDateTime.now();
-            
+
             for (Booking booking : cartBookings) {
                 // Kiểm tra nếu booking đã được tạo hơn 15 phút
                 if (booking.dateBooked.plusMinutes(15).isBefore(now)) {
@@ -64,7 +66,47 @@ public class CartCleanupServlet extends HttpServlet {
             e.printStackTrace();
         }
     }
-    
+
+    private void cleanupExpiredPendingPayments() {
+        try {
+            List<Booking> pendingPaymentBookings = BookingDAO.getByState(Booking.BookingState.PENDINGPAYMENT.toString());
+
+            LocalDateTime now = LocalDateTime.now();
+
+            for (Booking booking : pendingPaymentBookings) {
+                if (booking.dateBooked.plusMinutes(5).isBefore(now)) {
+                    System.out.println("Auto-cancelling expired pending payment booking ID " + booking.getBookingID()
+                            + " (created: " + booking.getDateBooked() + ", timeout: 5 minutes)");
+                    booking.setState(Booking.BookingState.CANCEL.toString());
+                    BookingDAO.update(booking);
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error in cleanupExpiredPendingPayments: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private void autoFinishCompletedBookings() {
+        try {
+            // Lấy danh sách booking IDs đã hoàn thành
+            List<Integer> completedBookingIds = daos.BookingDetailDAO.getCompletedBookedBookings();
+
+            if (!completedBookingIds.isEmpty()) {
+                // Update state từ BOOKED sang FINISHED
+                int updatedCount = daos.BookingDAO.updateCompletedBookingsToFinished(completedBookingIds);
+
+                if (updatedCount > 0) {
+                    System.out.println("Auto-finished " + updatedCount + " completed bookings: " + completedBookingIds);
+                }
+            }
+
+        } catch (Exception e) {
+            System.err.println("Error in autoFinishCompletedBookings: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void destroy() {
         // Dừng scheduler khi servlet bị hủy

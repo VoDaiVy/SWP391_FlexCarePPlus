@@ -7,6 +7,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
+import java.util.Map;
 import models.UserDetail;
 import utils.DBConnection;
 
@@ -156,5 +158,40 @@ public class UserDetailDAO {
             System.out.println("Error updating user avatar: " + e.getMessage());
         }
         return false;
+    }
+    
+    public static Map<Integer, UserDetail> adminGetByBookingID(int day, int month, int year) {
+        Map<Integer, UserDetail> userDetails = new HashMap<>();
+        String sql = "SELECT DISTINCT u.*\n"
+                + "FROM UserDetail u\n"
+                + "JOIN Booking b ON u.UserID = b.UserID\n"
+                + "WHERE DAY(b.DateBooked) = ? AND MONTH(b.DateBooked) = ? AND YEAR(b.DateBooked) = ?";
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, day);
+            ps.setInt(2, month);
+            ps.setInt(3, year);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                UserDetail userDetail = new UserDetail();
+                userDetail.setUserID(rs.getInt("UserID"));
+                userDetail.setFirstName(rs.getString("FirstName"));
+                userDetail.setLastName(rs.getString("LastName"));
+                userDetail.setTel(rs.getString("Tel"));
+                
+                // Handle SQL Date to LocalDate conversion
+                Date dobDate = rs.getDate("DOB");
+                if (dobDate != null) {
+                    userDetail.setDob(dobDate.toLocalDate());
+                }
+                
+                userDetail.setGender(rs.getString("Gender"));
+                userDetail.setAvatar(rs.getString("Avatar"));
+                userDetails.put(userDetail.getUserID(), userDetail);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error retrieving all userDetails booking: " + e.getMessage());
+        }
+        return userDetails;
     }
 }

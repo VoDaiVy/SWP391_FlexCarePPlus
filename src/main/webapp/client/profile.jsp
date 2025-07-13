@@ -5,21 +5,32 @@
 <style>
     /* Animation for new row */
     @keyframes highlightNew {
-        0% { background-color: rgba(52, 173, 84, 0.2); }
-        70% { background-color: rgba(52, 173, 84, 0.2); }
-        100% { background-color: transparent; }
+        0% {
+            background-color: rgba(52, 173, 84, 0.2);
+        }
+        70% {
+            background-color: rgba(52, 173, 84, 0.2);
+        }
+        100% {
+            background-color: transparent;
+        }
     }
-    
+
     .highlight-new {
         animation: highlightNew 3s ease;
     }
-    
+
     /* Animation for row deletion */
     @keyframes fadeOut {
-        from { opacity: 1; }
-        to { opacity: 0; transform: translateX(30px); }
+        from {
+            opacity: 1;
+        }
+        to {
+            opacity: 0;
+            transform: translateX(30px);
+        }
     }
-    
+
     .fade-out {
         animation: fadeOut 0.5s ease forwards;
     }
@@ -223,53 +234,16 @@
                             <div class="border-bottom pb-3 mb-4">
                                 <h4 class="text-uppercase">Booking History</h4>
                             </div>
-
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead>
-                                        <tr>
-                                            <th>Booking ID</th>
-                                            <th>Date</th>
-                                            <th>Service</th>
-                                            <th>Provider</th>
-                                            <th>Status</th>
-                                            <th>Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>#BK12345</td>
-                                            <td>2025-05-15</td>
-                                            <td>Health Checkup</td>
-                                            <td>Dr. Smith</td>
-                                            <td><span class="badge bg-success">Completed</span></td>
-                                            <td><button class="btn btn-sm btn-outline-primary">View Details</button></td>
-                                        </tr>
-                                        <tr>
-                                            <td>#BK12344</td>
-                                            <td>2025-05-22</td>
-                                            <td>Consultation</td>
-                                            <td>Dr. Johnson</td>
-                                            <td><span class="badge bg-warning text-dark">Upcoming</span></td>
-                                            <td>
-                                                <button class="btn btn-sm btn-outline-primary me-1">View Details</button>
-                                                <button class="btn btn-sm btn-outline-danger">Cancel</button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>#BK12343</td>
-                                            <td>2025-05-05</td>
-                                            <td>Lab Tests</td>
-                                            <td>Metro Lab</td>
-                                            <td><span class="badge bg-info">Processing</span></td>
-                                            <td><button class="btn btn-sm btn-outline-primary">View Details</button></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                            <div id="bookingHistoryTableContainer">
+                                <div class="text-center py-4">
+                                    <div class="spinner-border text-primary" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                    </div>                   
-                    
+                    </div>
+
                     <!-- My Pets Tab -->
                     <div class="tab-pane fade" id="userPets" role="tabpanel" aria-labelledby="user-pets-tab">
                         <div class="bg-light p-4 rounded">
@@ -384,6 +358,56 @@
 </div>
 
 <jsp:include page="/client/assets/layout/footer.jsp"/>
+
+<!-- Feedback Modal -->
+<div class="modal fade" id="feedbackModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Rate Service</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div id="feedbackServiceList">
+                    <!-- Services without feedback will be loaded here -->
+                </div>
+                <form id="feedbackForm" style="display: none;">
+                    <div class="text-center mb-3">
+                        <img id="feedbackServiceImage" src="" alt="" class="service-image">
+                        <h6 id="feedbackServiceName" class="mt-2"></h6>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Rating *</label>
+                        <div class="star-rating text-center" id="starRating">
+                            <span class="star" data-rating="1">★</span>
+                            <span class="star" data-rating="2">★</span>
+                            <span class="star" data-rating="3">★</span>
+                            <span class="star" data-rating="4">★</span>
+                            <span class="star" data-rating="5">★</span>
+                        </div>
+                        <input type="hidden" id="ratingValue" name="rating" value="0">
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="feedbackComment" class="form-label">Comment (Optional)</label>
+                        <textarea class="form-control" id="feedbackComment" name="comment" rows="3" 
+                                  placeholder="Share your experience with this service..."></textarea>
+                    </div>
+
+                    <input type="hidden" id="feedbackBookingId" name="bookingId">
+                    <input type="hidden" id="feedbackServiceId" name="serviceId">
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="submitFeedbackBtn" class="btn btn-primary" style="display: none;" onclick="submitFeedback()">
+                    Submit Feedback
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 
 <!-- JavaScript for Profile Page -->
 <script>
@@ -500,81 +524,100 @@
                 document.getElementById('currentPassword').closest('.mb-3').style.display = 'none';
             }
         });
+
         // Tab navigation - ensure proper activation of tabs
         document.querySelectorAll('[data-bs-toggle="tab"]').forEach(function (element) {
             element.addEventListener('click', function (e) {
                 e.preventDefault();
 
+                const target = this.getAttribute('href');
+                if (!target)
+                    return;
+                const targetId = target.substring(1);
+                const targetPane = document.getElementById(targetId);
+
+                if (!targetPane) {
+                    console.error('Tab pane not found:', targetId);
+                    return;
+                }
+
                 // Remove active class from all tabs
                 document.querySelectorAll('[data-bs-toggle="tab"]').forEach(el => {
                     el.classList.remove('active');
+                    el.setAttribute('aria-selected', 'false');
                 });
 
                 // Add active class to clicked tab
                 this.classList.add('active');
+                this.setAttribute('aria-selected', 'true');
 
-                // Show the corresponding tab content
-                const target = this.getAttribute('href').substring(1);
                 document.querySelectorAll('.tab-pane').forEach(pane => {
                     pane.classList.remove('show', 'active');
                 });
-                document.getElementById(target).classList.add('show', 'active');
+
+                // Show target pane
+                targetPane.classList.add('show', 'active');
+
+                // Special handling for booking history
+                if (targetId === 'bookingHistory') {
+                    loadBookingHistory();
+                }
             });
         });
 
         // Pet type select dropdown - load options on modal open
-        document.getElementById('addPetBtn').addEventListener('click', function() {
+        document.getElementById('addPetBtn').addEventListener('click', function () {
             // Clear previous messages and form values
             document.getElementById('modalPetAddMsg').innerHTML = '';
             document.getElementById('addPetForm').reset();
-            
+
             // Fetch pet types from server
             fetch('userdetail?action=getAvailablePets')
-                .then(response => response.json())
-                .then(pets => {
-                    const petSelect = document.getElementById('petType');
-                    // Clear existing options
-                    while (petSelect.options.length > 1) {
-                        petSelect.remove(1);
-                    }
-                    
-                    // Add new options
-                    pets.forEach(pet => {
-                        const option = document.createElement('option');
-                        option.value = pet.petID;
-                        option.textContent = pet.name;
-                        petSelect.appendChild(option);
+                    .then(response => response.json())
+                    .then(pets => {
+                        const petSelect = document.getElementById('petType');
+                        // Clear existing options
+                        while (petSelect.options.length > 1) {
+                            petSelect.remove(1);
+                        }
+
+                        // Add new options
+                        pets.forEach(pet => {
+                            const option = document.createElement('option');
+                            option.value = pet.petID;
+                            option.textContent = pet.name;
+                            petSelect.appendChild(option);
+                        });
+                    })
+                    .catch(error => {
+                        document.getElementById('modalPetAddMsg').innerHTML =
+                                '<div class="alert alert-danger">Error loading pet types. Please try again.</div>';
                     });
-                })
-                .catch(error => {
-                    document.getElementById('modalPetAddMsg').innerHTML = 
-                        '<div class="alert alert-danger">Error loading pet types. Please try again.</div>';
-                });
         });
-          // Initialize modal object
+        // Initialize modal object
         const petModal = new bootstrap.Modal(document.getElementById('addPetModal'), {
-            backdrop: 'static',   // Prevent closing when clicking outside
+            backdrop: 'static', // Prevent closing when clicking outside
             keyboard: false       // Prevent closing with keyboard
         });
-        
+
         // Save new pet button
-        document.getElementById('saveNewPetBtn').addEventListener('click', function() {
+        document.getElementById('saveNewPetBtn').addEventListener('click', function () {
             const form = document.getElementById('addPetForm');
             const petTypeSelect = document.getElementById('petType');
             const petNameInput = document.getElementById('petName');
             const modalMsgDiv = document.getElementById('modalPetAddMsg');
-            
+
             // Clear previous error messages
             modalMsgDiv.innerHTML = '';
-            
+
             // Custom validation
             let isValid = true;
-            
+
             if (petTypeSelect.value === "") {
                 modalMsgDiv.innerHTML += '<div class="alert alert-danger">Please select a pet type</div>';
                 isValid = false;
             }
-            
+
             if (petNameInput.value.trim() === "") {
                 modalMsgDiv.innerHTML += '<div class="alert alert-danger">Please enter a name for your pet</div>';
                 isValid = false;
@@ -582,156 +625,38 @@
                 modalMsgDiv.innerHTML += '<div class="alert alert-danger">Pet name cannot be more than 50 characters</div>';
                 isValid = false;
             }
-            
+
             // Stop if validation fails
             if (!isValid) {
                 return;
             }
-            
+
             const petID = petTypeSelect.value;
             const petName = petNameInput.value.trim();
-            
+
             // Create form data
             const formData = new FormData();
             formData.append('action', 'addUserPet');
             formData.append('petID', petID);
             formData.append('petName', petName);
-            
+
             // Send AJAX request
             fetch('userdetail', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {                
-                if (data.success) {
-                    // Close modal
-                    petModal.hide();
-                    
-                    // Update pets table
-                    updatePetsTable(data.pet);
-                      // Show success message
-                    document.getElementById('petAddMsg').innerHTML = 
-                        '<div class="alert alert-success alert-dismissible fade show">Pet added successfully! <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
-                    
-                    // Hide message after 5 seconds
-                    setTimeout(() => {
-                        const alert = document.querySelector('#petAddMsg .alert');
-                        if (alert) {
-                            alert.classList.remove('show');
-                            alert.classList.add('hide');
-                            setTimeout(() => {
-                                if (alert.parentNode) {
-                                    alert.parentNode.removeChild(alert);
-                                }
-                            }, 500);
-                        }
-                    }, 5000);
-                } else {
-                    document.getElementById('modalPetAddMsg').innerHTML = 
-                        `<div class="alert alert-danger">${data.error || 'Failed to add pet. Please try again.'}</div>`;
-                }
-            })
-            .catch(error => {
-                document.getElementById('modalPetAddMsg').innerHTML = 
-                    '<div class="alert alert-danger">An error occurred. Please try again.</div>';
-            });
-        });
-          // Function to update the pets table
-        function updatePetsTable(newPet) {
-            const tableBody = document.getElementById('petsTableBody');
-            
-            // Remove "No pets found" row if it exists
-            const noPetsRow = tableBody.querySelector('tr td[colspan="4"]');
-            if (noPetsRow) {
-                tableBody.innerHTML = '';
-            }
-            
-            // Count existing rows to determine new ID
-            const rowCount = tableBody.querySelectorAll('tr').length + 1;
-            
-            // Create new row
-            const newRow = document.createElement('tr');
-            newRow.innerHTML = `
-                <td>` + rowCount + `</td>
-                <td>` + newPet.petType + `</td>
-                <td>` + newPet.petName + `</td>
-                <td>
-                    <div class="btn-group" role="group">
-                        <a href="petDetail?userPetID=` + newPet.userPetID +`" class="btn btn-sm btn-outline-primary me-4">View Details</a>
-                        <button type="button" class="btn btn-sm btn-outline-secondary edit-pet-btn me-4" data-id="` + newPet.userPetID +`" data-name="` + newPet.petName +`" data-type="` + newPet.petType +`">Edit</button>
-                        <button type="button" class="btn btn-sm btn-outline-danger delete-pet-btn" data-id="` + newPet.userPetID +`">Delete</button>
-                    </div>
-                </td>
-            `;
-            
-            // Add row to table with animation
-            newRow.classList.add('highlight-new');
-            tableBody.appendChild(newRow);
-            
-            // Add event listeners for the buttons
-            const deleteButton = newRow.querySelector('.delete-pet-btn');
-            if (deleteButton) {
-                deleteButton.addEventListener('click', handleDeletePet);
-            }
-            
-            const editButton = newRow.querySelector('.edit-pet-btn');
-            if (editButton) {
-                editButton.addEventListener('click', handleEditPet);
-            }
-            
-            // Remove highlight after animation
-            setTimeout(() => {
-                newRow.classList.remove('highlight-new');
-            }, 3000);
-        }
-        
-        // Function to handle delete pet button clicks
-        function handleDeletePet(event) {
-            if (confirm('Are you sure you want to delete this pet?')) {
-                const petId = event.target.getAttribute('data-id');
-                
-                // Create form data
-                const formData = new FormData();
-                formData.append('action', 'deleteUserPet');
-                formData.append('userPetID', petId);
-                
-                // Send AJAX request
-                fetch('userdetail', {
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Server responded with an error');
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    if (data.success) {
-                        // Find and remove the row
-                        const row = event.target.closest('tr');
-                        row.classList.add('fade-out');
-                        
-                        // Wait for animation to finish then remove
-                        setTimeout(() => {
-                            row.remove();
-                            
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Close modal
+                            petModal.hide();
+
+                            // Update pets table
+                            updatePetsTable(data.pet);
                             // Show success message
-                            document.getElementById('petAddMsg').innerHTML = 
-                                '<div class="alert alert-success alert-dismissible fade show">Pet deleted successfully! <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
-                            
-                            // Renumber remaining rows
-                            const rows = document.querySelectorAll('#petsTableBody tr');
-                            if (rows.length === 0) {
-                                // Add "No pets found" message if all pets are deleted
-                                document.getElementById('petsTableBody').innerHTML = '<tr><td colspan="4" class="text-center">No pets found.</td></tr>';
-                            } else {
-                                rows.forEach((row, index) => {
-                                    row.cells[0].textContent = index + 1;
-                                });
-                            }
-                            
+                            document.getElementById('petAddMsg').innerHTML =
+                                    '<div class="alert alert-success alert-dismissible fade show">Pet added successfully! <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
+
                             // Hide message after 5 seconds
                             setTimeout(() => {
                                 const alert = document.querySelector('#petAddMsg .alert');
@@ -745,63 +670,181 @@
                                     }, 500);
                                 }
                             }, 5000);
-                        }, 500);
-                    } else {
-                        document.getElementById('petAddMsg').innerHTML = 
-                            `<div class="alert alert-danger">${data.error || 'Failed to delete pet. Please try again.'}</div>`;
-                    }
+                        } else {
+                            document.getElementById('modalPetAddMsg').innerHTML =
+                                    `<div class="alert alert-danger">${data.error || 'Failed to add pet. Please try again.'}</div>`;
+                        }
+                    })
+                    .catch(error => {
+                        document.getElementById('modalPetAddMsg').innerHTML =
+                                '<div class="alert alert-danger">An error occurred. Please try again.</div>';
+                    });
+        });
+        // Function to update the pets table
+        function updatePetsTable(newPet) {
+            const tableBody = document.getElementById('petsTableBody');
+
+            // Remove "No pets found" row if it exists
+            const noPetsRow = tableBody.querySelector('tr td[colspan="4"]');
+            if (noPetsRow) {
+                tableBody.innerHTML = '';
+            }
+
+            // Count existing rows to determine new ID
+            const rowCount = tableBody.querySelectorAll('tr').length + 1;
+
+            // Create new row
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td>` + rowCount + `</td>
+                <td>` + newPet.petType + `</td>
+                <td>` + newPet.petName + `</td>
+                <td>
+                    <div class="btn-group" role="group">
+                        <a href="petDetail?userPetID=` + newPet.userPetID + `" class="btn btn-sm btn-outline-primary me-4">View Details</a>
+                        <button type="button" class="btn btn-sm btn-outline-secondary edit-pet-btn me-4" data-id="` + newPet.userPetID + `" data-name="` + newPet.petName + `" data-type="` + newPet.petType + `">Edit</button>
+                        <button type="button" class="btn btn-sm btn-outline-danger delete-pet-btn" data-id="` + newPet.userPetID + `">Delete</button>
+                    </div>
+                </td>
+            `;
+
+            // Add row to table with animation
+            newRow.classList.add('highlight-new');
+            tableBody.appendChild(newRow);
+
+            // Add event listeners for the buttons
+            const deleteButton = newRow.querySelector('.delete-pet-btn');
+            if (deleteButton) {
+                deleteButton.addEventListener('click', handleDeletePet);
+            }
+
+            const editButton = newRow.querySelector('.edit-pet-btn');
+            if (editButton) {
+                editButton.addEventListener('click', handleEditPet);
+            }
+
+            // Remove highlight after animation
+            setTimeout(() => {
+                newRow.classList.remove('highlight-new');
+            }, 3000);
+        }
+
+        // Function to handle delete pet button clicks
+        function handleDeletePet(event) {
+            if (confirm('Are you sure you want to delete this pet?')) {
+                const petId = event.target.getAttribute('data-id');
+
+                // Create form data
+                const formData = new FormData();
+                formData.append('action', 'deleteUserPet');
+                formData.append('userPetID', petId);
+
+                // Send AJAX request
+                fetch('userdetail', {
+                    method: 'POST',
+                    body: formData
                 })
-                .catch(error => {
-                    document.getElementById('petAddMsg').innerHTML = 
-                        '<div class="alert alert-danger">An error occurred ' + error + '. Please try again.</div>';
-                });
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Server responded with an error');
+                            }
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (data.success) {
+                                // Find and remove the row
+                                const row = event.target.closest('tr');
+                                row.classList.add('fade-out');
+
+                                // Wait for animation to finish then remove
+                                setTimeout(() => {
+                                    row.remove();
+
+                                    // Show success message
+                                    document.getElementById('petAddMsg').innerHTML =
+                                            '<div class="alert alert-success alert-dismissible fade show">Pet deleted successfully! <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
+
+                                    // Renumber remaining rows
+                                    const rows = document.querySelectorAll('#petsTableBody tr');
+                                    if (rows.length === 0) {
+                                        // Add "No pets found" message if all pets are deleted
+                                        document.getElementById('petsTableBody').innerHTML = '<tr><td colspan="4" class="text-center">No pets found.</td></tr>';
+                                    } else {
+                                        rows.forEach((row, index) => {
+                                            row.cells[0].textContent = index + 1;
+                                        });
+                                    }
+
+                                    // Hide message after 5 seconds
+                                    setTimeout(() => {
+                                        const alert = document.querySelector('#petAddMsg .alert');
+                                        if (alert) {
+                                            alert.classList.remove('show');
+                                            alert.classList.add('hide');
+                                            setTimeout(() => {
+                                                if (alert.parentNode) {
+                                                    alert.parentNode.removeChild(alert);
+                                                }
+                                            }, 500);
+                                        }
+                                    }, 5000);
+                                }, 500);
+                            } else {
+                                document.getElementById('petAddMsg').innerHTML =
+                                        `<div class="alert alert-danger">${data.error || 'Failed to delete pet. Please try again.'}</div>`;
+                            }
+                        })
+                        .catch(error => {
+                            document.getElementById('petAddMsg').innerHTML =
+                                    '<div class="alert alert-danger">An error occurred ' + error + '. Please try again.</div>';
+                        });
             }
         }
-        
+
         // Add event listeners to existing delete buttons
         document.querySelectorAll('.delete-pet-btn').forEach(button => {
             button.addEventListener('click', handleDeletePet);
         });
-        
+
         // Add event listeners to existing edit buttons
         document.querySelectorAll('.edit-pet-btn').forEach(button => {
             button.addEventListener('click', handleEditPet);
         });
-        
+
         // Initialize edit pet modal
         const editPetModal = new bootstrap.Modal(document.getElementById('editPetModal'), {
             backdrop: 'static',
             keyboard: false
         });
-        
+
         // Function to handle edit pet button clicks
         function handleEditPet(event) {
             const petId = event.target.getAttribute('data-id');
             const petName = event.target.getAttribute('data-name');
             const petType = event.target.getAttribute('data-type');
-            
+
             // Populate the edit form
             document.getElementById('editPetId').value = petId;
             document.getElementById('editPetName').value = petName;
             document.getElementById('editPetType').value = petType;
-            
+
             // Clear previous messages
             document.getElementById('modalPetEditMsg').innerHTML = '';
-            
+
             // Show the modal
             editPetModal.show();
         }
-        
+
         // Save edited pet name
-        document.getElementById('saveEditPetBtn').addEventListener('click', function() {
+        document.getElementById('saveEditPetBtn').addEventListener('click', function () {
             const form = document.getElementById('editPetForm');
             const petId = document.getElementById('editPetId').value;
             const petName = document.getElementById('editPetName').value.trim();
             const modalMsgDiv = document.getElementById('modalPetEditMsg');
-            
+
             // Clear previous error messages
             modalMsgDiv.innerHTML = '';
-            
+
             // Validate pet name
             if (petName === "") {
                 modalMsgDiv.innerHTML = '<div class="alert alert-danger">Please enter a name for your pet</div>';
@@ -810,68 +853,68 @@
                 modalMsgDiv.innerHTML = '<div class="alert alert-danger">Pet name cannot be more than 50 characters</div>';
                 return;
             }
-            
+
             // Create form data
             const formData = new FormData();
             formData.append('action', 'editUserPet');
             formData.append('userPetID', petId);
             formData.append('petName', petName);
-            
+
             // Send AJAX request
             fetch('userdetail', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    // Close modal
-                    editPetModal.hide();
-                    
-                    // Update the pet name in the table
-                    updatePetInTable(data.pet);
-                    
-                    // Show success message
-                    document.getElementById('petAddMsg').innerHTML = 
-                        '<div class="alert alert-success alert-dismissible fade show">Pet name updated successfully! <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
-                    
-                    // Hide message after 5 seconds
-                    setTimeout(() => {
-                        const alert = document.querySelector('#petAddMsg .alert');
-                        if (alert) {
-                            alert.classList.remove('show');
-                            alert.classList.add('hide');
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Close modal
+                            editPetModal.hide();
+
+                            // Update the pet name in the table
+                            updatePetInTable(data.pet);
+
+                            // Show success message
+                            document.getElementById('petAddMsg').innerHTML =
+                                    '<div class="alert alert-success alert-dismissible fade show">Pet name updated successfully! <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
+
+                            // Hide message after 5 seconds
                             setTimeout(() => {
-                                if (alert.parentNode) {
-                                    alert.parentNode.removeChild(alert);
+                                const alert = document.querySelector('#petAddMsg .alert');
+                                if (alert) {
+                                    alert.classList.remove('show');
+                                    alert.classList.add('hide');
+                                    setTimeout(() => {
+                                        if (alert.parentNode) {
+                                            alert.parentNode.removeChild(alert);
+                                        }
+                                    }, 500);
                                 }
-                            }, 500);
+                            }, 5000);
+                        } else {
+                            modalMsgDiv.innerHTML =
+                                    `<div class="alert alert-danger">${data.error || 'Failed to update pet name. Please try again.'}</div>`;
                         }
-                    }, 5000);
-                } else {
-                    modalMsgDiv.innerHTML = 
-                        `<div class="alert alert-danger">${data.error || 'Failed to update pet name. Please try again.'}</div>`;
-                }
-            })
-            .catch(error => {
-                modalMsgDiv.innerHTML = 
-                    '<div class="alert alert-danger">An error occurred. Please try again.</div>';
-            });
+                    })
+                    .catch(error => {
+                        modalMsgDiv.innerHTML =
+                                '<div class="alert alert-danger">An error occurred. Please try again.</div>';
+                    });
         });
-        
+
         // Function to update a pet in the table after editing
         function updatePetInTable(updatedPet) {
             const rows = document.querySelectorAll('#petsTableBody tr');
-            
+
             rows.forEach(row => {
                 const editBtn = row.querySelector('.edit-pet-btn');
                 if (editBtn && editBtn.getAttribute('data-id') == updatedPet.userPetID) {
                     // Update the pet name in the row
                     row.cells[2].textContent = updatedPet.petName;
-                    
+
                     // Update the data attributes for the edit button
                     editBtn.setAttribute('data-name', updatedPet.petName);
-                    
+
                     // Add highlighting effect
                     row.classList.add('highlight-new');
                     setTimeout(() => {
@@ -881,10 +924,302 @@
             });
         }
     });
-    
+
     function submitAvatarForm() {
         // Show loading indicator if desired
         document.querySelector('.rounded-circle').style.opacity = '0.5';
         document.getElementById('avatarForm').submit();
     }
+
+    // Booking History Tab AJAX loading and modal
+
+    function loadBookingHistory() {
+        const container = document.getElementById('bookingHistoryTableContainer');
+        container.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+        fetch('userdetail?action=getBookingHistory')
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        container.innerHTML = '<div class="alert alert-danger">Failed to load booking history.</div>';
+                        return;
+                    }
+                    if (!data.bookings || data.bookings.length === 0) {
+                        container.innerHTML = '<div class="alert alert-info">No finished bookings found.</div>';
+                        return;
+                    }
+                    let html = '<div class="table-responsive"><table class="table table-hover"><thead><tr><th>Booking ID</th><th>Date</th><th>Total</th><th>Status</th><th>Actions</th></tr></thead><tbody>';
+                    data.bookings.forEach((b, index) => {
+                        const sequenceNumber = index + 1;
+                        let formattedDate = '';
+                        if (b.dateBooked) {
+                            formattedDate = b.dateBooked.replace('T', ' ').substring(0, 16);
+                        } else {
+                            formattedDate = 'N/A';
+                        }
+                        const formattedPrice = new Intl.NumberFormat('vi-VN').format(b.totalPrice) + ' đ';
+                        html += `<tr>
+                        <td>#BK` + sequenceNumber + `</td>
+                        <td>` + formattedDate + `</td>
+                        <td>` + formattedPrice + `</td>
+                        <td><span class="badge bg-success">Finished</span></td>
+                        <td><button class="btn btn-sm btn-outline-primary" onclick="showBookingDetailModal(` + b.bookingID + `)">View Details</button></td>
+                    </tr>`;
+                    });
+                    html += '</tbody></table></div>';
+                    html += `<div class="modal fade" id="bookingDetailModal" tabindex="-1" aria-labelledby="bookingDetailModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header bg-primary text-white">
+                                <h5 class="modal-title" id="bookingDetailModalLabel">Booking Details</h5>
+                                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body" id="bookingDetailModalBody">
+                                <div class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>`;
+                    container.innerHTML = html;
+                })
+                .catch(() => {
+                    container.innerHTML = '<div class="alert alert-danger">Failed to load booking history.</div>';
+                });
+    }
+
+    window.showBookingDetailModal = function (bookingID) {
+        const modal = new bootstrap.Modal(document.getElementById('bookingDetailModal'));
+        const modalBody = document.getElementById('bookingDetailModalBody');
+        modalBody.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div></div>';
+        fetch('booking?action=viewBookingDetailHTML&bookingID=' + bookingID)
+                .then(response => response.text())
+                .then(html => {
+                    modalBody.innerHTML = html;
+                })
+                .catch(() => {
+                    modalBody.innerHTML = '<div class="alert alert-danger">Failed to load booking details.</div>';
+                });
+        modal.show();
+    };
+
+    let currentFeedbackServices = [];
+    let currentServiceIndex = 0;
+    let feedbackModal;
+
+    window.checkFeedbackAvailability = function (bookingId) {
+        fetch('feedbackservice?action=checkFeedbackStatus&bookingId=' + bookingId)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success && data.canProvideFeedback) {
+                        currentFeedbackServices = data.servicesWithoutFeedback;
+                        showFeedbackModal();
+                    } else if (data.success && !data.canProvideFeedback) {
+                        alert('You have already provided feedback for all services in this booking.');
+                    } else {
+                        alert('Unable to check feedback status: ' + (data.message || 'Unknown error'));
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error checking feedback availability');
+                });
+    };
+
+    function showFeedbackModal() {
+        if (!feedbackModal) {
+            feedbackModal = new bootstrap.Modal(document.getElementById('feedbackModal'));
+        }
+
+        if (currentFeedbackServices.length === 1) {
+            showFeedbackForm(0);
+        } else {
+            showServiceList();
+        }
+
+        feedbackModal.show();
+    }
+
+    function showServiceList() {
+        document.getElementById('feedbackServiceList').style.display = 'block';
+        document.getElementById('feedbackForm').style.display = 'none';
+        document.getElementById('submitFeedbackBtn').style.display = 'none';
+
+        let html = '<h6 class="mb-3">Select a service to rate:</h6>';
+        currentFeedbackServices.forEach((service, index) => {
+            html += `
+                <div class="d-flex align-items-center mb-2 p-2 border rounded cursor-pointer" 
+                     onclick="showFeedbackForm(` + index + `)" style="cursor: pointer;">
+                    <img src="` + service.serviceImage + `" alt="` + service.serviceName + `" 
+                         style="width: 40px; height: 40px; object-fit: cover; border-radius: 5px;" class="me-3">
+                    <span>` + service.serviceName + `</span>
+                </div>
+            `;
+        });
+
+        document.getElementById('feedbackServiceList').innerHTML = html;
+    }
+
+    window.showFeedbackForm = function (serviceIndex) {
+        currentServiceIndex = serviceIndex;
+        const service = currentFeedbackServices[serviceIndex];
+
+        document.getElementById('feedbackServiceList').style.display = 'none';
+        document.getElementById('feedbackForm').style.display = 'block';
+        document.getElementById('submitFeedbackBtn').style.display = 'block';
+
+        document.getElementById('feedbackServiceImage').src = service.serviceImage;
+        document.getElementById('feedbackServiceName').textContent = service.serviceName;
+        document.getElementById('feedbackServiceId').value = service.serviceId;
+
+        document.getElementById('ratingValue').value = '0';
+        document.getElementById('feedbackComment').value = '';
+        updateStarDisplay(0);
+    };
+
+    function updateStarDisplay(rating) {
+        const stars = document.querySelectorAll('#starRating .star');
+        stars.forEach((star, index) => {
+            if (index < rating) {
+                star.classList.add('active');
+                star.classList.remove('inactive');
+            } else {
+                star.classList.add('inactive');
+                star.classList.remove('active');
+            }
+        });
+    }
+
+    class ProfanityFilterService {
+        constructor(apiKey) {
+            this.apiKey = apiKey;
+        }
+
+        async checkProfanity(text) {
+            try {
+                const response = await fetch(`https://api.api-ninjas.com/v1/profanityfilter?text=` + encodeURIComponent(text), {
+                    method: 'GET',
+                    headers: {
+                        'X-Api-Key': this.apiKey,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ` + response.status);
+                }
+
+                const data = await response.json();
+                return {
+                    original: data.original,
+                    censored: data.censored,
+                    hasProfanity: data.has_profanity || data.censored.includes('*')
+                };
+            } catch (error) {
+                console.error('Error checking profanity:', error);
+                return {
+                    original: text,
+                    censored: text,
+                    hasProfanity: false
+                };
+            }
+        }
+    }
+
+    window.submitFeedback = async function () {
+        const rating = document.getElementById('ratingValue').value;
+        const comment = document.getElementById('feedbackComment').value;
+        const serviceId = document.getElementById('feedbackServiceId').value;
+        const profanityFilterService = new ProfanityFilterService('1wBakvP3y3hLKEj1f9oNnQ==dE5FLVIfUEeurEpd');
+
+        if (rating === '0') {
+            alert('Please select a rating');
+            return;
+        }
+
+        const modalBody = document.getElementById('bookingDetailModalBody');
+        const bookingIdElement = modalBody.querySelector('[data-booking-id]');
+        const bookingId = bookingIdElement ? bookingIdElement.getAttribute('data-booking-id') : null;
+
+        if (!bookingId) {
+            alert('Booking ID not found');
+            return;
+        }
+
+        const submitBtn = document.getElementById('submitFeedbackBtn');
+        submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Checking content...';
+        submitBtn.disabled = true;
+
+        try {
+            if (comment && comment.trim() !== '') {
+                const profanityResult = await profanityFilterService.checkProfanity(comment.trim());
+
+                if (profanityResult.hasProfanity) {
+                    alert('Your comment contains inappropriate language. Please revise your feedback.');
+                    submitBtn.innerHTML = 'Submit Feedback';
+                    submitBtn.disabled = false;
+                    return;
+                }
+            }
+
+            submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Submitting...';
+
+            const formData = new URLSearchParams();
+            formData.append('action', 'submitFeedback');
+            formData.append('bookingId', bookingId);
+            formData.append('serviceId', serviceId);
+            formData.append('rating', rating);
+            formData.append('comment', comment);
+
+            const response = await fetch('feedbackservice', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                currentFeedbackServices.splice(currentServiceIndex, 1);
+
+                if (currentFeedbackServices.length > 0) {
+                    showServiceList();
+                } else {
+                    alert('Thank you for your feedback!');
+                    feedbackModal.hide();
+                }
+            } else {
+                alert('Error submitting feedback: ' + (data.message || 'Unknown error'));
+            }
+
+        } catch (error) {
+            console.error('Error during feedback submission:', error);
+            alert('Error submitting feedback. Please try again.');
+        } finally {
+            submitBtn.innerHTML = 'Submit Feedback';
+            submitBtn.disabled = false;
+        }
+    };
+
+    document.addEventListener('click', function (e) {
+        if (e.target.matches('#starRating .star')) {
+            const rating = parseInt(e.target.dataset.rating);
+            document.getElementById('ratingValue').value = rating;
+            updateStarDisplay(rating);
+        }
+    });
+
+    document.addEventListener('mouseenter', function (e) {
+        if (e.target.matches('#starRating .star')) {
+            const rating = parseInt(e.target.dataset.rating);
+            updateStarDisplay(rating);
+        }
+    }, true);
+
+    document.addEventListener('mouseleave', function (e) {
+        if (e.target.matches('#starRating')) {
+            const currentRating = parseInt(document.getElementById('ratingValue').value) || 0;
+            updateStarDisplay(currentRating);
+        }
+    }, true);
 </script>
