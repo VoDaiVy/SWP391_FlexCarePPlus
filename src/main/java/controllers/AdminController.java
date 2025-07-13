@@ -58,6 +58,12 @@ public class AdminController extends HttpServlet {
                 case "getFeedbacks" -> {
                     request.getRequestDispatcher("feedbackservice").forward(request, response);
                 }
+                case "getBookings" -> {
+                    request.getRequestDispatcher("booking").forward(request, response);
+                }
+                case "getBookingDetails" -> {
+                    request.getRequestDispatcher("bookingdetail").forward(request, response);
+                }
             }
         }
     }
