@@ -4,10 +4,17 @@ import daos.BookingDetailDAO;
 import daos.UserDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024 * 1, // 1 MB
+        maxFileSize = 1024 * 1024 * 10, // 10 MB
+        maxRequestSize = 1024 * 1024 * 100 // 100 MB
+)
 public class AdminController extends HttpServlet {
 
     @Override
@@ -21,8 +28,35 @@ public class AdminController extends HttpServlet {
                 case "getUsers" -> {
                     request.getRequestDispatcher("user").forward(request, response);
                 }
+                case "getUserDetail" -> {
+                    request.getRequestDispatcher("user").forward(request, response);
+                }
                 case "getNotifications" -> {
                     request.getRequestDispatcher("notification").forward(request, response);
+                }
+                case "getPolicies" -> {
+                    request.getRequestDispatcher("policy").forward(request, response);
+                }
+                case "getPolicyDetail" -> {
+                    request.getRequestDispatcher("policy").forward(request, response);
+                }
+                case "getCategoryServices" -> {
+                    request.getRequestDispatcher("categoryservice").forward(request, response);
+                }
+                case "getServices" -> {
+                    request.getRequestDispatcher("service").forward(request, response);
+                }
+                case "getServiceDetail" -> {
+                    request.getRequestDispatcher("service").forward(request, response);
+                }
+                case "getServiceImages" -> {
+                    request.getRequestDispatcher("serviceimage").forward(request, response);
+                }
+                case "getRooms" -> {
+                    request.getRequestDispatcher("room").forward(request, response);
+                }
+                case "getFeedbacks" -> {
+                    request.getRequestDispatcher("feedbackservice").forward(request, response);
                 }
             }
         }
@@ -31,54 +65,64 @@ public class AdminController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String object = request.getParameter("object");
         String action = request.getParameter("action");
-        if (object == null) {
-            request.getRequestDispatcher("user").forward(request, response);
-        } else {
-            switch (object) {
-                case "notification" -> {
-                    switch (action) {
-                        case "create" -> {
-                            // 1. Lấy nội dung thông báo từ form
-                            String content = request.getParameter("content");
-                            if (content != null && !content.trim().isEmpty()) {
-                                // 2. Tạo notification mới
-                                models.Notification notification = new models.Notification();
-                                notification.setContent(content);
-                                daos.NotificationDAO.create(notification);
-
-                                // 3. Lấy danh sách userID của tất cả user KHÔNG phải admin
-                                java.util.List<Integer> userIds = daos.UserDAO.getAllUserIds();
-                                // 4. Gửi notification tới từng user (NotificationUser)
-                                for (Integer userId : userIds) {
-                                    models.NotificationUser nu = new models.NotificationUser();
-                                    nu.setUserID(userId);
-                                    nu.setNotificationID(notification.getNotificationID());
-                                    nu.setStatus(true);
-                                    nu.setHasRead(false);
-                                    daos.NotificationUserDAO.create(nu);
-                                }
-                            }
-                            // 5. Quay lại trang danh sách thông báo
-                            response.sendRedirect("admin?action=getNotifications");
-                        }
-                        case "delete" -> {
-                            // Xóa notification và các bản ghi liên quan trong NotificationUser
-                            int notificationId = Integer.parseInt(request.getParameter("notificationID"));
-
-                            // Xóa tất cả các bản ghi NotificationUser liên quan
-                            daos.NotificationUserDAO.deleteAllForNotification(notificationId);
-                            // Xóa notification
-                            daos.NotificationDAO.delete(notificationId);
-
-                            response.sendRedirect("admin?action=getNotifications");
-                        }
-                        case "getNotifications" -> {
-                            request.getRequestDispatcher("notification").forward(request, response);
-                        }
-                    }
-                }
+        switch (action) {
+            case "createNotification" -> {
+                request.getRequestDispatcher("notification").forward(request, response);
+            }
+            case "deleteNotification" -> {
+                request.getRequestDispatcher("notification").forward(request, response);
+            }
+            case "banUser" -> {
+                request.getRequestDispatcher("user").forward(request, response);
+            }
+            case "allowUser" -> {
+                request.getRequestDispatcher("user").forward(request, response);
+            }
+            case "updatePolicy" -> {
+                request.getRequestDispatcher("policy").forward(request, response);
+            }
+            case "createPolicy" -> {
+                request.getRequestDispatcher("policy").forward(request, response);
+            }
+            case "deletePolicy" -> {
+                request.getRequestDispatcher("policy").forward(request, response);
+            }
+            case "createCategoryService" -> {
+                request.getRequestDispatcher("categoryservice").forward(request, response);
+            }
+            case "updateCategoryService" -> {
+                request.getRequestDispatcher("categoryservice").forward(request, response);
+            }
+            case "deleteCategoryService" -> {
+                request.getRequestDispatcher("categoryservice").forward(request, response);
+            }
+            case "updateService" -> {
+                request.getRequestDispatcher("service").forward(request, response);
+            }
+            case "createService" -> {
+                request.getRequestDispatcher("service").forward(request, response);
+            }
+            case "deleteService" -> {
+                request.getRequestDispatcher("service").forward(request, response);
+            }
+            case "addServiceImage" -> {
+                request.getRequestDispatcher("serviceimage").forward(request, response);
+            }
+            case "deleteServiceImage" -> {
+                request.getRequestDispatcher("serviceimage").forward(request, response);
+            }
+            case "createRoom" -> {
+                request.getRequestDispatcher("room").forward(request, response);
+            }
+            case "updateRoom" -> {
+                request.getRequestDispatcher("room").forward(request, response);
+            }
+            case "deleteRoom" -> {
+                request.getRequestDispatcher("room").forward(request, response);
+            }
+            case "toggleFeedbackStatus" -> {
+                request.getRequestDispatcher("feedbackservice").forward(request, response);
             }
         }
     }

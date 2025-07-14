@@ -220,6 +220,8 @@ public class BookingController extends HttpServlet {
             viewBookingAction(request, response);
         } else if ("viewBookingDetail".equals(action)) {
             viewBookingDetailAction(request, response);
+        } else if ("viewBookingDetailHTML".equals(action)) {
+            viewBookingDetailActionHTML(request, response);
         } else if ("view".equals(action)) {
             int bookingID = Integer.parseInt(request.getParameter("bookingID"));
             Booking booking = BookingDAO.getById(bookingID);
@@ -1662,6 +1664,47 @@ public class BookingController extends HttpServlet {
             e.printStackTrace();
             request.setAttribute("error", "An error occurred during checkout: " + e.getMessage());
             response.sendRedirect(request.getContextPath() + "/booking?action=viewCart");
+        }
+    }
+
+    private void viewBookingDetailActionHTML(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            String bookingIdParam = request.getParameter("bookingID");
+
+            int bookingId = Integer.parseInt(bookingIdParam);
+
+            UserDetailDTO userDetailDTO = (UserDetailDTO) request.getSession().getAttribute("userDetailDTO");
+            int userId = userDetailDTO.getUser().getUserId();
+
+            Booking booking = BookingDAO.getById(bookingId);
+
+            if (booking == null || booking.getUserID() != userId) {
+                response.setContentType("text/html;charset=UTF-8");
+                response.getWriter().write("<div class='alert alert-danger'>Booking not found or access denied</div>");
+                return;
+            }
+
+            List<BookingDetail> bookingDetails = BookingDetailDAO.getByBookingId(bookingId);
+
+            List<BookingDetailDTO> detailDTOs = new ArrayList<>();
+            for (BookingDetail detail : bookingDetails) {
+                BookingDetailDTO dto = new BookingDetailDTO(detail);
+                detailDTOs.add(dto);
+            }
+
+            request.setAttribute("booking", booking);
+            request.setAttribute("bookingDetails", detailDTOs);
+
+            request.getRequestDispatcher("/client/booking-detail-modal.jsp").forward(request, response);
+
+        } catch (NumberFormatException e) {
+            response.setContentType("text/html;charset=UTF-8");
+            response.getWriter().write("<div class='alert alert-danger'>Invalid booking ID</div>");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setContentType("text/html;charset=UTF-8");
+            response.getWriter().write("<div class='alert alert-danger'>Unable to load booking details</div>");
         }
     }
 }
