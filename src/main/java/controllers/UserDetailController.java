@@ -1,8 +1,10 @@
 package controllers;
 
 import daos.UserDAO;
+import daos.BookingDAO;
 import dtos.UserDetailDTO;
 import java.io.IOException;
+import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.http.HttpServlet;
@@ -15,6 +17,7 @@ import java.io.InputStream;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import models.User;
+import models.Booking;
 import utils.Common;
 import static utils.S3Uploader.deleteFromS3;
 import static utils.S3Uploader.uploadToS3;
@@ -136,6 +139,8 @@ public class UserDetailController extends HttpServlet {
                 getUserDetail(request, response);
             case "getAvailablePets" ->
                 getAvailablePets(request, response);
+            case "getBookingHistory" ->
+                getBookingHistory(request, response);
         }
     }    
     
@@ -544,6 +549,41 @@ public class UserDetailController extends HttpServlet {
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write("{\"success\":false,\"error\":\"" + e.getMessage() + "\"}");
+        }
+    }
+    
+    private void getBookingHistory(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json;charset=UTF-8");
+        PrintWriter out = response.getWriter();
+        try {
+            UserDetailDTO userDetailDTO = (UserDetailDTO) request.getSession().getAttribute("userDetailDTO");
+            if (userDetailDTO == null) {
+                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                out.print("{\"success\":false,\"error\":\"User not logged in\"}");
+                return;
+            }
+            int userId = userDetailDTO.getUser().getUserId();
+
+            List<Booking> finishedBookings = BookingDAO.getByUserIdAndState(userId, Booking.BookingState.FINISHED.toString());
+            StringBuilder json = new StringBuilder();
+            json.append("{\"success\":true,\"bookings\":[");
+            for (int i = 0; i < finishedBookings.size(); i++) {
+                Booking b = finishedBookings.get(i);
+                json.append("{\"bookingID\":" + b.getBookingID());
+                json.append(",\"dateBooked\":\"" + b.getDateBooked() + "\"");
+                json.append(",\"totalPrice\":" + b.getTotalPrice());
+                json.append(",\"paid\":" + b.getPaid());
+                json.append(",\"state\":\"" + b.getState() + "\"");
+                json.append(",\"note\":\"" + (b.getNote() != null ? b.getNote().replace("\"", "\\\"") : "") + "\"");
+                json.append("}");
+                if (i < finishedBookings.size() - 1) json.append(",");
+            }
+            json.append("]}");
+            out.print(json.toString());
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            out.print("{\"success\":false,\"error\":\"" + e.getMessage() + "\"}");
         }
     }
 }

@@ -5,13 +5,20 @@
 package controllers;
 
 import java.io.IOException;
+import java.io.InputStream;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 @WebServlet(name = "StaffController", urlPatterns = {"/staff"})
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024 * 1, // 1 MB
+        maxFileSize = 1024 * 1024 * 10, // 10 MB
+        maxRequestSize = 1024 * 1024 * 100 // 100 MB
+)
 public class StaffController extends HttpServlet {
 
     @Override
@@ -43,14 +50,35 @@ public class StaffController extends HttpServlet {
             case "getNews" -> {
                 getNews(request, response);
             } 
+            case "getNewsById" -> {
+                getNewsById(request, response);
+            } 
+            case "deleteNews" -> {
+                deleteNews(request, response);
+            } 
+            case "getCreateNews" -> {
+                request.getRequestDispatcher("staff/newsDetail.jsp").forward(request, response);
+            } 
         }
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        String action = request.getParameter("action");
+        switch (action) {
+            case "createNews" -> {
+                request.getRequestDispatcher("news").forward(request, response);
+            }   
+            case "updateNews" -> {
+                request.getRequestDispatcher("news").forward(request, response);
+            }   
+            case "deleteNews" -> {
+                request.getRequestDispatcher("news").forward(request, response);
+            }   
+        } 
     }
+
 
     private void getBookings(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getRequestDispatcher("bookingdetail").forward(request, response);
@@ -76,6 +104,12 @@ public class StaffController extends HttpServlet {
         request.getRequestDispatcher("medicalrecords").forward(request, response);
     }
     private void getNews(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("news").forward(request, response);
+    }
+    private void getNewsById(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("news").forward(request, response);
+    }
+    private void deleteNews(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.getRequestDispatcher("news").forward(request, response);
     }
 }
