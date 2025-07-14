@@ -183,7 +183,7 @@
                                         </div>
                                         <div class="mb-0">
                                             <div>
-                                                <a href="admin?action=getUsers" class="btn btn-secondary waves-effect">
+                                                <a href="${pageContext.request.contextPath}/admin?action=getUsers" class="btn btn-secondary waves-effect">
                                                     Quay trở lại
                                                 </a>
                                             </div>
