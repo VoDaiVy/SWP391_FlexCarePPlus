@@ -1,7 +1,6 @@
 package daos;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,6 +13,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import models.Booking;
 import models.BookingDetail;
 import utils.DBConnection;
 
@@ -70,7 +70,7 @@ public class BookingDetailDAO {
         }
         return false;
     }
-  
+
     // Get a booking detail by ID
     public static BookingDetail getById(int bookingDetailID) {
         String sql = "SELECT * FROM BookingDetail WHERE BookingDetailID = ?";
@@ -572,7 +572,7 @@ public class BookingDetailDAO {
 
         return false;
     }
-    
+
     public static int countBooking() {
         String sql = "SELECT COUNT(*) FROM BookingDetail";
         try (Connection conn = DBConnection.getConnection(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) {
@@ -583,5 +583,151 @@ public class BookingDetailDAO {
             System.out.println("Error counting bookingDetail: " + e.getMessage());
         }
         return 0;
+    }
+
+    public static int countByUserIdExcludeStates(int userId, String[] excludeStates) {
+
+        StringBuilder placeholders = new StringBuilder();
+        for (int i = 0; i < excludeStates.length; i++) {
+            placeholders.append("?");
+            if (i < excludeStates.length - 1) {
+                placeholders.append(",");
+            }
+        }
+
+        String sql = "SELECT COUNT(DISTINCT bd.BookingDetailID) FROM BookingDetail bd "
+                + "INNER JOIN Booking b ON bd.BookingID = b.BookingID "
+                + "WHERE b.UserID = ? AND b.State NOT IN (" + placeholders.toString() + ")";
+
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+
+            // Set parameters for exclude states
+            for (int i = 0; i < excludeStates.length; i++) {
+                ps.setString(i + 2, excludeStates[i]);
+            }
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error counting bookings for user with exclude states: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return 0;
+    }
+
+    public static List<BookingDetail> getByUserIdWithPaginationExcludeStates(int userId, int offset, int pageSize, String[] excludeStates) {
+        List<BookingDetail> bookingDetails = new ArrayList<>();
+
+        StringBuilder placeholders = new StringBuilder();
+        for (int i = 0; i < excludeStates.length; i++) {
+            placeholders.append("?");
+            if (i < excludeStates.length - 1) {
+                placeholders.append(",");
+            }
+        }
+
+        String sql = "SELECT bd.*, b.DateBooked, b.State, b.TotalPrice, b.Paid "
+                + "FROM BookingDetail bd "
+                + "INNER JOIN Booking b ON bd.BookingID = b.BookingID "
+                + "WHERE b.UserID = ? AND b.State NOT IN (" + placeholders.toString() + ") "
+                + "ORDER BY b.DateBooked DESC, b.BookingID DESC "
+                + "OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, userId);
+
+            for (int i = 0; i < excludeStates.length; i++) {
+                ps.setString(i + 2, excludeStates[i]);
+            }
+
+            ps.setInt(excludeStates.length + 2, offset);
+            ps.setInt(excludeStates.length + 3, pageSize);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                BookingDetail detail = new BookingDetail();
+
+                detail.setBookingDetailID(rs.getInt("BookingDetailID"));
+                detail.setBookingID(rs.getInt("BookingID"));
+                detail.setServiceID(rs.getInt("ServiceID"));
+
+                Object roomIdObj = rs.getObject("RoomID");
+                if (roomIdObj != null) {
+                    detail.setRoomID(rs.getInt("RoomID"));
+                }
+
+                Object userPetIdObj = rs.getObject("UserPetID");
+                if (userPetIdObj != null) {
+                    detail.setUserPetID(rs.getInt("UserPetID"));
+                }
+
+                detail.setPrice(rs.getFloat("Price"));
+                detail.setStockBooking(rs.getInt("StockBooking"));
+
+                Timestamp dateStartTimestamp = rs.getTimestamp("DateStartService");
+                if (dateStartTimestamp != null) {
+                    detail.setDateStartService(dateStartTimestamp.toLocalDateTime());
+                }
+
+                Timestamp dateEndTimestamp = rs.getTimestamp("DateEndService");
+                if (dateEndTimestamp != null) {
+                    detail.setDateEndService(dateEndTimestamp.toLocalDateTime());
+                }
+
+                Time startTime = rs.getTime("StartTime");
+                if (startTime != null) {
+                    detail.setStartTime(startTime.toLocalTime());
+                }
+
+                Time endTime = rs.getTime("EndTime");
+                if (endTime != null) {
+                    detail.setEndTime(endTime.toLocalTime());
+                }
+
+                bookingDetails.add(detail);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error getting paginated booking details with exclude states: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return bookingDetails;
+    }
+
+    public static List<Integer> getCompletedBookedBookings() {
+        List<Integer> completedBookingIds = new ArrayList<>();
+
+        String sql = "SELECT DISTINCT b.BookingID "
+                + "FROM Booking b "
+                + "INNER JOIN BookingDetail bd ON b.BookingID = bd.BookingID "
+                + "WHERE b.State = ? AND b.Status = 1 "
+                + "GROUP BY b.BookingID "
+                + "HAVING COUNT(bd.BookingDetailID) > 0 "
+                + "AND COUNT(bd.BookingDetailID) = COUNT(CASE WHEN bd.DateEndService IS NOT NULL AND bd.DateEndService <= GETDATE() THEN 1 END)";
+
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, Booking.BookingState.BOOKED.toString());
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                completedBookingIds.add(rs.getInt("BookingID"));
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error getting completed booked bookings: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return completedBookingIds;
     }
 }

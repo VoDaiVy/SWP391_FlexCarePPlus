@@ -6,9 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import models.CategoryService;
 import utils.DBConnection;
 
@@ -169,26 +167,5 @@ public class CategoryServiceDAO {
             System.out.println("Error counting services in category: " + e.getMessage());
         }
         return 0;
-    }
-    
-    public static Map<Integer, CategoryService> getMap() {
-        Map<Integer, CategoryService> categories = new HashMap<>();
-        String sql = "SELECT * FROM CategoryService";
-        try (Connection conn = DBConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            
-            while (rs.next()) {
-                CategoryService categoryService = new CategoryService();
-                categoryService.setCategoryServiceID(rs.getInt("CategoryServiceID"));
-                categoryService.setName(rs.getString("Name"));
-                categoryService.setStatus(rs.getBoolean("Status"));
-                categories.put(categoryService.getCategoryServiceID() , categoryService);
-            }
-            
-        } catch (SQLException e) {
-            System.out.println("Error retrieving all category services: " + e.getMessage());
-        }
-        return categories;
     }
 }
