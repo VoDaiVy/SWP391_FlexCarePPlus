@@ -232,4 +232,3 @@ ADD CONSTRAINT FK_Room_CategoryService
 FOREIGN KEY (CategoryServiceID) REFERENCES CategoryService(CategoryServiceID);
 
 EXEC sp_help 'Room';
-EXEC sp_rename 'Policy.DataCreated', 'DateCreated', 'COLUMN';

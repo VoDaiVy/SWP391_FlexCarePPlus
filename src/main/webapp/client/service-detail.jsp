@@ -273,47 +273,182 @@
                         <h3 class="text-uppercase mb-3">Book This Service</h3>
                         <c:choose>
                             <c:when test="${not empty sessionScope.userDetailDTO}">
-                                <form action="booking" method="get">
-                                    <input type="hidden" name="action" value="addToCart">
-                                    <input type="hidden" name="serviceId" value="${service.serviceID}">
+                                <c:choose>
+                                    <c:when test="${service.categoryServiceID == 3}">
+                                        <!-- Booking Form cho Lodging Service -->
+                                        <div id="lodgingBookingError" class="alert alert-danger mb-3" style="display:none;"></div>
+                                        <form id="lodgingBookingForm" action="booking" method="post">
+                                            <input type="hidden" name="action" value="bookService">
+                                            <input type="hidden" name="serviceId" value="${service.serviceID}" />
+                                            <input type="hidden" name="serviceType" value="lodging" />
+                                            <input type="hidden" name="categoryServiceId" value="${service.categoryServiceID}" />
 
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
-                                            <label for="bookingDate" class="form-label">Preferred Date</label>
-                                            <input type="date" class="form-control" id="bookingDate" name="bookingDate" min="${java.time.LocalDate.now()}" required>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="bookingTime" class="form-label">Preferred Time</label>
-                                            <select class="form-select" id="bookingTime" name="bookingTime" required>
-                                                <option value="" selected disabled>Select a time</option>
-                                                <option value="08:00:00">8:00 AM</option>
-                                                <option value="09:00:00">9:00 AM</option>
-                                                <option value="10:00:00">10:00 AM</option>
-                                                <option value="11:00:00">11:00 AM</option>
-                                                <option value="13:00:00">1:00 PM</option>
-                                                <option value="14:00:00">2:00 PM</option>
-                                                <option value="15:00:00">3:00 PM</option>
-                                                <option value="16:00:00">4:00 PM</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="petSelect" class="form-label">Select Your Pet</label>
-                                            <select class="form-select" id="petSelect" name="userPetId" required>
-                                                <option value="" selected disabled>Select a pet</option>
-                                            </select>
-                                            <small class="text-danger" style="display: none;">You don't have any pets. <a href="userdetail?action=getUserDetail">Add a pet first</a>.</small>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <label for="note" class="form-label">Special Instructions (Optional)</label>
-                                            <input type="text" class="form-control" id="note" name="note">
-                                        </div>
-                                        <div class="col-12">
-                                            <button type="submit" class="btn btn-primary w-100 py-3" disabled>
-                                                <i class="bi bi-cart-plus me-2"></i> Book Now
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
+                                            <div class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label for="bookingCheckInDate" class="form-label">Check-in date</label>
+                                                    <input type="date" class="form-control" id="bookingCheckInDate" name="bookingDate" required />
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="bookingLodgingDays" class="form-label">Length of stay</label>
+                                                    <div class="input-group">
+                                                        <input type="number" class="form-control" id="bookingLodgingDays" name="lodgingDays" min="1" value="1">
+                                                        <span class="input-group-text">days</span>
+                                                    </div>
+                                                    <small class="form-text text-muted">Minimum stay is 1 day</small>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="bookingCheckInTime" class="form-label">Check-in time</label>
+                                                    <select class="form-select" id="bookingCheckInTime" name="bookingTime" required>
+                                                        <option value="" selected disabled>Select check-in time</option>
+                                                        <option value="08:00:00">8:00 AM</option>
+                                                        <option value="09:00:00">9:00 AM</option>
+                                                        <option value="10:00:00">10:00 AM</option>
+                                                        <option value="11:00:00">11:00 AM</option>
+                                                        <option value="13:00:00">1:00 PM</option>
+                                                        <option value="14:00:00">2:00 PM</option>
+                                                        <option value="15:00:00">3:00 PM</option>
+                                                        <option value="16:00:00">4:00 PM</option>
+                                                        <option value="17:00:00">5:00 PM</option>
+                                                    </select>
+                                                    <small class="form-text text-muted">Check-out will be at the same time on your departure day</small>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="bookingLodgingPet" class="form-label">Choose a pet</label>
+                                                    <select class="form-select" id="bookingLodgingPet" name="userPetId" required>
+                                                        <option value="" selected disabled>Loading pet list...</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-12">
+                                                    <label for="bookingLodgingNote" class="form-label">Special instructions (optional)</label>
+                                                    <textarea class="form-control" id="bookingLodgingNote" name="note" rows="2"></textarea>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="card bg-white">
+                                                        <div class="card-body">
+                                                            <h6 class="card-title">Booking Summary</h6>
+                                                            <div id="bookingLodgingPriceDisplay" class="mt-2">
+                                                                <span class="d-flex justify-content-between">
+                                                                    <span>Daily rate:</span>
+                                                                    <span class="text-primary fw-bold">${service.price} đ</span>
+                                                                </span>
+                                                                <span class="d-flex justify-content-between">
+                                                                    <span>Length of stay:</span>
+                                                                    <span id="bookingStayLengthDisplay">1 day</span>
+                                                                </span>
+                                                                <hr>
+                                                                <span class="d-flex justify-content-between">
+                                                                    <span><strong>Total:</strong></span>
+                                                                    <span class="text-primary fw-bold" id="bookingTotalPriceDisplay">${service.price} đ</span>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <button type="submit" class="btn btn-primary w-100 py-3" id="lodgingBookNowBtn" disabled>
+                                                        <i class="bi bi-calendar-check me-2"></i> Book Now
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <!-- Booking Form cho Regular Service -->
+                                        <div id="regularBookingError" class="alert alert-danger mb-3" style="display:none;"></div>
+                                        <form id="regularBookingForm" action="booking" method="post">
+                                            <input type="hidden" name="action" value="bookService">
+                                            <input type="hidden" name="serviceId" value="${service.serviceID}">
+                                            <input type="hidden" name="categoryServiceId" value="${service.categoryServiceID}" />
+
+                                            <div class="row g-3">
+                                                <div class="col-md-6">
+                                                    <label for="bookingRegularDate" class="form-label">Preferred Date</label>
+                                                    <input type="date" class="form-control" id="bookingRegularDate" name="bookingDate" required>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label class="form-label">Preferred Time</label>
+
+                                                    <!-- Time Input Row -->
+                                                    <div class="row mb-2">                                  
+                                                        <div class="col-md-8">
+                                                            <input type="time" class="form-control" id="bookingRegularTimeInput" 
+                                                                   min="08:00" max="17:30" step="60" placeholder="HH:MM" disabled>
+                                                            <small class="form-text text-muted">Enter time directly or use timeline below</small>
+                                                        </div>
+                                                        <div class="col-md-4">
+                                                            <button type="button" class="btn btn-outline-secondary btn-sm w-100" id="bookingSetTimeFromInput" disabled>
+                                                                Set Time
+                                                            </button>
+                                                        </div>
+                                                    </div>
+
+                                                    <div id="bookingTimelineContainer" style="display: none;">
+                                                        <div class="timeline-wrapper">
+                                                            <div class="timeline-hours">
+                                                                <div class="timeline-scale" id="bookingTimelineScale"></div>
+                                                                <div class="timeline-busy" id="bookingTimelineBusy"></div>
+                                                                <div class="timeline-selector" id="bookingTimelineSelector"></div>
+                                                            </div>
+                                                            <div class="timeline-labels" id="bookingTimelineLabels"></div>
+                                                        </div>
+                                                        <div class="mt-2">
+                                                            <small class="text-muted">
+                                                                <span class="badge bg-success me-2">Available</span>
+                                                                <span class="badge bg-danger">Busy</span>
+                                                            </small>
+                                                        </div>
+                                                        <input type="hidden" id="bookingRegularTime" name="bookingTime" required>
+                                                        <div class="mt-2">
+                                                            <small id="bookingSelectedTimeDisplay" class="text-primary fw-bold"></small>
+                                                        </div>
+                                                    </div>
+                                                    <div id="bookingSelectDateFirst" class="text-muted">
+                                                        Please select a date first to see available time slots
+                                                    </div>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="bookingRegularPet" class="form-label">Select Your Pet</label>
+                                                    <select class="form-select" id="bookingRegularPet" name="userPetId" required>
+                                                        <option value="" selected disabled>Loading pet list...</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="bookingRegularNote" class="form-label">Special Instructions (Optional)</label>
+                                                    <textarea class="form-control" id="bookingRegularNote" name="note" rows="2"></textarea>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div class="card bg-white">
+                                                        <div class="card-body">
+                                                            <h6 class="card-title">Booking Summary</h6>
+                                                            <div class="mt-2">
+                                                                <span class="d-flex justify-content-between">
+                                                                    <span>Service:</span>
+                                                                    <span class="fw-bold">${service.name}</span>
+                                                                </span>
+                                                                <span class="d-flex justify-content-between">
+                                                                    <span>Duration:</span>
+                                                                    <span>${service.time} minutes</span>
+                                                                </span>
+                                                                <hr>
+                                                                <span class="d-flex justify-content-between">
+                                                                    <span><strong>Total:</strong></span>
+                                                                    <span class="text-primary fw-bold">${service.price} đ</span>
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="col-12">
+                                                    <div id="bookingRegularTimeLoading" style="display:none;" class="mb-2 text-primary">Loading available time slots...</div>
+                                                    <div id="bookingRegularTimeError" style="display:none;" class="mb-2 text-danger"></div>
+                                                    <button type="submit" class="btn btn-primary w-100 py-3" id="regularBookNowBtn" disabled>
+                                                        <i class="bi bi-calendar-check me-2"></i> Book Now
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </c:otherwise>
+                                </c:choose>
                             </c:when>
                             <c:otherwise>
                                 <div class="text-center">
@@ -713,7 +848,6 @@
     document.addEventListener('DOMContentLoaded', function () {
         // Set minimum date for booking to today
         const today = new Date().toISOString().split('T')[0];
-        document.getElementById('bookingDate').min = today;
 
         // Set minimum date for cart modal date picker
         if (document.getElementById('cartDate')) {
@@ -753,40 +887,6 @@
     }
 
     function loadUserPets() {
-        fetch('userpet?action=getUserPet', {
-            method: 'GET'
-        })
-                .then(response => response.json())
-                .then(data => {
-                    const petSelect = document.getElementById('petSelect');
-                    const noPetsMessage = document.querySelector('.text-danger');
-                    const bookButton = document.querySelector('button[type="submit"]');
-
-                    petSelect.innerHTML = '<option value="" selected disabled>Select a pet</option>';
-
-                    if (data.length > 0) {
-                        data.forEach(pet => {
-                            const option = document.createElement('option');
-                            option.value = pet.userPetID;
-                            option.text = `` + pet.petName + `(` + pet.pet.name + `)`;
-                            petSelect.appendChild(option);
-                        });
-                        bookButton.disabled = false;
-                        if (noPetsMessage)
-                            noPetsMessage.style.display = 'none';
-                    } else {
-                        if (noPetsMessage)
-                            noPetsMessage.style.display = 'block';
-                        bookButton.disabled = true;
-                    }
-                })
-                .catch(error => {
-                    console.error('Error fetching user pets:', error);
-                    const petSelect = document.getElementById('petSelect');
-                    petSelect.innerHTML = '<option value="" disabled>Error loading pets. Try again later.</option>';
-                    document.querySelector('button[type="submit"]').disabled = true;
-                });
-
         fetch('userpet?action=getUserPet', {
             method: 'GET'
         })
@@ -995,7 +1095,7 @@
                     busySlot.className = 'busy-slot';
                     busySlot.style.left = (relativeStart / totalMinutes * 100) + '%';
                     busySlot.style.width = ((relativeEnd - relativeStart) / totalMinutes * 100) + '%';
-                    busySlot.title = `Busy: ${busyRange.start} - ${busyRange.end}`;
+                    busySlot.title = `Busy:` + busyRange.start + `-` + busyRange.end ``;
                     timelineBusy.appendChild(busySlot);
                 }
             });
@@ -1050,10 +1150,10 @@
                         alert(validationResult.message);
                         return;
                     }
-                    
+
                     document.getElementById('cartTimeInput').value = selectedHour.toString().padStart(2, '0') + ':' + selectedMin.toString().padStart(2, '0');
                     cartTime.value = selectedHour.toString().padStart(2, '0') + ':' + selectedMin.toString().padStart(2, '0') + ':00';
-                    
+
                     const endTimeStr = serviceEndHour.toString().padStart(2, '0') + ':' + serviceEndMin.toString().padStart(2, '0');
                     selectedTimeDisplay.textContent = `Selected:` + selectedTimeStr + `-` + endTimeStr + `(${service.time} mins)`;
                     validateForm();
@@ -1067,7 +1167,7 @@
                     } else {
                         alert('Please select a time within working hours.');
                     }
-                }  
+                }
             };
         }
 
@@ -1304,7 +1404,6 @@
             });
 
             const today = new Date().toISOString().split('T')[0];
-            document.getElementById('bookingDate').min = today;
 
             if (document.getElementById('checkInDate')) {
                 document.getElementById('checkInDate').min = today;
@@ -1409,5 +1508,599 @@
                         }
                     });
         }
+    }
+
+    const isBookingLodgingService = ${service.categoryServiceID == 3};
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Set minimum date cho booking
+        const today = new Date().toISOString().split('T')[0];
+
+        if (isBookingLodgingService) {
+            // Initialize lodging booking
+            if (document.getElementById('bookingCheckInDate')) {
+                document.getElementById('bookingCheckInDate').min = today;
+            }
+            loadBookingLodgingPets();
+            initBookingLodgingEvents();
+        } else {
+            // Initialize regular booking
+            if (document.getElementById('bookingRegularDate')) {
+                document.getElementById('bookingRegularDate').min = today;
+            }
+            loadBookingRegularPets();
+            initBookingRegularEvents();
+        }
+    });
+
+    // === LODGING BOOKING FUNCTIONS ===
+    function loadBookingLodgingPets() {
+        fetch('userpet?action=getUserPet', {
+            method: 'GET'
+        })
+                .then(response => response.json())
+                .then(data => {
+                    const petSelect = document.getElementById('bookingLodgingPet');
+                    petSelect.innerHTML = '<option value="" selected disabled>Choose a pet</option>';
+
+                    if (data.length > 0) {
+                        data.forEach(pet => {
+                            const option = document.createElement('option');
+                            option.value = pet.userPetID;
+                            option.text = `` + pet.petName + `(` + pet.pet.name + `)`;
+                            petSelect.appendChild(option);
+                        });
+                    } else {
+                        petSelect.innerHTML = '<option value="" disabled>You do not have any pets</option>';
+                    }
+                    validateBookingLodgingForm();
+                })
+                .catch(error => {
+                    console.error('Error fetching pets for booking lodging:', error);
+                    document.getElementById('bookingLodgingPet').innerHTML = '<option value="" disabled>Error loading pets</option>';
+                });
+    }
+
+    function initBookingLodgingEvents() {
+        // Days change event
+        const lodgingDays = document.getElementById('bookingLodgingDays');
+        lodgingDays.addEventListener('change', function () {
+            updateBookingLodgingSummary();
+            validateBookingLodgingForm();
+        });
+
+        lodgingDays.addEventListener('input', function () {
+            if (this.value < 1) {
+                this.classList.add('is-invalid');
+            } else {
+                this.classList.remove('is-invalid');
+            }
+            validateBookingLodgingForm();
+        });
+
+        // Date change event
+        document.getElementById('bookingCheckInDate').addEventListener('change', function () {
+            validateBookingLodgingForm();
+        });
+
+        // Time change event
+        document.getElementById('bookingCheckInTime').addEventListener('change', validateBookingLodgingForm);
+
+        // Pet change event
+        document.getElementById('bookingLodgingPet').addEventListener('change', validateBookingLodgingForm);
+
+        // Form submit event
+        document.getElementById('lodgingBookingForm').addEventListener('submit', handleBookingLodgingSubmit);
+
+        // Initialize summary
+        updateBookingLodgingSummary();
+        validateBookingLodgingForm();
+    }
+
+    function updateBookingLodgingSummary() {
+        const days = parseInt(document.getElementById('bookingLodgingDays').value) || 1;
+        if (days < 1) {
+            document.getElementById('bookingLodgingDays').value = 1;
+            return updateBookingLodgingSummary();
+        }
+
+        document.getElementById('bookingStayLengthDisplay').textContent = days + (days > 1 ? ' days' : ' day');
+
+        const basePrice = ${service.price};
+        const totalPrice = basePrice * days;
+
+        document.getElementById('bookingTotalPriceDisplay').textContent = formatCurrency(totalPrice);
+    }
+
+    function validateBookingLodgingForm() {
+        const date = document.getElementById('bookingCheckInDate')?.value || '';
+        const time = document.getElementById('bookingCheckInTime')?.value || '';
+        const pet = document.getElementById('bookingLodgingPet')?.value || '';
+        const days = parseInt(document.getElementById('bookingLodgingDays')?.value) || 0;
+        const bookButton = document.getElementById('lodgingBookNowBtn');
+
+        let isValid = true;
+
+        // Validate date
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const selectedDate = date ? new Date(date) : null;
+        const isDateValid = selectedDate && selectedDate >= today;
+
+        if (date && !isDateValid) {
+            isValid = false;
+        }
+
+        // Validate days
+        if (days < 1) {
+            isValid = false;
+        }
+
+        // Validate time
+        if (date && time && isDateValid) {
+            const now = new Date();
+            const selectedDateTime = new Date(date + 'T' + time);
+            const minAllowedTime = new Date(now.getTime() + 30 * 60000);
+
+            if (selectedDateTime < minAllowedTime) {
+                isValid = false;
+            }
+        }
+
+        // Update error message
+        const errorDiv = document.getElementById('lodgingBookingError');
+        if (!isValid) {
+            errorDiv.style.display = 'block';
+
+            if (!date || !isDateValid) {
+                errorDiv.textContent = 'Please select a valid date (today or later).';
+            } else if (days < 1) {
+                errorDiv.textContent = 'Minimum stay is 1 day.';
+            } else if (!time || !isValid) {
+                errorDiv.textContent = 'Please select a valid time (at least 30 minutes from now).';
+            } else if (!pet) {
+                errorDiv.textContent = 'Please select a pet.';
+            }
+        } else {
+            errorDiv.style.display = 'none';
+        }
+
+        if (bookButton) {
+            bookButton.disabled = !isValid || !(date && time && pet && days >= 1);
+        }
+
+        return isValid;
+    }
+
+    function handleBookingLodgingSubmit(e) {
+        e.preventDefault();
+
+        if (!validateBookingLodgingForm()) {
+            return false;
+        }
+
+        // Show loading state
+        const bookButton = document.getElementById('lodgingBookNowBtn');
+        bookButton.disabled = true;
+        bookButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+
+        // Submit form
+        const formData = new FormData(this);
+        const params = new URLSearchParams();
+        for (const [key, value] of formData.entries()) {
+            params.append(key, value);
+        }
+
+        fetch('booking', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: params
+        })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Redirect to booking confirmation or payment page
+                        window.location.href = data.redirectUrl || 'booking?action=viewBookingDetail&bookingId=' + data.bookingId;
+                    } else {
+                        document.getElementById('lodgingBookingError').style.display = 'block';
+                        document.getElementById('lodgingBookingError').textContent = data.message || 'Failed to create booking. Please try again.';
+
+                        bookButton.disabled = false;
+                        bookButton.innerHTML = '<i class="bi bi-calendar-check me-2"></i> Book Now';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('lodgingBookingError').style.display = 'block';
+                    document.getElementById('lodgingBookingError').textContent = 'An error occurred while processing your booking.';
+
+                    bookButton.disabled = false;
+                    bookButton.innerHTML = '<i class="bi bi-calendar-check me-2"></i> Book Now';
+                });
+    }
+
+    // === REGULAR BOOKING FUNCTIONS ===
+    function loadBookingRegularPets() {
+        fetch('userpet?action=getUserPet', {
+            method: 'GET'
+        })
+                .then(response => response.json())
+                .then(data => {
+                    const petSelect = document.getElementById('bookingRegularPet');
+                    petSelect.innerHTML = '<option value="" selected disabled>Choose a pet</option>';
+
+                    if (data.length > 0) {
+                        data.forEach(pet => {
+                            const option = document.createElement('option');
+                            option.value = pet.userPetID;
+                            option.text = `` + pet.petName + `(` + pet.pet.name + `)`;
+                            petSelect.appendChild(option);
+                        });
+                    } else {
+                        petSelect.innerHTML = '<option value="" disabled>You do not have any pets</option>';
+                    }
+                    validateBookingRegularForm();
+                })
+                .catch(error => {
+                    console.error('Error fetching pets for regular booking:', error);
+                    document.getElementById('bookingRegularPet').innerHTML = '<option value="" disabled>Error loading pets</option>';
+                });
+    }
+
+    function initBookingRegularEvents() {
+        // Date change event
+        document.getElementById('bookingRegularDate').addEventListener('change', function () {
+            const selectedDate = this.value;
+            if (selectedDate) {
+                loadBookingTimeSlots(selectedDate);
+            } else {
+                document.getElementById('bookingTimelineContainer').style.display = 'none';
+                document.getElementById('bookingSelectDateFirst').style.display = 'block';
+            }
+            validateBookingRegularForm(true);
+        });
+
+        // Pet change event
+        document.getElementById('bookingRegularPet').addEventListener('change', function () {
+            validateBookingRegularForm(true);
+        });
+
+        // Time input events
+        document.getElementById('bookingRegularTimeInput').addEventListener('change', function () {
+            validateBookingRegularForm(true);
+        });
+
+        document.getElementById('bookingSetTimeFromInput').addEventListener('click', setBookingTimeFromInput);
+
+        // Form submit event
+        document.getElementById('regularBookingForm').addEventListener('submit', handleBookingRegularSubmit);
+
+        validateBookingRegularForm(false);
+    }
+
+    function loadBookingTimeSlots(date) {
+        document.getElementById('bookingRegularTimeLoading').style.display = 'block';
+        document.getElementById('bookingRegularTimeError').style.display = 'none';
+        document.getElementById('bookingTimelineContainer').style.display = 'none';
+        document.getElementById('bookingSelectDateFirst').style.display = 'none';
+
+        const categoryServiceId = ${service.categoryServiceID};
+
+        fetch('booking?action=getTimeAvaliable&date=' + encodeURIComponent(date) + '&categoryServiceId=' + categoryServiceId)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('bookingRegularTimeLoading').style.display = 'none';
+
+                    if (data.busyTimeRanges !== undefined) {
+                        renderBookingTimeline(data);
+                        document.getElementById('bookingTimelineContainer').style.display = 'block';
+                        document.getElementById('bookingRegularTimeInput').disabled = false;
+                        document.getElementById('bookingSetTimeFromInput').disabled = false;
+                    } else {
+                        document.getElementById('bookingRegularTimeError').textContent = 'Unable to load available time slots';
+                        document.getElementById('bookingRegularTimeError').style.display = 'block';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading time slots:', error);
+                    document.getElementById('bookingRegularTimeLoading').style.display = 'none';
+                    document.getElementById('bookingRegularTimeError').textContent = 'Error loading time slots';
+                    document.getElementById('bookingRegularTimeError').style.display = 'block';
+                });
+    }
+
+    function renderBookingTimeline(data) {
+        const timelineScale = document.getElementById('bookingTimelineScale');
+        const timelineBusy = document.getElementById('bookingTimelineBusy');
+        const timelineLabels = document.getElementById('bookingTimelineLabels');
+        const timelineSelector = document.getElementById('bookingTimelineSelector');
+
+        // Clear previous content
+        timelineBusy.innerHTML = '';
+        timelineLabels.innerHTML = '';
+
+        // Working hours setup
+        const workingStartHour = 8;
+        const workingEndHour = 17;
+        const workingStartMinutes = workingStartHour * 60 + 30;
+        const workingEndMinutes = workingEndHour * 60 + 30;
+        const totalMinutes = workingEndMinutes - workingStartMinutes;
+
+        // Add hour labels
+        for (let hour = workingStartHour; hour <= workingEndHour; hour++) {
+            const position = ((hour * 60 - workingStartMinutes) / totalMinutes) * 100;
+            const label = document.createElement('div');
+            label.className = 'timeline-label';
+            label.style.left = position + '%';
+            label.textContent = hour + ':00';
+            timelineLabels.appendChild(label);
+        }
+
+        // Add busy slots
+        if (data.busyTimeRanges && data.busyTimeRanges.length > 0) {
+            data.busyTimeRanges.forEach(range => {
+                const startTime = range.start.split(':');
+                const endTime = range.end.split(':');
+                const startMinutes = parseInt(startTime[0]) * 60 + parseInt(startTime[1]);
+                const endMinutes = parseInt(endTime[0]) * 60 + parseInt(endTime[1]);
+
+                if (startMinutes >= workingStartMinutes && endMinutes <= workingEndMinutes) {
+                    const startPercent = ((startMinutes - workingStartMinutes) / totalMinutes) * 100;
+                    const widthPercent = ((endMinutes - startMinutes) / totalMinutes) * 100;
+
+                    const busySlot = document.createElement('div');
+                    busySlot.className = 'busy-slot';
+                    busySlot.style.left = startPercent + '%';
+                    busySlot.style.width = widthPercent + '%';
+                    timelineBusy.appendChild(busySlot);
+                }
+            });
+        }
+
+        // Timeline click handler
+        timelineSelector.onclick = function (e) {
+            const rect = timelineSelector.getBoundingClientRect();
+            const clickX = e.clientX - rect.left;
+            const percentage = clickX / rect.width;
+            const selectedMinutes = Math.round(percentage * totalMinutes);
+
+            const actualMinutes = workingStartMinutes + selectedMinutes;
+            const selectedHour = Math.floor(actualMinutes / 60);
+            const selectedMin = actualMinutes % 60;
+            const selectedTimeStr = selectedHour.toString().padStart(2, '0') + ':' + selectedMin.toString().padStart(2, '0');
+
+            // Check for conflicts
+            let isConflict = false;
+            const serviceTime = ${service.time};
+            const serviceEndMinutes = actualMinutes + serviceTime;
+            const serviceEndHour = Math.floor(serviceEndMinutes / 60);
+            const serviceEndMin = serviceEndMinutes % 60;
+
+            if (data.busyTimeRanges && data.busyTimeRanges.length > 0) {
+                for (const range of data.busyTimeRanges) {
+                    const rangeStart = range.start.split(':');
+                    const rangeEnd = range.end.split(':');
+                    const rangeStartMinutes = parseInt(rangeStart[0]) * 60 + parseInt(rangeStart[1]);
+                    const rangeEndMinutes = parseInt(rangeEnd[0]) * 60 + parseInt(rangeEnd[1]);
+
+                    if ((actualMinutes < rangeEndMinutes && serviceEndMinutes > rangeStartMinutes)) {
+                        isConflict = true;
+                        break;
+                    }
+                }
+            }
+
+            if (!isConflict && selectedMinutes >= 0 && selectedMinutes < totalMinutes && serviceEndMinutes <= workingEndMinutes) {
+                const selectedTimeFormatted = selectedHour.toString().padStart(2, '0') + ':' +
+                        selectedMin.toString().padStart(2, '0') + ':00';
+
+                // Validate booking time
+                const validationResult = validateBookingTime(selectedTimeFormatted, document.getElementById('bookingRegularDate').value);
+                if (!validationResult.valid) {
+                    alert(validationResult.message);
+                    return;
+                }
+
+                // Update input time
+                document.getElementById('bookingRegularTimeInput').value = selectedHour.toString().padStart(2, '0') + ':' + selectedMin.toString().padStart(2, '0');
+
+                const endTimeStr = serviceEndHour.toString().padStart(2, '0') + ':' + serviceEndMin.toString().padStart(2, '0');
+                document.getElementById('bookingSelectedTimeDisplay').textContent = `Selected:` + selectedTimeStr + `-` + endTimeStr + `(${service.time} mins)`;
+                document.getElementById('bookingRegularTime').value = selectedTimeFormatted;
+                validateBookingRegularForm();
+            } else {
+                if (isConflict) {
+                    alert('Selected time conflicts with existing bookings. Please choose another time.');
+                } else if (serviceEndMinutes > workingEndMinutes) {
+                    alert('Service would end after working hours. Please choose an earlier time.');
+                } else {
+                    alert('Invalid time selection. Please try again.');
+                }
+            }
+        };
+    }
+
+    function setBookingTimeFromInput() {
+        const timeInput = document.getElementById('bookingRegularTimeInput');
+        const timeValue = timeInput.value;
+
+        if (!timeValue) {
+            alert('Please enter a time first');
+            return;
+        }
+        
+        const [selectedHour, selectedMin] = timeValue.split(':').map(num => parseInt(num));
+        const selectedMinutes = selectedHour * 60 + selectedMin;
+        const workingStartMinutes = 8 * 60;
+        const workingEndMinutes = 17 * 60 + 30;
+        if (selectedMinutes < workingStartMinutes || selectedMinutes >= workingEndMinutes) {
+            alert('Please select a time within working hours (8:00 AM - 5:30 PM).');
+            return;
+        }
+
+        const selectedTimeFormatted = timeValue + ':00';
+        const validationResult = validateBookingTime(selectedTimeFormatted, document.getElementById('bookingRegularDate').value);
+
+        if (!validationResult.valid) {
+            alert(validationResult.message);
+            return;
+        }
+
+        const serviceTime = ${service.time};
+        const totalMinutes = selectedHour * 60 + selectedMin;
+        const endTotalMinutes = totalMinutes + serviceTime;
+        const endHour = Math.floor(endTotalMinutes / 60);
+        const endMin = endTotalMinutes % 60;
+
+        if (endHour > 17 || (endHour === 17 && endMin > 30)) {
+            alert('Service would end after working hours (17:30). Please choose an earlier time.');
+            return;
+        }
+
+        const endTimeStr = endHour.toString().padStart(2, '0') + ':' + endMin.toString().padStart(2, '0');
+        document.getElementById('bookingSelectedTimeDisplay').textContent = `Selected:` + timeValue + `-` + endTimeStr + `(` + serviceTime + `mins)`;
+        document.getElementById('bookingRegularTime').value = selectedTimeFormatted;
+        validateBookingRegularForm();
+    }
+
+    function validateBookingRegularForm(showErrors = false) {
+        const date = document.getElementById('bookingRegularDate')?.value || '';
+        const time = document.getElementById('bookingRegularTime')?.value || '';
+        const pet = document.getElementById('bookingRegularPet')?.value || '';
+        const bookButton = document.getElementById('regularBookNowBtn');
+
+        let isValid = true;
+
+        // Validate date
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const selectedDate = date ? new Date(date) : null;
+        const isDateValid = selectedDate && selectedDate >= today;
+
+        if (!date || !isDateValid) {
+            isValid = false;
+        }
+
+        if (time) {
+            const timeParts = time.split(':');
+            const selectedHour = parseInt(timeParts[0]);
+            const selectedMin = parseInt(timeParts[1]);
+            const selectedMinutes = selectedHour * 60 + selectedMin;
+            const workingStartMinutes = 8 * 60; // 8:00
+            const workingEndMinutes = 17 * 60 + 30; // 17:30
+
+            // Kiểm tra thời gian kết thúc dịch vụ
+            const serviceTime = parseInt('${service.time}');
+            const serviceEndMinutes = selectedMinutes + serviceTime;
+
+            if (selectedMinutes < workingStartMinutes || selectedMinutes >= workingEndMinutes) {
+                isValid = false;
+            }
+
+            if (serviceEndMinutes > workingEndMinutes) {
+                isValid = false;
+            }
+        }
+
+        if (!time || !pet) {
+            isValid = false;
+        }
+
+        // Update error message
+        const errorDiv = document.getElementById('regularBookingError');
+        if (!isValid && showErrors) {
+            errorDiv.style.display = 'block';
+
+            if (!date || !isDateValid) {
+                errorDiv.textContent = 'Please select a valid date (today or later).';
+            } else if (!time) {
+                errorDiv.textContent = 'Please select a time slot.';
+            } else if (time && (selectedMinutes < workingStartMinutes || selectedMinutes >= workingEndMinutes)) {
+                errorDiv.textContent = 'Please select a time within working hours (8:00 AM - 5:30 PM).';
+            } else if (time && serviceEndMinutes > workingEndMinutes) {
+                errorDiv.textContent = 'Service would end after working hours (5:30 PM). Please choose an earlier time.';
+            } else if (!pet) {
+                errorDiv.textContent = 'Please select a pet.';
+            }
+        } else {
+            errorDiv.style.display = 'none';
+        }
+
+        if (bookButton) {
+            bookButton.disabled = !isValid;
+        }
+
+        return isValid;
+    }
+
+    function handleBookingRegularSubmit(e) {
+        e.preventDefault();
+
+        if (!validateBookingRegularForm(true)) {
+            return false;
+        }
+
+        // Show loading state
+        const bookButton = document.getElementById('regularBookNowBtn');
+        bookButton.disabled = true;
+        bookButton.innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Processing...';
+
+        // Submit form
+        const formData = new FormData(this);
+        const params = new URLSearchParams();
+        for (const [key, value] of formData.entries()) {
+            params.append(key, value);
+        }
+
+        fetch('booking', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: params
+        })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Redirect to booking confirmation or payment page
+                        window.location.href = data.redirectUrl || 'booking?action=viewBookingDetail&bookingId=' + data.bookingId;
+                    } else {
+                        document.getElementById('regularBookingError').style.display = 'block';
+                        document.getElementById('regularBookingError').textContent = data.message || 'Failed to create booking. Please try again.';
+
+                        bookButton.disabled = false;
+                        bookButton.innerHTML = '<i class="bi bi-calendar-check me-2"></i> Book Now';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    document.getElementById('regularBookingError').style.display = 'block';
+                    document.getElementById('regularBookingError').textContent = 'An error occurred while processing your booking.';
+
+                    bookButton.disabled = false;
+                    bookButton.innerHTML = '<i class="bi bi-calendar-check me-2"></i> Book Now';
+                });
+    }
+
+    // Shared utility functions
+    function formatCurrency(amount) {
+        return new Intl.NumberFormat('vi-VN').format(amount) + ' đ';
+    }
+
+    function validateBookingTime(timeStr, dateStr) {
+        const now = new Date();
+        const selectedDateTime = new Date(dateStr + 'T' + timeStr);
+        const minAllowedTime = new Date(now.getTime() + 30 * 60000);
+
+        if (selectedDateTime < minAllowedTime) {
+            return {
+                valid: false,
+                message: 'Booking time must be at least 30 minutes from now to allow preparation time.'
+            };
+        }
+
+        return {valid: true};
     }
 </script>

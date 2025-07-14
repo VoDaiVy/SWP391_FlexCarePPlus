@@ -1,18 +1,10 @@
 package controllers;
 
-import daos.FeedbackServiceDAO;
-import daos.ServiceDAO;
-import daos.UserDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Map;
-import models.FeedbackService;
-import models.Service;
-import models.User;
 
 public class FeedbackServiceController extends HttpServlet {
 
@@ -99,36 +91,12 @@ public class FeedbackServiceController extends HttpServlet {
     // Admin role methods
     private void adminGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String action = request.getParameter("action");
-        switch (action) {
-            case "getFeedbacks" -> {
-                int serviceID = Integer.parseInt(request.getParameter("serviceID"));
-                Service service = ServiceDAO.getById(serviceID);
-                List<FeedbackService> feedbacks = FeedbackServiceDAO.adminGetByServiceId(serviceID);
-                Map<Integer, User> users = UserDAO.getUserByFeedbackServiceID(serviceID);
-                request.setAttribute("service", service);
-                request.setAttribute("feedbacks", feedbacks);
-                request.setAttribute("users", users);
-                request.getRequestDispatcher("adminPages/feedbacks.jsp").forward(request, response);
-            }
-        }
+        // To be implemented
     }
 
     private void adminPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String action = request.getParameter("action");
-        switch (action) {
-            case "toggleFeedbackStatus" -> {
-                int feedbackServiceID = Integer.parseInt(request.getParameter("feedbackServiceID"));
-                int serviceID = Integer.parseInt(request.getParameter("serviceID"));
-                models.FeedbackService fb = daos.FeedbackServiceDAO.getById(feedbackServiceID);
-                if (fb != null) {
-                    fb.setStatus(!fb.isStatus());
-                    daos.FeedbackServiceDAO.update(fb);
-                }
-                response.sendRedirect("admin?action=getFeedbacks&serviceID=" + serviceID);
-            }
-        }
+        // To be implemented
     }
 
     private void adminPut(HttpServletRequest request, HttpServletResponse response)

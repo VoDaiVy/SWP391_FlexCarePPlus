@@ -274,39 +274,4 @@ public class FeedbackServiceDAO {
         }
         return 0;
     }
-
-      // Get feedbacks by service ID
-    public static List<FeedbackService> adminGetByServiceId(int serviceID) {
-        List<FeedbackService> feedbacks = new ArrayList<>();
-        String sql = "SELECT * FROM FeedbackService WHERE ServiceID = ? ORDER BY DateCreated DESC";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            
-            ps.setInt(1, serviceID);
-            ResultSet rs = ps.executeQuery();
-            
-            while (rs.next()) {
-                FeedbackService feedback = new FeedbackService();
-                feedback.setFeedbackServiceID(rs.getInt("FeedbackServiceID"));
-                feedback.setUserID(rs.getInt("UserID"));
-                feedback.setBookingID(rs.getInt("BookingID"));
-                feedback.setServiceID(rs.getInt("ServiceID"));
-                
-                // Handle SQL Timestamp to LocalDateTime conversion
-                Timestamp dateCreatedTimestamp = rs.getTimestamp("DateCreated");
-                if (dateCreatedTimestamp != null) {
-                    feedback.setDateCreated(dateCreatedTimestamp.toLocalDateTime());
-                }
-                
-                feedback.setRating(rs.getInt("Rating"));
-                feedback.setComment(rs.getString("Comment"));
-                feedback.setStatus(rs.getBoolean("Status"));
-                feedbacks.add(feedback);
-            }
-            
-        } catch (SQLException e) {
-            System.out.println("Error retrieving feedbacks by service ID: " + e.getMessage());
-        }
-        return feedbacks;
-    }
 }

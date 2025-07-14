@@ -17,7 +17,7 @@
             <!-- Menu giữa -->
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                 <li class="nav-item">
-                    <a href="${pageContext.request.contextPath}/client/index.html"
+                    <a href="home"
                        class="nav-link active">Home</a>
                 </li>
                 <li class="nav-item">
@@ -84,7 +84,7 @@
                                     class="bi bi-person me-2"></i>View Profile</a>
                             <a href="wallet?action=getWallet" class="dropdown-item"><i class="bi bi-wallet2 me-2"></i>View
                                 Wallet</a>
-                            <a href="wallet.html" class="dropdown-item"><i class="bi bi-wallet2 me-2"></i>View
+                            <a href="booking?action=viewBooking" class="dropdown-item"><i class="bi bi-calendar-check me-2"></i>View
                                 Booking</a>
                             <div class="dropdown-divider"></div>
                             <a href="sign-in?actor=logout" class="dropdown-item text-danger"><i
