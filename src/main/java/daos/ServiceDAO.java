@@ -6,7 +6,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import models.Service;
 import utils.DBConnection;
 
@@ -394,5 +396,38 @@ public class ServiceDAO {
 
     public static Service getServiceById(int serviceId) {
         return getById(serviceId);
+    }
+
+    public static Map<Integer, Service> getByBookingDetails(int bookingID) {
+        Map<Integer, Service> services = new HashMap<>();
+        String sql = "SELECT s.*\n"
+                + "FROM BookingDetail bd\n"
+                + "JOIN Service s ON bd.ServiceID = s.ServiceID\n"
+                + "WHERE bd.BookingID = ?";
+
+        try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setInt(1, bookingID);
+
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Service service = new Service();
+                service.setServiceID(rs.getInt("ServiceID"));
+                service.setCategoryServiceID(rs.getInt("CategoryServiceID"));
+                service.setName(rs.getString("Name"));
+                service.setDescription(rs.getString("Description"));
+                service.setPrice(rs.getFloat("Price"));
+                service.setTime(rs.getInt("Time"));
+                service.setViews(rs.getInt("Views"));
+                service.setImgURL(rs.getString("ImgURL"));
+                service.setStatus(rs.getBoolean("Status"));
+                services.put(service.getServiceID(), service);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Error retrieving related services: " + e.getMessage());
+        }
+        return services;
     }
 }

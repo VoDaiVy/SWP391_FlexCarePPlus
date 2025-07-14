@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Date;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 import models.Service;
 
 public class BookingDetailController extends HttpServlet {
@@ -105,29 +106,17 @@ public class BookingDetailController extends HttpServlet {
     private void adminGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
-        
-        if (action == null || action.isEmpty()) {
-            List<BookingDetail> bookingDetails = BookingDetailDAO.getAll();
-            request.setAttribute("bookingDetails", bookingDetails);
-            request.getRequestDispatcher("/admin/bookingdetail/list.jsp").forward(request, response);
-        } else if ("view".equals(action)) {
-            int bookingDetailID = Integer.parseInt(request.getParameter("bookingDetailID"));
-            BookingDetail bookingDetail = BookingDetailDAO.getById(bookingDetailID);
-            request.setAttribute("bookingDetail", bookingDetail);
-            request.getRequestDispatcher("/admin/bookingdetail/view.jsp").forward(request, response);
-        } else if ("add".equals(action)) {
-            int bookingID = Integer.parseInt(request.getParameter("bookingID"));
-            List<Room> rooms = RoomDAO.getAll();
-            request.setAttribute("bookingID", bookingID);
-            request.setAttribute("rooms", rooms);
-            request.getRequestDispatcher("/admin/bookingdetail/add.jsp").forward(request, response);
-        } else if ("edit".equals(action)) {
-            int bookingDetailID = Integer.parseInt(request.getParameter("bookingDetailID"));
-            BookingDetail bookingDetail = BookingDetailDAO.getById(bookingDetailID);
-            List<Room> rooms = RoomDAO.getAll();
-            request.setAttribute("bookingDetail", bookingDetail);
-            request.setAttribute("rooms", rooms);
-            request.getRequestDispatcher("/admin/bookingdetail/edit.jsp").forward(request, response);
+        switch (action) {
+            case "getBookingDetails" -> {
+                int bookingID = Integer.parseInt(request.getParameter("bookingID"));
+                List<BookingDetail> bookingDetails = BookingDetailDAO.getByBookingId(bookingID);
+                Map<Integer, Service> services = ServiceDAO.getByBookingDetails(bookingID);
+                Booking booking = BookingDAO.getById(bookingID);
+                request.setAttribute("bookingDetails", bookingDetails);
+                request.setAttribute("services", services);
+                request.setAttribute("booking", booking);
+                request.getRequestDispatcher("adminPages/bookingDetails.jsp").forward(request, response);
+            }
         }
     }
 

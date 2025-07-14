@@ -306,6 +306,37 @@ public class BookingDAO {
         return bookings;
     }
 
+    public static List<Booking> getByDate(int day, int month, int year) {
+        List<Booking> bookings = new ArrayList<>();
+        String sql = "SELECT * FROM Booking WHERE DAY(DateBooked) = ? AND MONTH(DateBooked) = ? AND YEAR(DateBooked) = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, day);
+            ps.setInt(2, month);
+            ps.setInt(3, year);
+            ResultSet rs = ps.executeQuery();
+          while (rs.next()) {
+                Booking booking = new Booking();
+                booking.setBookingID(rs.getInt("BookingID"));
+                booking.setUserID(rs.getInt("UserID"));
+            Timestamp dateBookedTimestamp = rs.getTimestamp("DateBooked");
+                if (dateBookedTimestamp != null) {
+                    booking.setDateBooked(dateBookedTimestamp.toLocalDateTime());
+                }
+            booking.setTotalPrice(rs.getFloat("TotalPrice"));
+                booking.setPaid(rs.getFloat("Paid"));
+                booking.setState(rs.getString("State"));
+                booking.setNote(rs.getString("Note"));
+                booking.setStatus(rs.getBoolean("Status"));
+            bookings.add(booking);
+            }
+        } catch (SQLException e) {
+            System.out.println("Error retrieving bookings by day/month/year: " + e.getMessage());
+        }
+        return bookings;
+    }
+
+public static List<Booking> getByUserIdExcludeStates(int userID, String[] excludeStates) {
     public static List<Booking> getByUserIdExcludeStates(int userID, String[] excludeStates) {
         List<Booking> bookings = new ArrayList<>();
 
@@ -329,24 +360,20 @@ public class BookingDAO {
             }
 
             ResultSet rs = ps.executeQuery();
-
             while (rs.next()) {
                 Booking booking = new Booking();
                 booking.setBookingID(rs.getInt("BookingID"));
                 booking.setUserID(rs.getInt("UserID"));
-
                 Timestamp dateBookedTimestamp = rs.getTimestamp("DateBooked");
                 if (dateBookedTimestamp != null) {
                     booking.setDateBooked(dateBookedTimestamp.toLocalDateTime());
                 }
-
                 booking.setTotalPrice(rs.getFloat("TotalPrice"));
                 booking.setPaid(rs.getFloat("Paid"));
                 booking.setState(rs.getString("State"));
                 booking.setNote(rs.getString("Note"));
                 booking.setStatus(rs.getBoolean("Status"));
-
-                bookings.add(booking);
+              bookings.add(booking);
             }
 
         } catch (SQLException e) {

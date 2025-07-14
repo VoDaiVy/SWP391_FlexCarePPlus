@@ -13,6 +13,8 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import daos.RoomDAO;
 import daos.ServiceDAO;
+import daos.UserDAO;
+import daos.UserDetailDAO;
 import daos.WalletDAO;
 import dtos.BookingDetailDTO;
 import java.io.PrintWriter;
@@ -26,6 +28,8 @@ import java.util.Map;
 import models.Room;
 import dtos.UserDetailDTO;
 import models.Booking;
+import models.User;
+import models.UserDetail;
 import models.Service;
 import models.Wallet;
 import utils.Common;
@@ -117,24 +121,30 @@ public class BookingController extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getParameter("action");
 
-        if (action == null || action.isEmpty()) {
-            List<Booking> bookings = BookingDAO.getAll();
-            request.setAttribute("bookings", bookings);
-            request.getRequestDispatcher("/admin/booking/list.jsp").forward(request, response);
-        } else if ("view".equals(action)) {
-            int bookingID = Integer.parseInt(request.getParameter("bookingID"));
-            Booking booking = BookingDAO.getById(bookingID);
-            List<BookingDetail> bookingDetails = BookingDetailDAO.getByBookingId(bookingID);
-            request.setAttribute("booking", booking);
-            request.setAttribute("bookingDetails", bookingDetails);
-            request.getRequestDispatcher("/admin/booking/view.jsp").forward(request, response);
-        } else if ("add".equals(action)) {
-            request.getRequestDispatcher("/admin/booking/add.jsp").forward(request, response);
-        } else if ("edit".equals(action)) {
-            int bookingID = Integer.parseInt(request.getParameter("bookingID"));
-            Booking booking = BookingDAO.getById(bookingID);
-            request.setAttribute("booking", booking);
-            request.getRequestDispatcher("/admin/booking/edit.jsp").forward(request, response);
+        switch (action) {
+            case "getBookings" -> {
+                String selectedDate = request.getParameter("selectedDate");
+                LocalDate date;
+                if (selectedDate == null || selectedDate.isEmpty()) {
+                    date = LocalDate.now();
+                    selectedDate = date.toString();
+                } else {
+                    date = LocalDate.parse(selectedDate);
+                }
+                int day = date.getDayOfMonth();
+                int month = date.getMonthValue();
+                int year = date.getYear();
+
+                List<Booking> bookings = BookingDAO.getByDate(day, month, year);
+                Map<Integer, User> users = UserDAO.adminGetByBookingID(day, month, year);
+                Map<Integer, UserDetail> userDetails = UserDetailDAO.adminGetByBookingID(day, month, year);
+
+                request.setAttribute("bookings", bookings);
+                request.setAttribute("users", users);
+                request.setAttribute("userDetails", userDetails);
+                request.setAttribute("selectedDate", selectedDate);
+                request.getRequestDispatcher("adminPages/bookings.jsp").forward(request, response);
+            }
         }
     }
 
