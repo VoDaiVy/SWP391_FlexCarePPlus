@@ -212,49 +212,31 @@ public class MedicalRecordsController extends HttpServlet {
     private void customerGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String action = request.getParameter("action");
-        int userID = (int) request.getSession().getAttribute("userID");
-
-        if ("viewByPet".equals(action)) {
-            int userPetID = Integer.parseInt(request.getParameter("userPetID"));
-            UserPet userPet = UserPetDAO.getById(userPetID);
-
-            // Security check - only allow viewing records for own pets
-            if (userPet != null && userPet.getUserID() == userID) {
-                List<MedicalRecords> records = MedicalRecordsDAO.getByUserPetId(userPetID);
-                request.setAttribute("records", records);
-                request.setAttribute("userPet", userPet);
-                request.getRequestDispatcher("/client/medicalrecords/list.jsp").forward(request, response);
-            } else {
-                response.sendRedirect(request.getContextPath() + "/userpet");
+        switch (action) {
+            case "getMedicalRecords" -> {
+                int userPetID = Integer.parseInt(request.getParameter("userPetID"));
+                UserPet userPet = UserPetDAO.getById(userPetID);
+                UserPetDTO userPetDTO = new UserPetDTO(userPet, PetDAO.getById(userPet.getPetID()));
+                List<MedicalRecords> medicalRecords = MedicalRecordsDAO.getByUserPetId(userPetID);
+                request.setAttribute("userPetDTO", userPetDTO);
+                request.setAttribute("medicalRecords", medicalRecords);
+                request.getRequestDispatcher("client/medicalRecords.jsp").forward(request, response);
             }
-        } else if ("view".equals(action)) {
-            int recordID = Integer.parseInt(request.getParameter("recordID"));
-            MedicalRecords record = MedicalRecordsDAO.getById(recordID);
-
-            if (record != null) {
-                UserPet userPet = UserPetDAO.getById(record.getUserPetID());
-
-                // Security check - only allow viewing records for own pets
-                if (userPet != null && userPet.getUserID() == userID) {
-                    request.setAttribute("record", record);
-                    request.setAttribute("userPet", userPet);
-                    request.getRequestDispatcher("/client/medicalrecords/view.jsp").forward(request, response);
-                } else {
-                    response.sendRedirect(request.getContextPath() + "/userpet");
-                }
-            } else {
-                response.sendRedirect(request.getContextPath() + "/userpet");
+            case "getMedicalDetail" -> {
+                int medicalRecordID = Integer.parseInt(request.getParameter("medicalRecordID"));
+                MedicalRecords medicalRecord = MedicalRecordsDAO.getById(medicalRecordID);
+                UserPet userPet = UserPetDAO.getById(medicalRecord.getUserPetID());
+                UserPetDTO userPetDTO = new UserPetDTO(userPet, PetDAO.getById(userPet.getPetID()));
+                request.setAttribute("userPetDTO", userPetDTO);
+                request.setAttribute("medicalRecord", medicalRecord);
+                request.getRequestDispatcher("client/medicalRecordDetail.jsp").forward(request, response);
             }
-        } else {
-            // Default view - show all pets for the user
-            response.sendRedirect(request.getContextPath() + "/userpet");
         }
     }
 
     private void customerPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Customers typically don't create medical records
-        response.sendRedirect(request.getContextPath() + "/userpet");
+        
     }
 
     private void customerPut(HttpServletRequest request, HttpServletResponse response)
