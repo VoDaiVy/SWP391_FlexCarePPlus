@@ -191,7 +191,7 @@
                                         <span class="h5 mb-0">Total:</span>
                                         <span class="h5 mb-0 text-primary"><fmt:formatNumber value="${cartBooking.totalPrice}" pattern="#,##0₫" /></span>
                                     </div>
-                                    <form action="${pageContext.request.contextPath}/booking" method="post">
+                                    <form action="booking" method="post" onsubmit="return confirmCheckout()">
                                         <input type="hidden" name="action" value="checkout">
                                         <button type="submit" class="btn btn-primary w-100 py-3">
                                             <i class="bi bi-credit-card me-2"></i>Proceed to Checkout
@@ -561,4 +561,8 @@
                     saveBtn.innerHTML = 'Save Changes';
                 });
     });
+    
+    function confirmCheckout() {
+        return confirm("Are you ready to proceed with this booking? You will be redirected to the booking details page.");
+    }
 </script>

@@ -260,7 +260,6 @@
         }
     </style>
     <body>
-        
         <!-- Search Section -->
         <div class="search-section">
             <div class="container">
@@ -273,12 +272,6 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Nút tạo tin tức mới -->
-        <div class="container mb-3" style="text-align:right;">
-            <a href="staff?action=getCreateNews" class="btn btn-primary" style="min-width:180px;">
-                <i class="fas fa-plus"></i> Tạo tin tức mới
-            </a>
         </div>
 
         <!-- News Content -->
@@ -405,34 +398,16 @@
                                 var actionsDiv = document.createElement('div');
                                 actionsDiv.className = 'news-actions';
 
-
-                                // Tạo form xóa (POST)
-                                var deleteForm = document.createElement('form');
-                                deleteForm.action = 'staff';
-                                deleteForm.method = 'post';
-                                deleteForm.style.display = 'inline';
-
-                                var hiddenId = document.createElement('input');
-                                hiddenId.type = 'hidden';
-                                hiddenId.name = 'newsID';
-                                hiddenId.value = news.newsID;
-                                deleteForm.appendChild(hiddenId);
-
-                                var deleteBtn = document.createElement('button');
-                                deleteBtn.type = 'submit';
-                                deleteBtn.className = 'delete-btn';
-                                deleteBtn.name = 'action';
-                                deleteBtn.value = 'deleteNews';
-                                deleteBtn.title = 'Xóa tin tức';
-                                deleteBtn.innerHTML = '<i class="fas fa-trash"></i>';
-                                deleteBtn.onclick = function(event) {
-                                    if (!confirm('Bạn có chắc chắn muốn xóa tin tức "' + news.title + '"?')) {
-                                        event.preventDefault();
-                                    }
+                                var deleteLink = document.createElement('a');
+                                deleteLink.className = 'delete-btn';
+                                deleteLink.href = 'staff?action=deleteNews&id=' + news.newsID;
+                                deleteLink.title = 'Xóa tin tức';
+                                deleteLink.innerHTML = '<i class="fas fa-trash"></i>';
+                                deleteLink.onclick = function (event) {
+                                    confirmDelete(event, news.newsID, news.title);
                                 };
-                                deleteForm.appendChild(deleteBtn);
 
-                                actionsDiv.appendChild(deleteForm);
+                                actionsDiv.appendChild(deleteLink);
 
                                 // Ghép tất cả lại
                                 newsContainer.appendChild(newsLink);

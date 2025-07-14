@@ -94,7 +94,7 @@
                             <div class="mt-auto">
                                 <a href="service?action=viewDetail&id=${service.serviceID}" class="btn btn-primary">Learn More</a>
                                 <c:if test="${not empty sessionScope.userDetailDTO}">
-                                    <a href="booking?action=addToCart&serviceId=${service.serviceID}" class="btn btn-outline-primary ms-2">
+                                    <a href="service?action=viewDetail&id=${service.serviceID}" class="btn btn-outline-primary ms-2">
                                         <i class="bi bi-cart-plus"></i> Book Now
                                     </a>
                                 </c:if>
