@@ -21,17 +21,20 @@
                        class="nav-link active">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a href="${pageContext.request.contextPath}/client/about.html" class="nav-link">About</a>
+                    <a href="${pageContext.request.contextPath}/client/about.jsp" class="nav-link">About</a>
                 </li>
                 <li class="nav-item">
                     <a href="${pageContext.request.contextPath}/service?action=viewListService"
                        class="nav-link">Service</a>
                 </li>
                 <li class="nav-item">
-                    <a href="${pageContext.request.contextPath}/client/product.html" class="nav-link">News</a>
+                    <a href="${pageContext.request.contextPath}/news?action=viewListNews" class="nav-link">News</a>
                 </li>
                 <li class="nav-item">
-                    <a href="${pageContext.request.contextPath}/client/contact.html"
+                    <a href="${pageContext.request.contextPath}/policy?action=viewListPolicy" class="nav-link">Policy</a>
+                </li>
+                <li class="nav-item">
+                    <a href="${pageContext.request.contextPath}/client/contact.jsp"
                        class="nav-link">Contact</a>
                 </li>
             </ul>
@@ -43,25 +46,28 @@
                         <div class="dropdown d-flex align-items-center" style="height: 56px; margin-right: 16px;">
                             <a href="#"
                                class="nav-link p-0 position-relative d-flex align-items-center justify-content-center"
-                               id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false"
-                               style="width: 56px; height: 87px;">
+                               id="notificationDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                                 <i class="bi bi-bell" style="font-size: 2rem; color: #7ac143;"></i>
                                 <span class="position-absolute translate-middle badge rounded-pill bg-danger"
-                                      style="font-size:0.8rem; left: 75%; top: 32%;">
-                                    3
-                                    <span class="visually-hidden">unread messages</span>
+                                      id="notificationBadge"
+                                      style="font-size:0.8rem; left: 75%; top: 32%; display: none">
+                                    
                                 </span>
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="notificationDropdown"
-                                style="min-width: 300px;">
-                                <li class="dropdown-header">Notifications</li>
-                                <li><a class="dropdown-item" href="#">Bạn có lịch hẹn mới</a></li>
-                                <li><a class="dropdown-item" href="#">Đơn đặt dịch vụ đã xác nhận</a></li>
-                                <li><a class="dropdown-item" href="#">Tin nhắn mới từ admin</a></li>
+                                style="min-width: 300px;" id="notificationDropdownMenu">
+                                <li class="dropdown-header d-flex justify-content-between align-items-center">
+                                    Notifications
+                                    <button id="markAllReadBtn" class="btn btn-link btn-sm p-0" style="font-size:0.9rem;">Đánh dấu tất cả đã đọc</button>
+                                </li>
+                                <li id="notificationListEmpty"><span class="dropdown-item text-muted">Không có thông báo nào</span></li>
+                                <li>
+                                    <ul id="notificationListItems" style="padding-left:0; margin-bottom:0;"></ul>
+                                </li>
                                 <li>
                                     <hr class="dropdown-divider">
                                 </li>
-                                <li><a class="dropdown-item text-center" href="#">Xem tất cả</a></li>
+                                <li><a class="dropdown-item text-center" id="viewAllNotificationsBtn" href="#">Xem tất cả</a></li>
                             </ul>
                         </div>
                         <!-- Cart Icon  -->
@@ -113,25 +119,20 @@
         const cartIcon = document.querySelector('.bi-cart3');
         if (cartIcon) {
             const savedCartCount = localStorage.getItem('cartCount');
-            if (savedCartCount && parseInt(savedCartCount) > 0) {
-                updateCartBadge(parseInt(savedCartCount));
-            }
-            
-            function updateCartCount() {
+
+
+            window.updateCartCount = function () {
                 fetch('booking?action=getCartCount')
                         .then(response => response.json())
                         .then(data => {
                             localStorage.setItem('cartCount', data.count);
-
                             updateCartBadge(data.count);
                         })
                         .catch(error => console.error('Error updating cart count:', error));
-            }
-
-            function updateCartBadge(count) {
+            };
+            window.updateCartBadge = function (count) {
                 const badgeContainer = cartIcon.closest('a');
                 let badgeElement = badgeContainer.querySelector('.badge');
-
                 if (count > 0) {
                     if (badgeElement) {
                         badgeElement.textContent = count;
@@ -142,11 +143,9 @@
                         badgeElement.style.left = '75%';
                         badgeElement.style.top = '32%';
                         badgeElement.textContent = count;
-
                         const visually = document.createElement('span');
                         visually.className = 'visually-hidden';
                         visually.textContent = 'items in cart';
-
                         badgeElement.appendChild(visually);
                         badgeContainer.appendChild(badgeElement);
                     }
@@ -155,11 +154,141 @@
                         badgeElement.remove();
                     }
                 }
-            }
-
+            };
             updateCartCount();
-
             setInterval(updateCartCount, 15000);
         }
+    }
+    );
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        window.fetchNotifications = function () {
+            fetch('notification?action=getNotificationForUser', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+                    .then(response => {
+                        if (!response.ok)
+                            throw new Error("Unauthorized or error");
+                        return response.json();
+                    })
+                    .then(data => {
+                        renderNotifications(data);
+                    })
+                    .catch(error => {
+                        console.error('Error loading notifications:', error);
+                    });
+        };
+
+        function renderNotifications(data) {
+            var listEmpty = document.getElementById('notificationListEmpty');
+            var listItems = document.getElementById('notificationListItems');
+
+            // Xoá hết li cũ (trừ header)
+            listItems.querySelectorAll('li').forEach(li => li.remove());
+            // Xóa tất cả các li cũ trong listItems
+
+
+            if (data.length === 0) {
+                listEmpty.style.display = 'block';
+                badge.style.display = 'none';
+            } else {
+                listEmpty.style.display = 'none';
+                for (var i = 0; i < data.length; i++) {
+                    var noti = data[i];
+                    var li = document.createElement('li');
+                    var a = document.createElement('a');
+                    a.className = 'dropdown-item d-flex justify-content-between align-items-center';
+                    a.href = '#';
+                    a.textContent = noti.content;
+                    if (!noti.hasRead) {
+                        a.style.fontWeight = 'bold';
+                        a.style.color = '';
+                    } else {
+                        a.style.fontWeight = 'normal';
+                        a.style.color = '#888';
+                    }
+                    // Sử dụng let để đảm bảo mỗi onclick lấy đúng ID
+                    let notificationID = noti.notificationID;
+                    a.onclick = function(e) {
+                        e.preventDefault();
+                        fetch('notification', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                            body: 'action=readNotification&notificationID=' + encodeURIComponent(notificationID)
+                        }).then(function() { 
+                            fetchNotifications(); 
+                            fetchUnreadCount();
+                        });
+                    };
+                    li.appendChild(a);
+                    listItems.appendChild(li);
+                }
+            }
+        }
+
+        // Gọi lần đầu + sau đó mỗi 2s
+        fetchNotifications();
+        setInterval(fetchNotifications, 2000);
     });
+</script>
+<!-- Thêm sau khi DOM đã load -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var viewAllBtn = document.getElementById('viewAllNotificationsBtn');
+        if (viewAllBtn) {
+            viewAllBtn.onclick = function (e) {
+                e.preventDefault();
+                fetch('notification', {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+                    body: 'action=readAllMessage'
+                }).then(function () {
+                    if (typeof fetchNotifications === 'function') {
+                        fetchNotifications();
+                        fetchUnreadCount();
+                    }
+
+                });
+            };
+        }
+    });
+</script>
+<script>
+    window.fetchUnreadCount = function () {
+        var badge = document.getElementById('notificationBadge');
+        fetch('notification?action=countUnreadNotifications', {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+                .then(response => {
+                    if (!response.ok)
+                        throw new Error("Unauthorized or error");
+                    return response.json();
+                })
+                .then(data => {
+                    if (badge) {
+                        if (data && data.count > 0) {
+                            badge.style.display = '';
+                            badge.textContent = data.count;
+                        } else {
+                            badge.style.display = 'none';
+                        }
+                    }
+                })
+                .catch(function () {
+                    var badge = document.getElementById('notificationBadge');
+                    if (badge)
+                        badge.style.display = 'none';
+                });
+    };
+    fetchUnreadCount();
+    setInterval(fetchUnreadCount, 2000);
 </script>
