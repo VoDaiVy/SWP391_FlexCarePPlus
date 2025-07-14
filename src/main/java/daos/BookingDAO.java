@@ -337,7 +337,6 @@ public class BookingDAO {
     }
 
 public static List<Booking> getByUserIdExcludeStates(int userID, String[] excludeStates) {
-    public static List<Booking> getByUserIdExcludeStates(int userID, String[] excludeStates) {
         List<Booking> bookings = new ArrayList<>();
 
         StringBuilder placeholders = new StringBuilder();
