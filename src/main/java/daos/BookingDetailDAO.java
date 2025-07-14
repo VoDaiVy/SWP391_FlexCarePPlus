@@ -712,7 +712,7 @@ public class BookingDetailDAO {
                 + "WHERE b.State = ? AND b.Status = 1 "
                 + "GROUP BY b.BookingID "
                 + "HAVING COUNT(bd.BookingDetailID) > 0 "
-                + "AND COUNT(bd.BookingDetailID) = COUNT(CASE WHEN bd.DateEndService IS NOT NULL AND bd.DateEndService <= GETDATE() THEN 1 END)";
+                + "AND COUNT(bd.BookingDetailID) = COUNT(CASE WHEN bd.DateEndService IS NOT NULL AND bd.DateEndService <= DATEADD(HOUR, 5, GETDATE()) THEN 1 END)";
 
         try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
