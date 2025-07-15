@@ -231,13 +231,11 @@ public class NewsDAO {
     // Get recent news with limit
     public static List<News> getRecent(int limit) {
         List<News> newsList = new ArrayList<>();
-        String sql = "SELECT * FROM News WHERE Status = 1 ORDER BY DateCreated DESC LIMIT ?";
+        String sql = "SELECT TOP " + limit + " * FROM News WHERE Status = 1 ORDER BY DateCreated DESC";
         try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-            
-            ps.setInt(1, limit);
-            ResultSet rs = ps.executeQuery();
-            
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery(sql)) {
+      
             while (rs.next()) {
                 News news = new News();
                 news.setNewsID(rs.getInt("NewsID"));
