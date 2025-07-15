@@ -100,8 +100,7 @@ public class MessageController extends HttpServlet {
 
         try (PrintWriter out = response.getWriter()) {
             out.write(data);
-            out.flush(); // ✅ đảm bảo tất cả dữ liệu được đẩy ra
-            // ✅ kết thúc stream chính xác
+            out.flush();
         }
     }
 
@@ -139,10 +138,11 @@ public class MessageController extends HttpServlet {
                 List<Message> messages = MessageDAO.getMessagesBetweenUsers(8, users.getFirst().getUserId());
                 request.setAttribute("users", users);
                 request.setAttribute("messages", messages);
+                request.setAttribute("action", "getMessages");
                 request.getRequestDispatcher("staff/managePage.jsp").forward(request, response);
             }
 
-            case "getUsers" -> {
+            case "getUsers" -> {    
                 response.setContentType("application/json");
                 response.setCharacterEncoding("UTF-8");
 
