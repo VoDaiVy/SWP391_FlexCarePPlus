@@ -305,7 +305,7 @@ public class BookingDAO {
         }
         return bookings;
     }
-
+    
     public static List<Booking> getByDate(int day, int month, int year) {
         List<Booking> bookings = new ArrayList<>();
         String sql = "SELECT * FROM Booking WHERE DAY(DateBooked) = ? AND MONTH(DateBooked) = ? AND YEAR(DateBooked) = ?";
