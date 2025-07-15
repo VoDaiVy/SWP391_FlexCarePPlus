@@ -145,6 +145,7 @@
                 listEmpty.style.display = 'none';
                 for (var i = 0; i < data.length; i++) {
                     var noti = data[i];
+                    console.log(noti);
                     var li = document.createElement('li');
                     var a = document.createElement('a');
                     a.className = 'dropdown-item d-flex justify-content-between align-items-center';
@@ -161,6 +162,7 @@
                     let notificationID = noti.notificationID;
                     a.onclick = function(e) {
                         e.preventDefault();
+                        console.log('action=readNotification&notificationID=' + encodeURIComponent(notificationID));
                         fetch('notification', {
                             method: 'POST',
                             headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
