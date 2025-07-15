@@ -339,6 +339,20 @@ public class NotificationController extends HttpServlet {
                 int userId = userDetailDTO.getUser().getUserId();
                 NotificationUserDAO.markAllAsRead(userId);
             }
+            case "createNotification" -> {
+                int userID = Integer.parseInt(request.getParameter("userId"));
+                String content = request.getParameter("content");
+                Notification notification = new Notification();
+                notification.setContent(content);
+                NotificationDAO.create(notification);
+                NotificationUser notificationUser = new NotificationUser();
+                notificationUser.setNotificationID(notification.getNotificationID());
+                notificationUser.setUserID(userID);
+                notificationUser.setHasRead(false);
+                notificationUser.setStatus(true);
+                NotificationUserDAO.create(notificationUser);
+                response.sendRedirect("staff?action=getCustomers");
+            }
         }
     }
 
