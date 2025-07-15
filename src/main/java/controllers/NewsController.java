@@ -26,6 +26,20 @@ public class NewsController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String actor = (String) request.getSession().getAttribute("actor");
+        if (actor == null) {
+            String action = request.getParameter("action");
+            switch (action) {
+                case "viewListNews" -> {
+                    viewListNews(request, response);
+                }
+                case "viewNewsDetail" -> {
+                    viewNewsDetail(request, response);
+                }
+                default -> {
+                    response.sendRedirect("./");
+                }
+            }
+        }
         switch (actor) {
             case "admin":
                 adminGet(request, response);
@@ -126,7 +140,18 @@ public class NewsController extends HttpServlet {
     // Customer role methods
     private void customerGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // To be implemented
+        String action = request.getParameter("action");
+        switch (action) {
+            case "viewListNews" -> {
+                viewListNews(request, response);
+            }
+            case "viewNewsDetail" -> {
+                viewNewsDetail(request, response);
+            }
+            default -> {
+                response.sendRedirect("./");
+            }
+        }
     }
 
     private void customerPost(HttpServletRequest request, HttpServletResponse response)
@@ -277,5 +302,99 @@ public class NewsController extends HttpServlet {
     private void staffDelete(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // To be implemented
+    }
+
+    // Common methods for customer news functionality
+    private void viewListNews(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            int page = 1;
+            int recordsPerPage = 9;
+
+            String pageParam = request.getParameter("page");
+            if (pageParam != null && !pageParam.isEmpty()) {
+                page = Integer.parseInt(pageParam);
+            }
+
+            String keyword = request.getParameter("keyword");
+            if (keyword != null) {
+                keyword = keyword.trim();
+                if (keyword.isEmpty()) {
+                    keyword = null;
+                }
+            }
+
+
+            List<News> allNews;
+            if (keyword != null && !keyword.isEmpty()) {
+                allNews = NewsDAO.searchByTitle(keyword);
+            } else {
+                allNews = NewsDAO.getAllActive();
+            }
+
+            int totalRecords = allNews.size();
+            int totalPages = (int) Math.ceil((double) totalRecords / recordsPerPage);
+
+            int start = (page - 1) * recordsPerPage;
+            int end = Math.min(start + recordsPerPage, totalRecords);
+            List<News> newsForPage = allNews.subList(start, end);
+
+            request.setAttribute("newsList", newsForPage);
+            request.setAttribute("currentPage", page);
+            request.setAttribute("totalPages", totalPages);
+            request.setAttribute("totalRecords", totalRecords);
+            request.setAttribute("keyword", keyword);
+
+            request.getRequestDispatcher("/client/list-news.jsp").forward(request, response);
+
+        } catch (NumberFormatException e) {
+            response.sendRedirect("news?action=viewListNews");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error processing news list: " + e.getMessage());
+        }
+    }
+
+    private void viewNewsDetail(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            String idStr = request.getParameter("id");
+
+            if (idStr == null || idStr.isEmpty()) {
+                response.sendRedirect("news?action=viewListNews");
+                return;
+            }
+
+            int newsId = Integer.parseInt(idStr);
+
+            News news = NewsDAO.getById(newsId);
+
+            if (news == null || !news.isStatus()) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "News not found");
+                return;
+            }
+
+            NewsDAO.incrementViews(newsId);
+
+            List<models.NewsImage> newsImages = daos.NewsImageDAO.getByNewsId(newsId);
+
+            List<News> relatedNews = NewsDAO.getRecent(5);
+            relatedNews.removeIf(n -> n.getNewsID() == newsId);
+            if (relatedNews.size() > 4) {
+                relatedNews = relatedNews.subList(0, 4);
+            }
+
+            request.setAttribute("news", news);
+            request.setAttribute("newsImages", newsImages);
+            request.setAttribute("relatedNews", relatedNews);
+
+            request.getRequestDispatcher("/client/news-detail.jsp").forward(request, response);
+
+        } catch (NumberFormatException e) {
+            response.sendRedirect("news?action=viewListNews");
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error processing news detail: " + e.getMessage());
+        }
     }
 }

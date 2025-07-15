@@ -21,17 +21,20 @@
                        class="nav-link active">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a href="${pageContext.request.contextPath}/client/about.html" class="nav-link">About</a>
+                    <a href="${pageContext.request.contextPath}/client/about.jsp" class="nav-link">About</a>
                 </li>
                 <li class="nav-item">
                     <a href="${pageContext.request.contextPath}/service?action=viewListService"
                        class="nav-link">Service</a>
                 </li>
                 <li class="nav-item">
-                    <a href="${pageContext.request.contextPath}/client/product.html" class="nav-link">News</a>
+                    <a href="${pageContext.request.contextPath}/news?action=viewListNews" class="nav-link">News</a>
                 </li>
                 <li class="nav-item">
-                    <a href="${pageContext.request.contextPath}/client/contact.html"
+                    <a href="${pageContext.request.contextPath}/policy?action=viewListPolicy" class="nav-link">Policy</a>
+                </li>
+                <li class="nav-item">
+                    <a href="${pageContext.request.contextPath}/client/contact.jsp"
                        class="nav-link">Contact</a>
                 </li>
             </ul>
