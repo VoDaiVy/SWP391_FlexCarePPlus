@@ -229,4 +229,36 @@ public class PolicyDAO {
         }
         return 0;
     }
+    
+    // Search policies by title (partial match)
+    public static List<Policy> searchByTitle(String keyword) {
+        List<Policy> policies = new ArrayList<>();
+        String sql = "SELECT * FROM Policy WHERE Title LIKE ? AND Status = 1 ORDER BY DateCreated DESC";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            
+            ps.setString(1, "%" + keyword + "%");
+            ResultSet rs = ps.executeQuery();
+            
+            while (rs.next()) {
+                Policy policy = new Policy();
+                policy.setPolicyID(rs.getInt("PolicyID"));
+                policy.setTitle(rs.getString("Title"));
+                policy.setDescription(rs.getString("Description"));
+                
+                // Handle SQL Date to LocalDate conversion
+                Date dateCreated = rs.getDate("DateCreated");
+                if (dateCreated != null) {
+                    policy.setDateCreated(dateCreated.toLocalDate());
+                }
+                
+                policy.setStatus(rs.getBoolean("Status"));
+                policies.add(policy);
+            }
+            
+        } catch (SQLException e) {
+            System.out.println("Error searching policies by title: " + e.getMessage());
+        }
+        return policies;
+    }
 }
