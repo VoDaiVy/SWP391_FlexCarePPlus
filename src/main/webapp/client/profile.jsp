@@ -272,7 +272,7 @@
                                                 <td>${pet.petName}</td>                                                
                                                 <td>
                                                     <div class="btn-group" role="group">
-                                                        <a href="petDetail?userPetID=${pet.userPetID}" class="btn btn-sm btn-outline-primary me-4">View Details</a>
+                                                        <a href="medicalrecords?action=getMedicalRecords&userPetID=${pet.userPetID}" class="btn btn-sm btn-outline-primary me-4">View Medical Records</a>
                                                         <button type="button" class="btn btn-sm btn-outline-secondary edit-pet-btn me-4" data-id="${pet.userPetID}" data-name="${pet.petName}" data-type="${pet.pet.name}">Edit</button>
                                                         <button type="button" class="btn btn-sm btn-outline-danger delete-pet-btn" data-id="${pet.userPetID}">Delete</button>
                                                     </div>

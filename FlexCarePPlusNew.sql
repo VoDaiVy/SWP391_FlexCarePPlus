@@ -233,3 +233,16 @@ FOREIGN KEY (CategoryServiceID) REFERENCES CategoryService(CategoryServiceID);
 
 EXEC sp_help 'Room';
 EXEC sp_rename 'Policy.DataCreated', 'DateCreated', 'COLUMN';
+
+SELECT TOP 10 
+    n.NotificationID,
+    n.Content,
+    nu.HasRead
+FROM 
+    NotificationUser nu
+JOIN 
+    Notifications n ON nu.NotificationID = n.NotificationID
+WHERE 
+    nu.UserID = 1 and nu.Status = 1
+ORDER BY 
+    n.DateCreated DESC;

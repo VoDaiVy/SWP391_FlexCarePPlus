@@ -76,6 +76,9 @@ public class StaffController extends HttpServlet {
             case "deleteNews" -> {
                 request.getRequestDispatcher("news").forward(request, response);
             }   
+            case "createNotification" -> {
+                request.getRequestDispatcher("notification").forward(request, response);
+            }
         } 
     }
 

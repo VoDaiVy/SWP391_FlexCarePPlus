@@ -95,7 +95,7 @@
     <!-- Chat Box -->
     <div class="chat-box" id="chatBox">
         <div class="chat-header">
-            Chat Support ${sessionScope.userDetailDTO.user.userId}
+            FlexCareP+ Support
             <span class="close-btn" onclick="closeChat()">&times;</span>
         </div>
         <div class="chat-messages" id="chatMessages"></div>
@@ -223,20 +223,58 @@
                         'Content-Type': 'application/json'
                     }
                 })
-                        .then(response => response.json())  // Nhận kết quả dưới dạng JSON
-                        .then(datas => {
-                            chatMessages.innerHTML = '';
-                            datas.forEach(data => {
-                                const msgDiv = document.createElement('div');
-                                msgDiv.className = 'message ' + (data.userID === senderID ? 'user' : 'bot');
-                                msgDiv.innerHTML = data.content;
-                                chatMessages.appendChild(msgDiv);
-                            });
-                            if (isNearBottom) {
-                                scrollToBottom();
-                            }
-                        })
-                        .catch(error => console.error('Error:', error));
+                .then(response => response.json())
+                .then(datas => {
+                    chatMessages.innerHTML = '';
+                    if (datas.length === 0) {
+                        // Hiện tin nhắn chào mừng nếu chưa có tin nhắn nào
+                        const welcomeDiv = document.createElement('div');
+                        welcomeDiv.className = 'message bot';
+                        welcomeDiv.innerHTML = 'Xin chào! Chào mừng bạn đến với FlexCareP+. Hãy đặt câu hỏi hoặc để lại lời nhắn, chúng tôi sẽ hỗ trợ bạn sớm nhất!';
+                        chatMessages.appendChild(welcomeDiv);
+
+                        // Thêm các button option
+                        const optionsDiv = document.createElement('div');
+                        optionsDiv.style.marginTop = '10px';
+                        optionsDiv.style.display = 'flex';
+                        optionsDiv.style.gap = '8px';
+
+                        const btnSupport = document.createElement('button');
+                        btnSupport.className = 'btn btn-outline-primary btn-sm';
+                        btnSupport.textContent = 'Tôi muốn được hỗ trợ';
+                        btnSupport.onclick = function() {
+                            sendMessageWithText('Tôi muốn được hỗ trợ');
+                        };
+
+                        const btnBooking = document.createElement('button');
+                        btnBooking.className = 'btn btn-outline-success btn-sm';
+                        btnBooking.textContent = 'Tôi muốn đặt lịch';
+                        btnBooking.onclick = function() {
+                            sendMessageWithText('Tôi muốn đặt lịch');
+                        };
+
+                        optionsDiv.appendChild(btnSupport);
+                        optionsDiv.appendChild(btnBooking);
+                        chatMessages.appendChild(optionsDiv);
+                    
+                        // Hàm gửi tin nhắn nhanh
+                        window.sendMessageWithText = function(text) {
+                            chatInput.value = text;
+                            sendMessage();
+                        };
+                    } else {
+                        datas.forEach(data => {
+                            const msgDiv = document.createElement('div');
+                            msgDiv.className = 'message ' + (data.userID === senderID ? 'user' : 'bot');
+                            msgDiv.innerHTML = data.content;
+                            chatMessages.appendChild(msgDiv);
+                        });
+                    }
+                    if (isNearBottom) {
+                        scrollToBottom();
+                    }
+                })
+                .catch(error => console.error('Error:', error));
             };
 
             setInterval(() => {
