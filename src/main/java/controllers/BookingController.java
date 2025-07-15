@@ -1544,7 +1544,8 @@ public class BookingController extends HttpServlet {
                 return;
             }
 
-            if (!booking.getState().equals("PENDINGPAYMENT") && !booking.getState().equals("BOOKED")) {
+//            if (!booking.getState().equals("PENDINGPAYMENT") && !booking.getState().equals("BOOKED")) {
+            if (!booking.getState().equals("PENDINGPAYMENT")) {
                 response.setContentType("application/json");
                 response.getWriter().write("{\"success\": false, \"message\": \"This booking cannot be cancelled\"}");
                 return;

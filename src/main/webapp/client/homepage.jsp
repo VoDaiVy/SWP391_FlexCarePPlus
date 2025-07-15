@@ -206,7 +206,7 @@
                                     </c:otherwise>
                                 </c:choose>
                             </p>
-                            <a class="text-primary text-uppercase" href="service?action=viewdetail&id=${service.serviceID}">
+                            <a class="text-primary text-uppercase" href="service?action=viewDetail&id=${service.serviceID}">
                                 Read More <i class="bi bi-chevron-right"></i>
                             </a>
                         </div>

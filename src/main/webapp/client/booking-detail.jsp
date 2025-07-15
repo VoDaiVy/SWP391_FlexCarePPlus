@@ -397,13 +397,13 @@
                                     <i class="bi bi-x-circle me-2"></i>Cancel Booking
                                 </button>
                             </c:if>
-
+                            <!-- comment 
                             <c:if test="${booking.state == 'BOOKED'}">
                                 <button class="btn btn-outline-danger" onclick="cancelBooking(${booking.bookingID})">
                                     <i class="bi bi-x-circle me-2"></i>Cancel Booking
                                 </button>
                             </c:if>
-
+-->
                             <c:if test="${booking.state == 'CANCEL'}">
                                 <div class="alert alert-light border-danger mt-3">
                                     <i class="bi bi-x-circle text-danger me-2"></i>

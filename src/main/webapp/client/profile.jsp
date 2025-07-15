@@ -701,7 +701,7 @@
                 <td>` + newPet.petName + `</td>
                 <td>
                     <div class="btn-group" role="group">
-                        <a href="petDetail?userPetID=` + newPet.userPetID + `" class="btn btn-sm btn-outline-primary me-4">View Details</a>
+                        <a href="medicalrecords?action=getMedicalRecords&userPetID=` + newPet.userPetID + `" class="btn btn-sm btn-outline-primary me-4">View Medical Records</a>
                         <button type="button" class="btn btn-sm btn-outline-secondary edit-pet-btn me-4" data-id="` + newPet.userPetID + `" data-name="` + newPet.petName + `" data-type="` + newPet.petType + `">Edit</button>
                         <button type="button" class="btn btn-sm btn-outline-danger delete-pet-btn" data-id="` + newPet.userPetID + `">Delete</button>
                     </div>
