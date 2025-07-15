@@ -100,8 +100,7 @@ public class MessageController extends HttpServlet {
 
         try (PrintWriter out = response.getWriter()) {
             out.write(data);
-            out.flush(); // ✅ đảm bảo tất cả dữ liệu được đẩy ra
-            // ✅ kết thúc stream chính xác
+            out.flush();
         }
     }
 

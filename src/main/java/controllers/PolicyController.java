@@ -2,7 +2,6 @@ package controllers;
 
 import daos.PolicyDAO;
 import java.io.IOException;
-import java.util.List;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,22 +14,6 @@ public class PolicyController extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String actor = (String) request.getSession().getAttribute("actor");
-        if (actor == null) {
-            // Handle guest access for policy viewing
-            String action = request.getParameter("action");
-            switch (action) {
-                case "viewListPolicy" -> {
-                    viewListPolicy(request, response);
-                }
-                case "viewPolicyDetail" -> {
-                    viewPolicyDetail(request, response);
-                }
-                default -> {
-                    response.sendRedirect("./");
-                }
-            }
-            return;
-        }
         switch (actor) {
             case "admin":
                 adminGet(request, response);
@@ -169,23 +152,10 @@ public class PolicyController extends HttpServlet {
         // To be implemented
     }
 
-    
-    
     // Customer role methods
     private void customerGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String action = request.getParameter("action");
-        switch (action) {
-            case "viewListPolicy" -> {
-                viewListPolicy(request, response);
-            }
-            case "viewPolicyDetail" -> {
-                viewPolicyDetail(request, response);
-            }
-            default -> {
-                response.sendRedirect("./");
-            }
-        }
+        // To be implemented
     }
 
     private void customerPost(HttpServletRequest request, HttpServletResponse response)
@@ -222,106 +192,5 @@ public class PolicyController extends HttpServlet {
     private void staffDelete(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         // To be implemented
-    }
-    
-    // Common methods for policy functionality
-    private void viewListPolicy(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try {
-            // Get page parameter, default to 1
-            String pageStr = request.getParameter("page");
-            int page = 1;
-            if (pageStr != null && !pageStr.isEmpty()) {
-                page = Integer.parseInt(pageStr);
-                if (page < 1) page = 1;
-            }
-            
-            // Set records per page
-            int recordsPerPage = 9;
-            
-            // Get search parameter
-            String keyword = request.getParameter("keyword");
-            if (keyword != null) {
-                keyword = keyword.trim();
-                if (keyword.isEmpty()) {
-                    keyword = null;
-                }
-            }
-            
-            // Get active policies with search functionality
-            List<Policy> allPolicies;
-            if (keyword != null && !keyword.isEmpty()) {
-                allPolicies = PolicyDAO.searchByTitle(keyword);
-            } else {
-                allPolicies = PolicyDAO.getAllActive();
-            }
-            
-            // Calculate pagination
-            int totalRecords = allPolicies.size();
-            int totalPages = (int) Math.ceil((double) totalRecords / recordsPerPage);
-            
-            // Get policies for current page
-            int start = (page - 1) * recordsPerPage;
-            int end = Math.min(start + recordsPerPage, totalRecords);
-            List<Policy> policiesForPage = allPolicies.subList(start, end);
-            
-            // Set attributes for JSP
-            request.setAttribute("policyList", policiesForPage);
-            request.setAttribute("currentPage", page);
-            request.setAttribute("totalPages", totalPages);
-            request.setAttribute("totalRecords", totalRecords);
-            request.setAttribute("keyword", keyword);
-            
-            // Forward to policy listing page
-            request.getRequestDispatcher("/client/list-policy.jsp").forward(request, response);
-            
-        } catch (NumberFormatException e) {
-            response.sendRedirect("policy?action=viewListPolicy");
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error processing policy list: " + e.getMessage());
-        }
-    }
-    
-    private void viewPolicyDetail(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try {
-            String idStr = request.getParameter("id");
-            
-            if (idStr == null || idStr.isEmpty()) {
-                response.sendRedirect("policy?action=viewListPolicy");
-                return;
-            }
-            
-            int policyId = Integer.parseInt(idStr);
-            
-            // Get policy by ID
-            Policy policy = PolicyDAO.getById(policyId);
-            
-            if (policy == null || !policy.isStatus()) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Policy not found");
-                return;
-            }
-            
-            // Get related policies (recent policies excluding current one)
-            List<Policy> relatedPolicies = PolicyDAO.getAllActive();
-            relatedPolicies.removeIf(p -> p.getPolicyID() == policyId);
-            if (relatedPolicies.size() > 4) {
-                relatedPolicies = relatedPolicies.subList(0, 4);
-            }
-            
-            // Set attributes for JSP
-            request.setAttribute("policy", policy);
-            request.setAttribute("relatedPolicies", relatedPolicies);
-            
-            // Forward to policy detail page
-            request.getRequestDispatcher("/client/policy-detail.jsp").forward(request, response);
-            
-        } catch (NumberFormatException e) {
-            response.sendRedirect("policy?action=viewListPolicy");
-        } catch (Exception e) {
-            e.printStackTrace();
-            response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Error processing policy detail: " + e.getMessage());
-        }
     }
 }
