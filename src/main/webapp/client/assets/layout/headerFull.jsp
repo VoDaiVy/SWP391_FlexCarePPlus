@@ -2,6 +2,20 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:include page="/client/assets/layout/header.jsp" />
 
+<style>
+    .dropdown-item.notification-text {
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: normal;
+        max-width: 320px;
+        font-size: 0.95rem;
+        line-height: 1.4;
+    }
+</style>
+
 <nav class="navbar navbar-expand-lg bg-white navbar-light shadow-sm py-3 py-lg-0 px-3 px-lg-0">
     <div class="container-fluid">
         <!-- Logo sát trái -->
@@ -62,7 +76,7 @@
                                 </li>
                                 <li id="notificationListEmpty"><span class="dropdown-item text-muted">Không có thông báo nào</span></li>
                                 <li>
-                                    <ul id="notificationListItems" style="padding-left:0; margin-bottom:0;"></ul>
+                                    <ul id="notificationListItems" style="list-style: none; padding-left:0; margin-bottom:0;"></ul>
                                 </li>
                                 <li>
                                     <hr class="dropdown-divider">
@@ -201,10 +215,12 @@
                 for (var i = 0; i < data.length; i++) {
                     var noti = data[i];
                     var li = document.createElement('li');
+                    li.style.width = '350px';
                     var a = document.createElement('a');
-                    a.className = 'dropdown-item d-flex justify-content-between align-items-center';
+                    a.className = 'dropdown-item d-flex justify-content-between align-items-center notification-text';
                     a.href = '#';
                     a.textContent = noti.content;
+                    a.title = noti.content;
                     if (!noti.hasRead) {
                         a.style.fontWeight = 'bold';
                         a.style.color = '';
