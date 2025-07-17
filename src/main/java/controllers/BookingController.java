@@ -368,18 +368,7 @@ public class BookingController extends HttpServlet {
             // Lấy thông tin dịch vụ
             models.Service service = ServiceDAO.getById(serviceId);
             float servicePrice = service.getPrice();
-
-            // Tính thời gian kết thúc dịch vụ
-            LocalTime endTime = bookingTime.plusMinutes(service.getTime());
-
-            boolean isPetBusy = BookingDetailDAO.isPetBusy(userPetId, bookingDate, bookingTime, endTime,
-                    new String[]{Booking.BookingState.BOOKED.toString(), Booking.BookingState.CART.toString(),
-                        Booking.BookingState.NEXTBOOKING.toString(), Booking.BookingState.PENDINGPAYMENT.toString()});
-
-            if (isPetBusy) {
-                out.print("{\"success\": false, \"message\": \"Pet is already scheduled for another service at this time. Please select a different time or pet.\"}");
-                return;
-            }
+            int serviceDuration = service.getTime();
 
             // Kiểm tra xem đã có giỏ hàng (booking với state="CART") cho user này chưa
             List<Booking> userCarts = BookingDAO.getByUserIdAndState(userId, Booking.BookingState.CART.toString());
@@ -411,17 +400,52 @@ public class BookingController extends HttpServlet {
             } else {
                 // Sử dụng cart booking đã có
                 cartBooking = userCarts.get(0);
-
-                // Cập nhật tổng giá
-                cartBooking.setTotalPrice(cartBooking.getTotalPrice() + servicePrice);
-                cartBooking.setDateBooked(now);
-                BookingDAO.update(cartBooking);
+                
+                 // Lấy tất cả booking detail của cart trong ngày này, sắp xếp theo startTime tăng dần
+                List<BookingDetail> cartDetails = BookingDetailDAO.getByBookingId(cartBooking.getBookingID());
+                List<BookingDetail> sameDayDetails = new ArrayList<>();
+                for (BookingDetail detail : cartDetails) {
+                    if (detail.dateStartService.toLocalDate().equals(bookingDate) && detail.getUserPetID() == userPetId) {
+                        sameDayDetails.add(detail);
+                    }
+                }
+                sameDayDetails.sort((a, b) -> a.startTime.compareTo(b.startTime));
+                
+                // Nếu bookingTime trùng startTime của booking nào đó, thì bookingTime = endTime của booking đó
+                boolean adjusted;
+                do {
+                    adjusted = false;
+                    for (BookingDetail detail : sameDayDetails) {
+                        if (bookingTime.equals(detail.startTime)) {
+                            if(detail.serviceID == serviceId) {
+                                out.print("{\"success\": false, \"message\": \"You have already added this service for this pet at this time in your cart. Please choose another time or service.\"}");
+                                return;
+                            }
+                            bookingTime = detail.endTime;
+                            adjusted = true;
+                            break;
+                        }
+                    }
+                } while (adjusted);
+                
+                if (bookingTime.plusMinutes(serviceDuration).isAfter(LocalTime.of(17, 30))) {
+                    out.print("{\"success\": false, \"message\": \"No available time slot after existing bookings on this day.\"}");
+                    return;
+                }
+ 
             }
+            
+            // Tính thời gian kết thúc dịch vụ
+            LocalTime endTime = bookingTime.plusMinutes(serviceDuration);
 
-            // Tạo booking detail cho service đã chọn
-            BookingDetail bookingDetail = new BookingDetail();
-            bookingDetail.setBookingID(cartBooking.getBookingID());
-            bookingDetail.setServiceID(serviceId);
+            boolean isPetBusy = BookingDetailDAO.isPetBusy(userPetId, bookingDate, bookingTime, endTime,
+                    new String[]{Booking.BookingState.BOOKED.toString(), Booking.BookingState.CART.toString(),
+                        Booking.BookingState.NEXTBOOKING.toString(), Booking.BookingState.PENDINGPAYMENT.toString()});
+
+            if (isPetBusy) {
+                out.print("{\"success\": false, \"message\": \"Pet is already scheduled for another service at this time. Please select a different time or pet.\"}");
+                return;
+            }
 
             // Tìm phòng phù hợp với service và còn trống trong khung giờ đã chọn
             List<Room> availableRooms = RoomDAO.getByCategoryServiceId(service.getCategoryServiceID());
@@ -458,8 +482,16 @@ public class BookingController extends HttpServlet {
                 out.print("{\"success\": false, \"message\": \"No room available for selected time slot\"}");
                 return;
             }
+            
+            // Cập nhật tổng giá
+            cartBooking.setTotalPrice(cartBooking.getTotalPrice() + servicePrice);
+            cartBooking.setDateBooked(now);
+            BookingDAO.update(cartBooking);
 
-            // Thiết lập thông tin cho booking detail
+            // Tạo booking detail cho service đã chọn
+            BookingDetail bookingDetail = new BookingDetail();
+            bookingDetail.setBookingID(cartBooking.getBookingID());
+            bookingDetail.setServiceID(serviceId);
             bookingDetail.setRoomID(selectedRoomId);
             bookingDetail.setStockBooking(1); // Giá trị mặc định nếu không dùng
             LocalDateTime startDateTime = LocalDateTime.of(bookingDate, bookingTime);
