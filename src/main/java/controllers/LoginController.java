@@ -93,6 +93,7 @@ public class LoginController extends HttpServlet {
             UserDetailDAO.create(userDetail);
             Wallet wallet = new Wallet(user.getUserId(), 0, true);
             WalletDAO.create(wallet);
+            Email.sendEmail(user.getEmail(), "Welcome to FlexCareP+ - Dịch vụ thú cưng", Email.noiDungWelcome());
         } else {
             userDetail = UserDetailDAO.getByUserId(user.getUserId());
             System.out.println(user);

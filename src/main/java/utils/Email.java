@@ -96,6 +96,48 @@ public class Email {
                 + "</html>";
     }
 
+    public static String noiDungWelcome() {
+        return "<!DOCTYPE html>\r\n"
+                + "<html>\r\n"
+                + "<head>\r\n"
+                + "  <meta charset=\"UTF-8\">\r\n"
+                + "  <style>\r\n"
+                + "    body { font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px; }\r\n"
+                + "    .email-container {\r\n"
+                + "      background-color: #ffffff;\r\n"
+                + "      max-width: 600px;\r\n"
+                + "      margin: auto;\r\n"
+                + "      padding: 30px;\r\n"
+                + "      border: 1px solid #ddd;\r\n"
+                + "      border-radius: 10px;\r\n"
+                + "      box-shadow: 0 4px 10px rgba(0,0,0,0.05);\r\n"
+                + "    }\r\n"
+                + "    h1 { color: #2c3e50; font-size: 22px; }\r\n"
+                + "    p { font-size: 16px; color: #333; line-height: 1.5; }\r\n"
+                + "    .info-box {\r\n"
+                + "      margin-top: 20px;\r\n"
+                + "      padding: 10px 20px;\r\n"
+                + "      background-color: #e3f2fd;\r\n"
+                + "      color: #1565c0;\r\n"
+                + "      font-size: 18px;\r\n"
+                + "      font-weight: bold;\r\n"
+                + "      border-radius: 6px;\r\n"
+                + "      display: inline-block;\r\n"
+                + "    }\r\n"
+                + "  </style>\r\n"
+                + "</head>\r\n"
+                + "<body>\r\n"
+                + "  <div class=\"email-container\">\r\n"
+                + "    <h1>Chào mừng bạn đến với <span style=\"color:#4285f4;\">FlexCareP+</span> 🐾</h1>\r\n"
+                + "    <p>Cảm ơn bạn đã đăng ký tài khoản. Dưới đây là thông tin để bạn bắt đầu sử dụng dịch vụ:</p>\r\n"
+                + "    <div class=\"info-box\">Mật khẩu mặc định của tài khoản bạn là <b>123</b></div>\r\n"
+                + "    <p>Vui lòng đổi mật khẩu sau khi đăng nhập lần đầu để đảm bảo bảo mật.</p>\r\n"
+                + "    <p style=\"margin-top: 30px; color: #888; font-size: 13px;\">Trân trọng,<br>Đội ngũ FlexCareP+</p>\r\n"
+                + "  </div>\r\n"
+                + "</body>\r\n"
+                + "</html>";
+    }
+
     public static String noiDungReset() {
         return "<!DOCTYPE html>\r\n"
                 + "<html>\r\n"

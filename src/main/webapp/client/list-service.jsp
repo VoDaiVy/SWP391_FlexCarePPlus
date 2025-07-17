@@ -485,7 +485,7 @@
                 })
                 .then(data => {
                     if (data.success) {
-                        window.location.href = 'booking?action=viewCart';
+                        window.location.reload();
                     } else {
                         document.getElementById('addToCartError').style.display = 'block';
                         document.getElementById('addToCartError').textContent = data.message || 'Failed to add to cart. Please try again.';
@@ -659,7 +659,7 @@
                 })
                 .then(data => {
                     if (data.success) {
-                        window.location.href = 'booking?action=viewCart';
+                        window.location.reload();
                     } else {
                         document.getElementById('lodgingServiceError').style.display = 'block';
                         document.getElementById('lodgingServiceError').textContent = data.message || 'Failed to add to cart. Please try again.';
