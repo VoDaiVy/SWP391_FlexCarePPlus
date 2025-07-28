@@ -94,3 +94,4 @@ models\Message.class
 models\ServiceImage.class
 dtos\BookingDTO.class
 models\User$RoleName.class
+utils\GeminiService.class

@@ -400,7 +400,7 @@ public static List<Booking> getByUserIdExcludeStates(int userID, String[] exclud
     }
 
     public static boolean updateBookingDate(int bookingId) {
-        String sql = "UPDATE Booking SET DateBooked = GETDATE() WHERE BookingID = ?";
+        String sql = "UPDATE Booking SET DateBooked = DATEADD(HOUR, 5, GETDATE()) WHERE BookingID = ?";
 
         try (Connection conn = DBConnection.getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
 
