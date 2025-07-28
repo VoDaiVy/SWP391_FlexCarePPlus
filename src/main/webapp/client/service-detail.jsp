@@ -1326,7 +1326,7 @@
 
         document.getElementById('addToCartBtn').disabled = true;
         document.getElementById('addToCartBtn').innerHTML = '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Adding...';
-        //Tạo và chuyển dữ liệu về dạng x-www-form-urlencoded
+
         const form = e.target;
         const formData = new FormData(form);
 
@@ -1334,7 +1334,7 @@
         for (const [key, value] of formData.entries()) {
             params.append(key, value);
         }
-        // Gửi dữ liệu đến server
+
         fetch('booking', {
             method: 'POST',
             headers: {
@@ -1342,7 +1342,6 @@
             },
             body: params
         })
-                //Xử lý kết quả trả về
                 .then(response => response.json())
                 .catch(error => {
                     return {success: false, message: 'Failed to add to cart. Please try again.'};

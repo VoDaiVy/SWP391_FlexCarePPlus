@@ -1,5 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <jsp:include page="/client/assets/layout/header.jsp" />
 
 <style>
@@ -32,24 +33,27 @@
             <ul class="navbar-nav mx-auto mb-2 mb-lg-0">
                 <li class="nav-item">
                     <a href="home"
-                       class="nav-link active">Home</a>
+                       class="nav-link ${fn:contains(pageContext.request.requestURI, 'home') ? 'active' : ''}">Home</a>
                 </li>
                 <li class="nav-item">
-                    <a href="${pageContext.request.contextPath}/client/about.jsp" class="nav-link">About</a>
+                    <a href="${pageContext.request.contextPath}/client/about.jsp" class="nav-link
+                       ${fn:contains(pageContext.request.requestURI, 'about') ? 'active' : ''}">About</a>
                 </li>
                 <li class="nav-item">
                     <a href="${pageContext.request.contextPath}/service?action=viewListService"
-                       class="nav-link">Service</a>
+                       class="nav-link ${fn:contains(pageContext.request.requestURI, 'service') ? 'active' : ''}">Service</a>
                 </li>
                 <li class="nav-item">
-                    <a href="${pageContext.request.contextPath}/news?action=viewListNews" class="nav-link">News</a>
+                    <a href="${pageContext.request.contextPath}/news?action=viewListNews" class="nav-link
+                       ${fn:contains(pageContext.request.requestURI, 'news') ? 'active' : ''}">News</a>
                 </li>
                 <li class="nav-item">
-                    <a href="${pageContext.request.contextPath}/policy?action=viewListPolicy" class="nav-link">Policy</a>
+                    <a href="${pageContext.request.contextPath}/policy?action=viewListPolicy" class="nav-link 
+                       ${fn:contains(pageContext.request.requestURI, 'policy') ? 'active' : ''}">Policy</a>
                 </li>
                 <li class="nav-item">
                     <a href="${pageContext.request.contextPath}/client/contact.jsp"
-                       class="nav-link">Contact</a>
+                       class="nav-link ${fn:contains(pageContext.request.requestURI, 'contact') ? 'active' : ''}">Contact</a>
                 </li>
             </ul>
             <!-- Avatar/Sign In sát phải -->
