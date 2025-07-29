@@ -238,6 +238,30 @@ public class NewsController extends HttpServlet {
                     request.getRequestDispatcher("staff/newsDetail.jsp").forward(request, response);
                 }
             }
+            case "createNewsAI" -> {
+                String title = request.getParameter("aiGenTitle");
+                String description = request.getParameter("aiGenContent");
+                String imgURL = request.getParameter("aiGenImage");
+
+                News news = new News();
+                news.setTitle(title);
+                news.setDescription(description);
+                news.setViews(0);
+                news.setImgURL(imgURL);
+                news.setDateCreated(java.time.LocalDate.now());
+                news.setStatus(true);
+
+                boolean created = daos.NewsDAO.create(news);
+                if (created) {
+                    request.setAttribute("message", "Thêm tin tức AI thành công!");
+                    request.setAttribute("type", "success");
+                    request.getRequestDispatcher("staff/newsDetail.jsp").forward(request, response);
+                } else {
+                    request.setAttribute("message", "Tạo tin tức AI thất bại!");
+                    request.setAttribute("type", "danger");
+                    request.getRequestDispatcher("staff/newsDetail.jsp").forward(request, response);
+                }
+            }
             case "updateNews" -> {
                 // Xử lý cập nhật tin tức
                 try {
@@ -323,7 +347,6 @@ public class NewsController extends HttpServlet {
                     keyword = null;
                 }
             }
-
 
             List<News> allNews;
             if (keyword != null && !keyword.isEmpty()) {

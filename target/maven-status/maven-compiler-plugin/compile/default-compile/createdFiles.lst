@@ -62,6 +62,7 @@ dtos\MedicalRecordsDTO.class
 dtos\RoomDTO.class
 utils\Common.class
 dtos\FeedbackServiceDTO.class
+controllers\GeminiController.class
 daos\DAOFactory.class
 utils\Email.class
 models\GoogleAccount.class

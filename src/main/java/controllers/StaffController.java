@@ -69,7 +69,10 @@ public class StaffController extends HttpServlet {
         switch (action) {
             case "createNews" -> {
                 request.getRequestDispatcher("news").forward(request, response);
-            }   
+            }
+            case "createNewsAI" -> {
+                request.getRequestDispatcher("news").forward(request, response);
+            }
             case "updateNews" -> {
                 request.getRequestDispatcher("news").forward(request, response);
             }   
